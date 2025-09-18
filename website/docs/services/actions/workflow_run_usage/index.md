@@ -1,0 +1,38 @@
+---
+title: workflow_run_usage
+hide_title: false
+hide_table_of_contents: false
+keywords:
+  - workflow_run_usage
+  - actions
+  - github    
+  - stackql
+  - infrastructure-as-code
+  - configuration-as-data
+  - cloud inventory
+description: Query, deploy and manage GitHub resources using SQL
+custom_edit_url: null
+image: /img/stackql-github-provider-featured-image.png
+---
+
+import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+
+
+
+
+## Overview
+<table><tbody>
+<tr><td><b>Name</b></td><td><code>workflow_run_usage</code></td></tr>
+<tr><td><b>Type</b></td><td>Resource</td></tr>
+<tr><td><b>Id</b></td><td><CopyableCode code="github.actions.workflow_run_usage" /></td></tr>
+</tbody></table>
+
+## Fields
+| Name | Datatype |
+|:-----|:---------|
+| <CopyableCode code="billable" /> | `object` |
+| <CopyableCode code="run_duration_ms" /> | `integer` |
+## Methods
+| Name | Accessible by | Required Params |
+|:-----|:--------------|:----------------|
+| <CopyableCode code="get_workflow_run_usage" /> | `SELECT` | <CopyableCode code="owner, repo, run_id" /> |
