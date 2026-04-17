@@ -1,11 +1,12 @@
 {
-  "name": "stackql-provider-digitalocean",
+  "name": "stackql-provider-github",
   "version": "0.1.0",
-  "description": "StackQL Provider for Digital Ocean",
+  "description": "StackQL Provider for GitHub",
   "type": "module",
   "scripts": {
     "generate-docs": "./bin/generate-docs.sh",
     "split": "./bin/split.sh",
+    "flatten": "./bin/flatten.sh",
     "generate-mappings": "./bin/generate-mappings.sh",
     "generate-provider": "./bin/generate-provider.sh",
     "start-server": "bash ./bin/start-server.sh",
@@ -15,11 +16,11 @@
   },
   "dependencies": {
     "@stackql/pgwire-lite": "^1.0.1",
-    "@stackql/provider-utils": "^0.5.0"
+    "@stackql/provider-utils": "^0.6.1"
   },
   "keywords": [
     "stackql",
-    "digitalocean",
+    "github",
     "provider"
   ],
   "engines": {

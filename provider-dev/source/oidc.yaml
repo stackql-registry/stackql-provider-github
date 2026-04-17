@@ -1,0 +1,426 @@
+openapi: 3.0.3
+info:
+  title: oidc API
+  description: Endpoints to manage GitHub OIDC configuration using the REST API.
+  version: 1.1.4
+paths:
+  /enterprises/{enterprise}/actions/oidc/customization/properties/repo:
+    get:
+      summary: List OIDC custom property inclusions for an enterprise
+      description: |-
+        Lists the repository custom properties that are included in the OIDC token for repository actions in an enterprise.
+
+        OAuth app tokens and personal access tokens (classic) need the `admin:enterprise` scope to use this endpoint.
+      tags:
+        - oidc
+      operationId: oidc/list-oidc-custom-property-inclusions-for-enterprise
+      externalDocs:
+        description: API method documentation
+        url: https://docs.github.com/rest/actions/oidc#list-oidc-custom-property-inclusions-for-an-enterprise
+      parameters:
+        - $ref: '#/components/parameters/enterprise'
+      responses:
+        '200':
+          description: A JSON array of OIDC custom property inclusions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/oidc-custom-property-inclusion'
+              examples:
+                default:
+                  value:
+                    - custom_property_name: environment
+                      inclusion_source: enterprise
+                    - custom_property_name: team
+                      inclusion_source: enterprise
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not_found'
+      x-github:
+        enabledForGitHubApps: true
+        githubCloudOnly: false
+        category: actions
+        subcategory: oidc
+      x-stackQL-resource: oidc
+    post:
+      summary: Create an OIDC custom property inclusion for an enterprise
+      description: |-
+        Adds a repository custom property to be included in the OIDC token for repository actions in an enterprise.
+
+        OAuth app tokens and personal access tokens (classic) need the `admin:enterprise` scope to use this endpoint.
+      tags:
+        - oidc
+      operationId: oidc/create-oidc-custom-property-inclusion-for-enterprise
+      externalDocs:
+        description: API method documentation
+        url: https://docs.github.com/rest/actions/oidc#create-an-oidc-custom-property-inclusion-for-an-enterprise
+      parameters:
+        - $ref: '#/components/parameters/enterprise'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/oidc-custom-property-inclusion-input'
+            examples:
+              default:
+                $ref: '#/components/examples/oidc-custom-property-inclusion'
+      responses:
+        '201':
+          description: OIDC custom property inclusion created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/oidc-custom-property-inclusion'
+              examples:
+                default:
+                  $ref: '#/components/examples/oidc-custom-property-inclusion'
+        '400':
+          description: Invalid input
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '422':
+          description: Property inclusion already exists
+      x-github:
+        enabledForGitHubApps: true
+        githubCloudOnly: false
+        category: actions
+        subcategory: oidc
+      x-stackQL-resource: oidc
+  /enterprises/{enterprise}/actions/oidc/customization/properties/repo/{custom_property_name}:
+    delete:
+      summary: Delete an OIDC custom property inclusion for an enterprise
+      description: |-
+        Removes a repository custom property from being included in the OIDC token for repository actions in an enterprise.
+
+        OAuth app tokens and personal access tokens (classic) need the `admin:enterprise` scope to use this endpoint.
+      tags:
+        - oidc
+      operationId: oidc/delete-oidc-custom-property-inclusion-for-enterprise
+      externalDocs:
+        description: API method documentation
+        url: https://docs.github.com/rest/actions/oidc#delete-an-oidc-custom-property-inclusion-for-an-enterprise
+      parameters:
+        - $ref: '#/components/parameters/enterprise'
+        - name: custom_property_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The name of the custom property to remove from OIDC token inclusion
+      responses:
+        '204':
+          description: OIDC custom property inclusion deleted
+        '400':
+          description: Invalid input
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          description: Property inclusion not found
+      x-github:
+        enabledForGitHubApps: true
+        githubCloudOnly: false
+        category: actions
+        subcategory: oidc
+      x-stackQL-resource: oidc
+  /orgs/{org}/actions/oidc/customization/properties/repo:
+    get:
+      summary: List OIDC custom property inclusions for an organization
+      description: |-
+        Lists the repository custom properties that are included in the OIDC token for repository actions in an organization.
+
+        OAuth app tokens and personal access tokens (classic) need the `read:org` scope to use this endpoint.
+      tags:
+        - oidc
+      operationId: oidc/list-oidc-custom-property-inclusions-for-org
+      externalDocs:
+        description: API method documentation
+        url: https://docs.github.com/rest/actions/oidc#list-oidc-custom-property-inclusions-for-an-organization
+      parameters:
+        - $ref: '#/components/parameters/org'
+      responses:
+        '200':
+          description: A JSON array of OIDC custom property inclusions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/oidc-custom-property-inclusion'
+              examples:
+                default:
+                  value:
+                    - property_name: environment
+                    - property_name: team
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not_found'
+      x-github:
+        enabledForGitHubApps: true
+        category: actions
+        subcategory: oidc
+      x-stackQL-resource: oidc
+    post:
+      summary: Create an OIDC custom property inclusion for an organization
+      description: |-
+        Adds a repository custom property to be included in the OIDC token for repository actions in an organization.
+
+        OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+      tags:
+        - oidc
+      operationId: oidc/create-oidc-custom-property-inclusion-for-org
+      externalDocs:
+        description: API method documentation
+        url: https://docs.github.com/rest/actions/oidc#create-an-oidc-custom-property-inclusion-for-an-organization
+      parameters:
+        - $ref: '#/components/parameters/org'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/oidc-custom-property-inclusion-input'
+            examples:
+              default:
+                $ref: '#/components/examples/oidc-custom-property-inclusion'
+      responses:
+        '201':
+          description: OIDC custom property inclusion created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/oidc-custom-property-inclusion'
+              examples:
+                default:
+                  $ref: '#/components/examples/oidc-custom-property-inclusion'
+        '400':
+          description: Invalid input
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '422':
+          description: Property inclusion already exists
+      x-github:
+        enabledForGitHubApps: true
+        category: actions
+        subcategory: oidc
+      x-stackQL-resource: oidc
+  /orgs/{org}/actions/oidc/customization/properties/repo/{custom_property_name}:
+    delete:
+      summary: Delete an OIDC custom property inclusion for an organization
+      description: |-
+        Removes a repository custom property from being included in the OIDC token for repository actions in an organization.
+
+        OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+      tags:
+        - oidc
+      operationId: oidc/delete-oidc-custom-property-inclusion-for-org
+      externalDocs:
+        description: API method documentation
+        url: https://docs.github.com/rest/actions/oidc#delete-an-oidc-custom-property-inclusion-for-an-organization
+      parameters:
+        - $ref: '#/components/parameters/org'
+        - name: custom_property_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The name of the custom property to remove from OIDC token inclusion
+      responses:
+        '204':
+          description: OIDC custom property inclusion deleted
+        '400':
+          description: Invalid input
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          description: Property inclusion not found
+      x-github:
+        enabledForGitHubApps: true
+        category: actions
+        subcategory: oidc
+      x-stackQL-resource: oidc
+  /orgs/{org}/actions/oidc/customization/sub:
+    get:
+      summary: Get the customization template for an OIDC subject claim for an organization
+      description: |-
+        Gets the customization template for an OpenID Connect (OIDC) subject claim.
+
+        OAuth app tokens and personal access tokens (classic) need the `read:org` scope to use this endpoint.
+      tags:
+        - oidc
+      operationId: oidc/get-oidc-custom-sub-template-for-org
+      externalDocs:
+        description: API method documentation
+        url: https://docs.github.com/rest/actions/oidc#get-the-customization-template-for-an-oidc-subject-claim-for-an-organization
+      parameters:
+        - $ref: '#/components/parameters/org'
+      responses:
+        '200':
+          description: A JSON serialized template for OIDC subject claim customization
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/oidc-custom-sub'
+              examples:
+                default:
+                  $ref: '#/components/examples/oidc-custom-sub'
+      x-github:
+        enabledForGitHubApps: true
+        category: actions
+        subcategory: oidc
+      x-stackQL-resource: oidc
+    put:
+      summary: Set the customization template for an OIDC subject claim for an organization
+      description: |-
+        Creates or updates the customization template for an OpenID Connect (OIDC) subject claim.
+
+        OAuth app tokens and personal access tokens (classic) need the `write:org` scope to use this endpoint.
+      tags:
+        - oidc
+      operationId: oidc/update-oidc-custom-sub-template-for-org
+      externalDocs:
+        description: API method documentation
+        url: https://docs.github.com/rest/actions/oidc#set-the-customization-template-for-an-oidc-subject-claim-for-an-organization
+      parameters:
+        - $ref: '#/components/parameters/org'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              title: Actions OIDC Subject customization
+              description: Actions OIDC Subject customization
+              type: object
+              properties:
+                include_claim_keys:
+                  description: Array of unique strings. Each claim key can only contain alphanumeric characters and underscores.
+                  type: array
+                  items:
+                    type: string
+            examples:
+              default:
+                $ref: '#/components/examples/oidc-custom-sub'
+      responses:
+        '201':
+          description: Empty response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/empty-object'
+              examples:
+                default:
+                  value: null
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not_found'
+      x-github:
+        enabledForGitHubApps: true
+        previews: []
+        category: actions
+        subcategory: oidc
+      x-stackQL-resource: oidc
+components:
+  schemas:
+    oidc-custom-property-inclusion:
+      title: Actions OIDC Custom Property Inclusion
+      description: An OIDC custom property inclusion for repository properties
+      type: object
+      properties:
+        custom_property_name:
+          type: string
+          description: The name of the custom property that is included in the OIDC token
+        inclusion_source:
+          type: string
+          description: Whether the inclusion was defined at the organization or enterprise level
+          enum:
+            - organization
+            - enterprise
+          example: organization
+      required:
+        - custom_property_name
+        - inclusion_source
+    oidc-custom-property-inclusion-input:
+      title: Actions OIDC Custom Property Inclusion Input
+      description: Input for creating an OIDC custom property inclusion
+      type: object
+      properties:
+        custom_property_name:
+          type: string
+          description: The name of the custom property to include in the OIDC token
+      required:
+        - custom_property_name
+    oidc-custom-sub:
+      title: Actions OIDC Subject customization
+      description: Actions OIDC Subject customization
+      type: object
+      properties:
+        include_claim_keys:
+          description: Array of unique strings. Each claim key can only contain alphanumeric characters and underscores.
+          type: array
+          items:
+            type: string
+      required:
+        - include_claim_keys
+    empty-object:
+      title: Empty Object
+      description: An object without any properties.
+      type: object
+      properties: {}
+      additionalProperties: false
+    basic-error:
+      title: Basic Error
+      description: Basic Error
+      type: object
+      properties:
+        message:
+          type: string
+        documentation_url:
+          type: string
+        url:
+          type: string
+        status:
+          type: string
+  responses:
+    forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/basic-error'
+    not_found:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/basic-error'
+  parameters:
+    enterprise:
+      name: enterprise
+      description: The slug version of the enterprise name.
+      in: path
+      required: true
+      schema:
+        type: string
+    org:
+      name: org
+      description: The organization name. The name is not case sensitive.
+      in: path
+      required: true
+      schema:
+        type: string
+  examples:
+    oidc-custom-property-inclusion:
+      value:
+        custom_property_name: environment
+    oidc-custom-sub:
+      value:
+        include_claim_keys:
+          - repo
+          - context
+servers:
+  - url: https://api.github.com

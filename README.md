@@ -28,7 +28,7 @@ Next, split the monolithic OpenAPI specification into service-specific files:
 rm -rf provider-dev/source/*
 npm run split -- \
   --provider-name github \
-  --api-doc provider-dev/downloaded/github-openapi.json \
+  --api-doc provider-dev/downloaded/api.github.com.json \
   --svc-discriminator tag \
   --output-dir provider-dev/source \
   --overwrite \
@@ -58,6 +58,15 @@ npm run split -- \
 EOF
 )"
 ```
+
+## 2a. Clobber Polymorhism
+
+```bash
+npm run flatten -- \
+  --api-dir provider-dev/source \
+  --verbose
+```
+
 
 ## 3. Generate Mappings
 
