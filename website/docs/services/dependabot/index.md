@@ -9,45 +9,28 @@ keywords:
   - infrastructure-as-code
   - configuration-as-data
   - cloud inventory
-description: Query, deploy and manage GitHub resources using SQL
+description: Query, deploy and manage github resources using SQL
 custom_edit_url: null
 image: /img/stackql-github-provider-featured-image.png
 ---
 
-Endpoints To Manage Dependabot.  
-    
-:::info Service Summary
+dependabot service documentation.
 
-<div class="row">
-<div class="providerDocColumn">
-<span>total resources:&nbsp;<b>7</b></span><br />
-<span>total selectable resources:&nbsp;<b>7</b></span><br />
-<span>total methods:&nbsp;<b>19</b></span><br />
-</div>
-</div>
+:::info[Service Summary]
+
+total resources: __5__  
 
 :::
-
-## Overview
-<table><tbody>
-<tr><td><b>Name</b></td><td><code>github.dependabot</code></td></tr>
-<tr><td><b>Type</b></td><td>Service</td></tr>
-<tr><td><b>Title</b></td><td>GitHub V3 REST API - Dependabot</td></tr>
-<tr><td><b>Description</b></td><td>Endpoints To Manage Dependabot.</td></tr>
-<tr><td><b>Id</b></td><td><code>dependabot:v24.04.00227</code></td></tr>
-</tbody></table>
 
 ## Resources
 <div class="row">
 <div class="providerDocColumn">
 <a href="/services/dependabot/alerts/">alerts</a><br />
-<a href="/services/dependabot/enterprise_alerts/">enterprise_alerts</a><br />
-<a href="/services/dependabot/org_alerts/">org_alerts</a><br />
-<a href="/services/dependabot/org_secrets/">org_secrets</a><br />
+<a href="/services/dependabot/org_dependabot_repository_access/">org_dependabot_repository_access</a><br />
+<a href="/services/dependabot/public_keys/">public_keys</a>
 </div>
 <div class="providerDocColumn">
-<a href="/services/dependabot/public_keys/">public_keys</a><br />
 <a href="/services/dependabot/repos_for_secret/">repos_for_secret</a><br />
-<a href="/services/dependabot/secrets/">secrets</a><br />
+<a href="/services/dependabot/secrets/">secrets</a>
 </div>
 </div>

@@ -12049,7 +12049,16 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1orgs~1{org}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}/patch'
           response:
@@ -12062,6 +12071,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '202'
         enable_or_disable_security_product_on_all_org_repos:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1{security_product}~1{enablement}/post'
           response:
@@ -12075,6 +12087,7 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
+          - $ref: '#/components/x-stackQL-resources/orgs/methods/get'
           - $ref: '#/components/x-stackQL-resources/orgs/methods/list_for_user'
           - $ref: '#/components/x-stackQL-resources/orgs/methods/list'
         insert: []
@@ -12083,36 +12096,24 @@ components:
         delete:
           - $ref: '#/components/x-stackQL-resources/orgs/methods/delete'
         replace: []
-    org:
-      id: github.orgs.org
-      name: org
-      title: Org
-      methods:
-        get:
-          operation:
-            $ref: '#/paths/~1orgs~1{org}/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-      sqlVerbs:
-        select:
-          - $ref: '#/components/x-stackQL-resources/org/methods/get'
-        insert: []
-        update: []
-        delete: []
-        replace: []
-    org_artifact_deployment_records:
-      id: github.orgs.org_artifact_deployment_records
-      name: org_artifact_deployment_records
-      title: Org Artifact Deployment Records
+    artifact_deployment_records:
+      id: github.orgs.artifact_deployment_records
+      name: artifact_deployment_records
+      title: Artifact Deployment Records
       methods:
         create_artifact_deployment_record:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1artifacts~1metadata~1deployment-record/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         set_cluster_deployment_records:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1orgs~1{org}~1artifacts~1metadata~1deployment-record~1cluster~1{cluster}/post
@@ -12129,21 +12130,24 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/org_artifact_deployment_records/methods/list_artifact_deployment_records
+              #/components/x-stackQL-resources/artifact_deployment_records/methods/list_artifact_deployment_records
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/org_artifact_deployment_records/methods/set_cluster_deployment_records
+              #/components/x-stackQL-resources/artifact_deployment_records/methods/set_cluster_deployment_records
           - $ref: >-
-              #/components/x-stackQL-resources/org_artifact_deployment_records/methods/create_artifact_deployment_record
+              #/components/x-stackQL-resources/artifact_deployment_records/methods/create_artifact_deployment_record
         update: []
         delete: []
         replace: []
-    org_artifact_storage_records:
-      id: github.orgs.org_artifact_storage_records
-      name: org_artifact_storage_records
-      title: Org Artifact Storage Records
+    artifact_storage_records:
+      id: github.orgs.artifact_storage_records
+      name: artifact_storage_records
+      title: Artifact Storage Records
       methods:
         create_artifact_storage_record:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1artifacts~1metadata~1storage-record/post'
           response:
@@ -12159,48 +12163,10 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/org_artifact_storage_records/methods/list_artifact_storage_records
+              #/components/x-stackQL-resources/artifact_storage_records/methods/list_artifact_storage_records
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/org_artifact_storage_records/methods/create_artifact_storage_record
-        update: []
-        delete: []
-        replace: []
-    org_attestations_bulk_list:
-      id: github.orgs.org_attestations_bulk_list
-      name: org_attestations_bulk_list
-      title: Org Attestations Bulk List
-      methods:
-        list_attestations_bulk:
-          operation:
-            $ref: '#/paths/~1orgs~1{org}~1attestations~1bulk-list/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-      sqlVerbs:
-        select: []
-        insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/org_attestations_bulk_list/methods/list_attestations_bulk
-        update: []
-        delete: []
-        replace: []
-    org_attestations_bulk_deletes:
-      id: github.orgs.org_attestations_bulk_deletes
-      name: org_attestations_bulk_deletes
-      title: Org Attestations Bulk Deletes
-      methods:
-        delete_attestations_bulk:
-          operation:
-            $ref: '#/paths/~1orgs~1{org}~1attestations~1delete-request/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-      sqlVerbs:
-        select: []
-        insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/org_attestations_bulk_deletes/methods/delete_attestations_bulk
+              #/components/x-stackQL-resources/artifact_storage_records/methods/create_artifact_storage_record
         update: []
         delete: []
         replace: []
@@ -12209,6 +12175,24 @@ components:
       name: attestations
       title: Attestations
       methods:
+        list_attestations_bulk:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
+          operation:
+            $ref: '#/paths/~1orgs~1{org}~1attestations~1bulk-list/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete_attestations_bulk:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
+          operation:
+            $ref: '#/paths/~1orgs~1{org}~1attestations~1delete-request/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
         delete_attestations_by_subject_digest:
           operation:
             $ref: >-
@@ -12241,10 +12225,10 @@ components:
           - $ref: >-
               #/components/x-stackQL-resources/attestations/methods/delete_attestations_by_id
         replace: []
-    org_attestation_repositories:
-      id: github.orgs.org_attestation_repositories
-      name: org_attestation_repositories
-      title: Org Attestation Repositories
+    attestation_repositories:
+      id: github.orgs.attestation_repositories
+      name: attestation_repositories
+      title: Attestation Repositories
       methods:
         list_attestation_repositories:
           operation:
@@ -12255,7 +12239,7 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/org_attestation_repositories/methods/list_attestation_repositories
+              #/components/x-stackQL-resources/attestation_repositories/methods/list_attestation_repositories
         insert: []
         update: []
         delete: []
@@ -12328,6 +12312,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         create_webhook:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1hooks/post'
           response:
@@ -12340,6 +12327,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update_webhook:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1hooks~1{hook_id}/patch'
           response:
@@ -12380,6 +12370,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update_webhook_config_for_org:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1hooks~1{hook_id}~1config/patch'
           response:
@@ -12604,6 +12597,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         create_invitation:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1invitations/post'
           response:
@@ -12646,10 +12642,10 @@ components:
         update: []
         delete: []
         replace: []
-    org_issue_fields:
-      id: github.orgs.org_issue_fields
-      name: org_issue_fields
-      title: Org Issue Fields
+    issue_fields:
+      id: github.orgs.issue_fields
+      name: issue_fields
+      title: Issue Fields
       methods:
         list_issue_fields:
           operation:
@@ -12658,12 +12654,18 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         create_issue_field:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1issue-fields/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update_issue_field:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1issue-fields~1{issue_field_id}/patch'
           response:
@@ -12678,21 +12680,21 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/org_issue_fields/methods/list_issue_fields
+              #/components/x-stackQL-resources/issue_fields/methods/list_issue_fields
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/org_issue_fields/methods/create_issue_field
+              #/components/x-stackQL-resources/issue_fields/methods/create_issue_field
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/org_issue_fields/methods/update_issue_field
+              #/components/x-stackQL-resources/issue_fields/methods/update_issue_field
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/org_issue_fields/methods/delete_issue_field
+              #/components/x-stackQL-resources/issue_fields/methods/delete_issue_field
         replace: []
-    org_issue_types:
-      id: github.orgs.org_issue_types
-      name: org_issue_types
-      title: Org Issue Types
+    issue_types:
+      id: github.orgs.issue_types
+      name: issue_types
+      title: Issue Types
       methods:
         list_issue_types:
           operation:
@@ -12701,12 +12703,18 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         create_issue_type:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1issue-types/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update_issue_type:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1issue-types~1{issue_type_id}/put'
           response:
@@ -12721,17 +12729,17 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/org_issue_types/methods/list_issue_types
+              #/components/x-stackQL-resources/issue_types/methods/list_issue_types
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/org_issue_types/methods/create_issue_type
+              #/components/x-stackQL-resources/issue_types/methods/create_issue_type
         update: []
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/org_issue_types/methods/delete_issue_type
+              #/components/x-stackQL-resources/issue_types/methods/delete_issue_type
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/org_issue_types/methods/update_issue_type
+              #/components/x-stackQL-resources/issue_types/methods/update_issue_type
     members:
       id: github.orgs.members
       name: members
@@ -12775,6 +12783,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set_membership_for_user:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1memberships~1{username}/put'
           response:
@@ -12799,6 +12810,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update_membership_for_authenticated_user:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1user~1memberships~1orgs~1{org}/patch'
           response:
@@ -12822,10 +12836,10 @@ components:
         replace:
           - $ref: >-
               #/components/x-stackQL-resources/memberships/methods/set_membership_for_user
-    org_roles:
-      id: github.orgs.org_roles
-      name: org_roles
-      title: Org Roles
+    roles:
+      id: github.orgs.roles
+      name: roles
+      title: Roles
       methods:
         list_org_roles:
           operation:
@@ -12841,16 +12855,16 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/org_roles/methods/get_org_role'
-          - $ref: '#/components/x-stackQL-resources/org_roles/methods/list_org_roles'
+          - $ref: '#/components/x-stackQL-resources/roles/methods/get_org_role'
+          - $ref: '#/components/x-stackQL-resources/roles/methods/list_org_roles'
         insert: []
         update: []
         delete: []
         replace: []
-    org_role_team_assignments:
-      id: github.orgs.org_role_team_assignments
-      name: org_role_team_assignments
-      title: Org Role Team Assignments
+    role_team_assignments:
+      id: github.orgs.role_team_assignments
+      name: role_team_assignments
+      title: Role Team Assignments
       methods:
         revoke_all_org_roles_team:
           operation:
@@ -12882,21 +12896,21 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/org_role_team_assignments/methods/list_org_role_teams
+              #/components/x-stackQL-resources/role_team_assignments/methods/list_org_role_teams
         insert: []
         update: []
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/org_role_team_assignments/methods/revoke_org_role_team
+              #/components/x-stackQL-resources/role_team_assignments/methods/revoke_org_role_team
           - $ref: >-
-              #/components/x-stackQL-resources/org_role_team_assignments/methods/revoke_all_org_roles_team
+              #/components/x-stackQL-resources/role_team_assignments/methods/revoke_all_org_roles_team
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/org_role_team_assignments/methods/assign_team_to_org_role
-    org_role_user_assignments:
-      id: github.orgs.org_role_user_assignments
-      name: org_role_user_assignments
-      title: Org Role User Assignments
+              #/components/x-stackQL-resources/role_team_assignments/methods/assign_team_to_org_role
+    role_user_assignments:
+      id: github.orgs.role_user_assignments
+      name: role_user_assignments
+      title: Role User Assignments
       methods:
         revoke_all_org_roles_user:
           operation:
@@ -12928,17 +12942,17 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/org_role_user_assignments/methods/list_org_role_users
+              #/components/x-stackQL-resources/role_user_assignments/methods/list_org_role_users
         insert: []
         update: []
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/org_role_user_assignments/methods/revoke_org_role_user
+              #/components/x-stackQL-resources/role_user_assignments/methods/revoke_org_role_user
           - $ref: >-
-              #/components/x-stackQL-resources/org_role_user_assignments/methods/revoke_all_org_roles_user
+              #/components/x-stackQL-resources/role_user_assignments/methods/revoke_all_org_roles_user
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/org_role_user_assignments/methods/assign_user_to_org_role
+              #/components/x-stackQL-resources/role_user_assignments/methods/assign_user_to_org_role
     outside_collaborators:
       id: github.orgs.outside_collaborators
       name: outside_collaborators
@@ -12951,6 +12965,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         convert_member_to_outside_collaborator:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1outside_collaborators~1{username}/put'
           response:
@@ -12984,12 +13001,18 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         review_pat_grant_requests_in_bulk:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1personal-access-token-requests/post'
           response:
             mediaType: application/json
             openAPIDocKey: '202'
         review_pat_grant_request:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1orgs~1{org}~1personal-access-token-requests~1{pat_request_id}/post
@@ -13036,12 +13059,18 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update_pat_accesses:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1personal-access-tokens/post'
           response:
             mediaType: application/json
             openAPIDocKey: '202'
         update_pat_access:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1personal-access-tokens~1{pat_id}/post'
           response:
@@ -13075,10 +13104,10 @@ components:
         update: []
         delete: []
         replace: []
-    org_custom_properties:
-      id: github.orgs.org_custom_properties
-      name: org_custom_properties
-      title: Org Custom Properties
+    custom_properties:
+      id: github.orgs.custom_properties
+      name: custom_properties
+      title: Custom Properties
       methods:
         custom_properties_for_repos_get_organization_definitions:
           operation:
@@ -13087,6 +13116,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         custom_properties_for_repos_create_or_update_organization_definitions:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1properties~1schema/patch'
           response:
@@ -13100,6 +13132,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         custom_properties_for_repos_create_or_update_organization_definition:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1orgs~1{org}~1properties~1schema~1{custom_property_name}/put
@@ -13116,23 +13151,23 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/org_custom_properties/methods/custom_properties_for_repos_get_organization_definition
+              #/components/x-stackQL-resources/custom_properties/methods/custom_properties_for_repos_get_organization_definition
           - $ref: >-
-              #/components/x-stackQL-resources/org_custom_properties/methods/custom_properties_for_repos_get_organization_definitions
+              #/components/x-stackQL-resources/custom_properties/methods/custom_properties_for_repos_get_organization_definitions
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/org_custom_properties/methods/custom_properties_for_repos_create_or_update_organization_definitions
+              #/components/x-stackQL-resources/custom_properties/methods/custom_properties_for_repos_create_or_update_organization_definitions
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/org_custom_properties/methods/custom_properties_for_repos_delete_organization_definition
+              #/components/x-stackQL-resources/custom_properties/methods/custom_properties_for_repos_delete_organization_definition
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/org_custom_properties/methods/custom_properties_for_repos_create_or_update_organization_definition
-    org_custom_property_values:
-      id: github.orgs.org_custom_property_values
-      name: org_custom_property_values
-      title: Org Custom Property Values
+              #/components/x-stackQL-resources/custom_properties/methods/custom_properties_for_repos_create_or_update_organization_definition
+    custom_property_values:
+      id: github.orgs.custom_property_values
+      name: custom_property_values
+      title: Custom Property Values
       methods:
         custom_properties_for_repos_get_organization_values:
           operation:
@@ -13141,6 +13176,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         custom_properties_for_repos_create_or_update_organization_values:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1properties~1values/patch'
           response:
@@ -13149,11 +13187,11 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/org_custom_property_values/methods/custom_properties_for_repos_get_organization_values
+              #/components/x-stackQL-resources/custom_property_values/methods/custom_properties_for_repos_get_organization_values
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/org_custom_property_values/methods/custom_properties_for_repos_create_or_update_organization_values
+              #/components/x-stackQL-resources/custom_property_values/methods/custom_properties_for_repos_create_or_update_organization_values
         delete: []
         replace: []
     public_members:
@@ -13261,10 +13299,10 @@ components:
           - $ref: >-
               #/components/x-stackQL-resources/security_managers/methods/remove_security_manager_team
         replace: []
-    org_immutable_releases_settings:
-      id: github.orgs.org_immutable_releases_settings
-      name: org_immutable_releases_settings
-      title: Org Immutable Releases Settings
+    immutable_releases_settings:
+      id: github.orgs.immutable_releases_settings
+      name: immutable_releases_settings
+      title: Immutable Releases Settings
       methods:
         get_immutable_releases_settings:
           operation:
@@ -13273,6 +13311,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set_immutable_releases_settings:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1settings~1immutable-releases/put'
           response:
@@ -13281,17 +13322,17 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/org_immutable_releases_settings/methods/get_immutable_releases_settings
+              #/components/x-stackQL-resources/immutable_releases_settings/methods/get_immutable_releases_settings
         insert: []
         update: []
         delete: []
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/org_immutable_releases_settings/methods/set_immutable_releases_settings
-    org_immutable_releases_repos:
-      id: github.orgs.org_immutable_releases_repos
-      name: org_immutable_releases_repos
-      title: Org Immutable Releases Repos
+              #/components/x-stackQL-resources/immutable_releases_settings/methods/set_immutable_releases_settings
+    immutable_releases_repos:
+      id: github.orgs.immutable_releases_repos
+      name: immutable_releases_repos
+      title: Immutable Releases Repos
       methods:
         get_immutable_releases_settings_repositories:
           operation:
@@ -13301,6 +13342,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set_immutable_releases_settings_repositories:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1orgs~1{org}~1settings~1immutable-releases~1repositories/put
@@ -13324,17 +13368,17 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/org_immutable_releases_repos/methods/get_immutable_releases_settings_repositories
+              #/components/x-stackQL-resources/immutable_releases_repos/methods/get_immutable_releases_settings_repositories
         insert: []
         update: []
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/org_immutable_releases_repos/methods/disable_selected_repository_immutable_releases_organization
+              #/components/x-stackQL-resources/immutable_releases_repos/methods/disable_selected_repository_immutable_releases_organization
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/org_immutable_releases_repos/methods/enable_selected_repository_immutable_releases_organization
+              #/components/x-stackQL-resources/immutable_releases_repos/methods/enable_selected_repository_immutable_releases_organization
           - $ref: >-
-              #/components/x-stackQL-resources/org_immutable_releases_repos/methods/set_immutable_releases_settings_repositories
+              #/components/x-stackQL-resources/immutable_releases_repos/methods/set_immutable_releases_settings_repositories
     orgs_for_user:
       id: github.orgs.orgs_for_user
       name: orgs_for_user

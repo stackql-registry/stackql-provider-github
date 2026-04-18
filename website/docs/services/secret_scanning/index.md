@@ -9,40 +9,28 @@ keywords:
   - infrastructure-as-code
   - configuration-as-data
   - cloud inventory
-description: Query, deploy and manage GitHub resources using SQL
+description: Query, deploy and manage github resources using SQL
 custom_edit_url: null
 image: /img/stackql-github-provider-featured-image.png
 ---
 
-Secret Scanning  
-    
-:::info Service Summary
+secret_scanning service documentation.
 
-<div class="row">
-<div class="providerDocColumn">
-<span>total resources:&nbsp;<b>2</b></span><br />
-<span>total selectable resources:&nbsp;<b>2</b></span><br />
-<span>total methods:&nbsp;<b>6</b></span><br />
-</div>
-</div>
+:::info[Service Summary]
+
+total resources: __5__  
 
 :::
-
-## Overview
-<table><tbody>
-<tr><td><b>Name</b></td><td><code>github.secret_scanning</code></td></tr>
-<tr><td><b>Type</b></td><td>Service</td></tr>
-<tr><td><b>Title</b></td><td>GitHub V3 REST API - Secret Scanning</td></tr>
-<tr><td><b>Description</b></td><td>Secret Scanning</td></tr>
-<tr><td><b>Id</b></td><td><code>secret_scanning:v24.04.00227</code></td></tr>
-</tbody></table>
 
 ## Resources
 <div class="row">
 <div class="providerDocColumn">
 <a href="/services/secret_scanning/alerts/">alerts</a><br />
+<a href="/services/secret_scanning/locations/">locations</a><br />
+<a href="/services/secret_scanning/org_secret_scanning_pattern_configurations/">org_secret_scanning_pattern_configurations</a>
 </div>
 <div class="providerDocColumn">
-<a href="/services/secret_scanning/locations/">locations</a><br />
+<a href="/services/secret_scanning/repo_push_protection_bypasses/">repo_push_protection_bypasses</a><br />
+<a href="/services/secret_scanning/repo_secret_scan_history/">repo_secret_scan_history</a>
 </div>
 </div>

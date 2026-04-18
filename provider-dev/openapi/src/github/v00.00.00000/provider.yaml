@@ -402,5 +402,6 @@ providerServices:
     description: Interact with and view information about users and also current user.
 config:
   auth:
-    credentialsenvvar: GITHUB_TOKEN
-    type: bearer
+    type: basic
+    username_var: STACKQL_GITHUB_USERNAME
+    password_var: STACKQL_GITHUB_PASSWORD

@@ -9,42 +9,29 @@ keywords:
   - infrastructure-as-code
   - configuration-as-data
   - cloud inventory
-description: Query, deploy and manage GitHub resources using SQL
+description: Query, deploy and manage github resources using SQL
 custom_edit_url: null
 image: /img/stackql-github-provider-featured-image.png
 ---
 
-Interact With GitHub Projects.  
-    
-:::info Service Summary
+projects service documentation.
 
-<div class="row">
-<div class="providerDocColumn">
-<span>total resources:&nbsp;<b>4</b></span><br />
-<span>total selectable resources:&nbsp;<b>4</b></span><br />
-<span>total methods:&nbsp;<b>25</b></span><br />
-</div>
-</div>
+:::info[Service Summary]
+
+total resources: __6__  
 
 :::
-
-## Overview
-<table><tbody>
-<tr><td><b>Name</b></td><td><code>github.projects</code></td></tr>
-<tr><td><b>Type</b></td><td>Service</td></tr>
-<tr><td><b>Title</b></td><td>GitHub V3 REST API - Projects</td></tr>
-<tr><td><b>Description</b></td><td>Interact With GitHub Projects.</td></tr>
-<tr><td><b>Id</b></td><td><code>projects:v24.04.00227</code></td></tr>
-</tbody></table>
 
 ## Resources
 <div class="row">
 <div class="providerDocColumn">
-<a href="/services/projects/cards/">cards</a><br />
-<a href="/services/projects/collaborators/">collaborators</a><br />
+<a href="/services/projects/project_draft_items/">project_draft_items</a><br />
+<a href="/services/projects/project_fields/">project_fields</a><br />
+<a href="/services/projects/project_items/">project_items</a>
 </div>
 <div class="providerDocColumn">
-<a href="/services/projects/columns/">columns</a><br />
-<a href="/services/projects/projects/">projects</a><br />
+<a href="/services/projects/project_view_items/">project_view_items</a><br />
+<a href="/services/projects/project_views/">project_views</a><br />
+<a href="/services/projects/projects/">projects</a>
 </div>
 </div>

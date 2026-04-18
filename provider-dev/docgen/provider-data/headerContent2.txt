@@ -4,10 +4,10 @@ See also:
 
 ## Installation
 
-To pull the latest version of the `REPLACEME` provider, run the following command:  
+To pull the latest version of the `github` provider, run the following command:  
 
 ```bash
-REGISTRY PULL REPLACEME;
+REGISTRY PULL github;
 ```
 > To view previous provider versions or to pull a specific provider version, see [here](https://stackql.io/docs/language-spec/registry).  
 
@@ -15,7 +15,8 @@ REGISTRY PULL REPLACEME;
 
 The following system environment variables are used for authentication by default:  
 
-- <CopyableCode code="REPLACEME" /> - REPLACEME API token (see <a href="REPLACEME>How to Create a Personal Access Token</a>)
+- <CopyableCode code="STACKQL_GITHUB_USERNAME" /> - GitHub username (login)
+- <CopyableCode code="STACKQL_GITHUB_PASSWORD" /> - GitHub Personal Access Token (see <a href="https://docs.github.com/en/enterprise-server@3.4/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token">Creating a personal access token</a>)
   
 These variables are sourced at runtime (from the local machine or as CI variables/secrets).  
 
@@ -27,7 +28,7 @@ To use different environment variables (instead of the defaults), use the `--aut
 
 ```bash
 
-AUTH='{ "REPLACEME": { "type": "bearer",  "credentialsenvvar": "REPLACEME" }}'
+AUTH='{ "github": { "type": "basic",  "username_var": "YOUR_GITHUB_USERNAME_VAR", "password_var": "YOUR_GITHUB_PASSWORD_VAR" }}'
 stackql shell --auth="${AUTH}"
 
 ```
@@ -35,7 +36,7 @@ or using PowerShell:
 
 ```powershell
 
-$Auth = "{ 'REPLACEME': { 'type': 'bearer',  'credentialsenvvar': 'REPLACEME' }}"
+$Auth = "{ 'github': { 'type': 'basic',  'username_var': 'YOUR_GITHUB_USERNAME_VAR', 'password_var': 'YOUR_GITHUB_PASSWORD_VAR' }}"
 stackql.exe shell --auth=$Auth
 
 ```

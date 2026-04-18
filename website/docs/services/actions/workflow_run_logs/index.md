@@ -1,37 +1,114 @@
----
+--- 
 title: workflow_run_logs
 hide_title: false
 hide_table_of_contents: false
 keywords:
   - workflow_run_logs
   - actions
-  - github    
-  - stackql
+  - github
   - infrastructure-as-code
   - configuration-as-data
   - cloud inventory
-description: Query, deploy and manage GitHub resources using SQL
+description: Query, deploy and manage github resources using SQL
 custom_edit_url: null
 image: /img/stackql-github-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-
-
+Creates, updates, deletes, gets or lists a <code>workflow_run_logs</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>workflow_run_logs</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="workflow_run_logs" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="github.actions.workflow_run_logs" /></td></tr>
 </tbody></table>
 
 ## Fields
-`SELECT` not supported for this resource, use `SHOW METHODS` to view available operations for the resource and then invoke a supported method using the `EXEC` command  
+
+The following fields are returned by `SELECT` queries:
+
+`SELECT` not supported for this resource, use `SHOW METHODS` to view available operations for the resource.
+
+
 ## Methods
-| Name | Accessible by | Required Params | Description |
-|:-----|:--------------|:----------------|:------------|
-| <CopyableCode code="delete_workflow_run_logs" /> | `DELETE` | <CopyableCode code="owner, repo, run_id" /> | Deletes all logs for a workflow run. You must authenticate using an access token with the `repo` scope to use this endpoint. GitHub Apps must have the `actions:write` permission to use this endpoint. |
-| <CopyableCode code="download_workflow_run_attempt_logs" /> | `EXEC` | <CopyableCode code="attempt_number, owner, repo, run_id" /> | Gets a redirect URL to download an archive of log files for a specific workflow run attempt. This link expires after<br />1 minute. Look for `Location:` in the response header to find the URL for the download. Anyone with read access to<br />the repository can use this endpoint. If the repository is private you must use an access token with the `repo` scope.<br />GitHub Apps must have the `actions:read` permission to use this endpoint. |
-| <CopyableCode code="download_workflow_run_logs" /> | `EXEC` | <CopyableCode code="owner, repo, run_id" /> | Gets a redirect URL to download an archive of log files for a workflow run. This link expires after 1 minute. Look for<br />`Location:` in the response header to find the URL for the download. Anyone with read access to the repository can use<br />this endpoint. If the repository is private you must use an access token with the `repo` scope. GitHub Apps must have<br />the `actions:read` permission to use this endpoint. |
+
+The following methods are available for this resource:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Accessible by</th>
+    <th>Required Params</th>
+    <th>Optional Params</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><a href="#delete_workflow_run_logs"><CopyableCode code="delete_workflow_run_logs" /></a></td>
+    <td><CopyableCode code="delete" /></td>
+    <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a>, <a href="#parameter-run_id"><code>run_id</code></a></td>
+    <td></td>
+    <td>Deletes all logs for a workflow run.<br /><br />OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.</td>
+</tr>
+</tbody>
+</table>
+
+## Parameters
+
+Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#methods) section to see which parameters are required or optional for each operation.
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr id="parameter-owner">
+    <td><CopyableCode code="owner" /></td>
+    <td><code>string</code></td>
+    <td>The account owner of the repository. The name is not case sensitive.</td>
+</tr>
+<tr id="parameter-repo">
+    <td><CopyableCode code="repo" /></td>
+    <td><code>string</code></td>
+    <td>The name of the repository without the `.git` extension. The name is not case sensitive.</td>
+</tr>
+<tr id="parameter-run_id">
+    <td><CopyableCode code="run_id" /></td>
+    <td><code>integer</code></td>
+    <td>The unique identifier of the workflow run.</td>
+</tr>
+</tbody>
+</table>
+
+## `DELETE` examples
+
+<Tabs
+    defaultValue="delete_workflow_run_logs"
+    values={[
+        { label: 'delete_workflow_run_logs', value: 'delete_workflow_run_logs' }
+    ]}
+>
+<TabItem value="delete_workflow_run_logs">
+
+Deletes all logs for a workflow run.<br /><br />OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+
+```sql
+DELETE FROM github.actions.workflow_run_logs
+WHERE owner = '{{ owner }}' --required
+AND repo = '{{ repo }}' --required
+AND run_id = '{{ run_id }}' --required
+;
+```
+</TabItem>
+</Tabs>

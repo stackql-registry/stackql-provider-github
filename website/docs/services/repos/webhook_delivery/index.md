@@ -1,51 +1,263 @@
----
+--- 
 title: webhook_delivery
 hide_title: false
 hide_table_of_contents: false
 keywords:
   - webhook_delivery
   - repos
-  - github    
-  - stackql
+  - github
   - infrastructure-as-code
   - configuration-as-data
   - cloud inventory
-description: Query, deploy and manage GitHub resources using SQL
+description: Query, deploy and manage github resources using SQL
 custom_edit_url: null
 image: /img/stackql-github-provider-featured-image.png
 ---
 
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import CodeBlock from '@theme/CodeBlock';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-
-
+Creates, updates, deletes, gets or lists a <code>webhook_delivery</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>webhook_delivery</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="webhook_delivery" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="github.repos.webhook_delivery" /></td></tr>
 </tbody></table>
 
 ## Fields
-| Name | Datatype | Description |
-|:-----|:---------|:------------|
-| <CopyableCode code="id" /> | `integer` | Unique identifier of the delivery. |
-| <CopyableCode code="action" /> | `string` | The type of activity for the event that triggered the delivery. |
-| <CopyableCode code="delivered_at" /> | `string` | Time when the delivery was delivered. |
-| <CopyableCode code="duration" /> | `number` | Time spent delivering. |
-| <CopyableCode code="event" /> | `string` | The event that triggered the delivery. |
-| <CopyableCode code="guid" /> | `string` | Unique identifier for the event (shared with all deliveries for all webhooks that subscribe to this event). |
-| <CopyableCode code="installation_id" /> | `integer` | The id of the GitHub App installation associated with this event. |
-| <CopyableCode code="redelivery" /> | `boolean` | Whether the delivery is a redelivery. |
-| <CopyableCode code="repository_id" /> | `integer` | The id of the repository associated with this event. |
-| <CopyableCode code="request" /> | `object` |  |
-| <CopyableCode code="response" /> | `object` |  |
-| <CopyableCode code="status" /> | `string` | Description of the status of the attempted delivery |
-| <CopyableCode code="status_code" /> | `integer` | Status code received when delivery was made. |
-| <CopyableCode code="url" /> | `string` | The URL target of the delivery. |
+
+The following fields are returned by `SELECT` queries:
+
+<Tabs
+    defaultValue="get_webhook_delivery"
+    values={[
+        { label: 'get_webhook_delivery', value: 'get_webhook_delivery' }
+    ]}
+>
+<TabItem value="get_webhook_delivery">
+
+Response
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer</code></td>
+    <td>Unique identifier of the delivery.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="installation_id" /></td>
+    <td><code>integer</code></td>
+    <td>The id of the GitHub App installation associated with this event.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="repository_id" /></td>
+    <td><code>integer</code></td>
+    <td>The id of the repository associated with this event.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="action" /></td>
+    <td><code>string</code></td>
+    <td>The type of activity for the event that triggered the delivery. (example: opened)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="delivered_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>Time when the delivery was delivered. (example: 2021-05-12T20:33:44Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="duration" /></td>
+    <td><code>number</code></td>
+    <td>Time spent delivering.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="event" /></td>
+    <td><code>string</code></td>
+    <td>The event that triggered the delivery. (example: issues)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="guid" /></td>
+    <td><code>string</code></td>
+    <td>Unique identifier for the event (shared with all deliveries for all webhooks that subscribe to this event). (example: 58474f00-b361-11eb-836d-0e4f3503ccbe)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="redelivery" /></td>
+    <td><code>boolean</code></td>
+    <td>Whether the delivery is a redelivery.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="request" /></td>
+    <td><code>object</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="response" /></td>
+    <td><code>object</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="status" /></td>
+    <td><code>string</code></td>
+    <td>Description of the status of the attempted delivery (example: failed to connect)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="status_code" /></td>
+    <td><code>integer</code></td>
+    <td>Status code received when delivery was made.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="throttled_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>Time when the webhook delivery was throttled. (example: 2021-05-12T20:33:44Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="url" /></td>
+    <td><code>string</code></td>
+    <td>The URL target of the delivery. (example: https://www.example.com)</td>
+</tr>
+</tbody>
+</table>
+</TabItem>
+</Tabs>
+
 ## Methods
-| Name | Accessible by | Required Params | Description |
-|:-----|:--------------|:----------------|:------------|
-| <CopyableCode code="get_webhook_delivery" /> | `SELECT` | <CopyableCode code="delivery_id, hook_id, owner, repo" /> | Returns a delivery for a webhook configured in a repository. |
-| <CopyableCode code="redeliver_webhook_delivery" /> | `EXEC` | <CopyableCode code="delivery_id, hook_id, owner, repo" /> | Redeliver a webhook delivery for a webhook configured in a repository. |
+
+The following methods are available for this resource:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Accessible by</th>
+    <th>Required Params</th>
+    <th>Optional Params</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><a href="#get_webhook_delivery"><CopyableCode code="get_webhook_delivery" /></a></td>
+    <td><CopyableCode code="select" /></td>
+    <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a>, <a href="#parameter-hook_id"><code>hook_id</code></a>, <a href="#parameter-delivery_id"><code>delivery_id</code></a></td>
+    <td></td>
+    <td>Returns a delivery for a webhook configured in a repository.</td>
+</tr>
+<tr>
+    <td><a href="#redeliver_webhook_delivery"><CopyableCode code="redeliver_webhook_delivery" /></a></td>
+    <td><CopyableCode code="exec" /></td>
+    <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a>, <a href="#parameter-hook_id"><code>hook_id</code></a>, <a href="#parameter-delivery_id"><code>delivery_id</code></a></td>
+    <td></td>
+    <td>Redeliver a webhook delivery for a webhook configured in a repository.</td>
+</tr>
+</tbody>
+</table>
+
+## Parameters
+
+Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#methods) section to see which parameters are required or optional for each operation.
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr id="parameter-delivery_id">
+    <td><CopyableCode code="delivery_id" /></td>
+    <td><code>integer</code></td>
+    <td></td>
+</tr>
+<tr id="parameter-hook_id">
+    <td><CopyableCode code="hook_id" /></td>
+    <td><code>integer</code></td>
+    <td>The unique identifier of the hook. You can find this value in the `X-GitHub-Hook-ID` header of a webhook delivery.</td>
+</tr>
+<tr id="parameter-owner">
+    <td><CopyableCode code="owner" /></td>
+    <td><code>string</code></td>
+    <td>The account owner of the repository. The name is not case sensitive.</td>
+</tr>
+<tr id="parameter-repo">
+    <td><CopyableCode code="repo" /></td>
+    <td><code>string</code></td>
+    <td>The name of the repository without the `.git` extension. The name is not case sensitive.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` examples
+
+<Tabs
+    defaultValue="get_webhook_delivery"
+    values={[
+        { label: 'get_webhook_delivery', value: 'get_webhook_delivery' }
+    ]}
+>
+<TabItem value="get_webhook_delivery">
+
+Returns a delivery for a webhook configured in a repository.
+
+```sql
+SELECT
+id,
+installation_id,
+repository_id,
+action,
+delivered_at,
+duration,
+event,
+guid,
+redelivery,
+request,
+response,
+status,
+status_code,
+throttled_at,
+url
+FROM github.repos.webhook_delivery
+WHERE owner = '{{ owner }}' -- required
+AND repo = '{{ repo }}' -- required
+AND hook_id = '{{ hook_id }}' -- required
+AND delivery_id = '{{ delivery_id }}' -- required
+;
+```
+</TabItem>
+</Tabs>
+
+
+## Lifecycle Methods
+
+<Tabs
+    defaultValue="redeliver_webhook_delivery"
+    values={[
+        { label: 'redeliver_webhook_delivery', value: 'redeliver_webhook_delivery' }
+    ]}
+>
+<TabItem value="redeliver_webhook_delivery">
+
+Redeliver a webhook delivery for a webhook configured in a repository.
+
+```sql
+EXEC github.repos.webhook_delivery.redeliver_webhook_delivery 
+@owner='{{ owner }}' --required, 
+@repo='{{ repo }}' --required, 
+@hook_id='{{ hook_id }}' --required, 
+@delivery_id='{{ delivery_id }}' --required
+;
+```
+</TabItem>
+</Tabs>

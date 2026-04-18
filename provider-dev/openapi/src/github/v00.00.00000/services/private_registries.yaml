@@ -1017,10 +1017,10 @@ components:
       schema:
         type: string
   x-stackQL-resources:
-    org_private_registries:
-      id: github.private_registries.org_private_registries
-      name: org_private_registries
-      title: Org Private Registries
+    private_registries:
+      id: github.private_registries.private_registries
+      name: private_registries
+      title: Private Registries
       methods:
         list_org_private_registries:
           operation:
@@ -1029,6 +1029,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         create_org_private_registry:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1private-registries/post'
           response:
@@ -1041,6 +1044,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update_org_private_registry:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1orgs~1{org}~1private-registries~1{secret_name}/patch'
           response:
@@ -1055,23 +1061,23 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/org_private_registries/methods/get_org_private_registry
+              #/components/x-stackQL-resources/private_registries/methods/get_org_private_registry
           - $ref: >-
-              #/components/x-stackQL-resources/org_private_registries/methods/list_org_private_registries
+              #/components/x-stackQL-resources/private_registries/methods/list_org_private_registries
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/org_private_registries/methods/create_org_private_registry
+              #/components/x-stackQL-resources/private_registries/methods/create_org_private_registry
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/org_private_registries/methods/update_org_private_registry
+              #/components/x-stackQL-resources/private_registries/methods/update_org_private_registry
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/org_private_registries/methods/delete_org_private_registry
+              #/components/x-stackQL-resources/private_registries/methods/delete_org_private_registry
         replace: []
-    org_private_registry_public_key:
-      id: github.private_registries.org_private_registry_public_key
-      name: org_private_registry_public_key
-      title: Org Private Registry Public Key
+    private_registry_public_key:
+      id: github.private_registries.private_registry_public_key
+      name: private_registry_public_key
+      title: Private Registry Public Key
       methods:
         get_org_public_key:
           operation:
@@ -1082,7 +1088,7 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/org_private_registry_public_key/methods/get_org_public_key
+              #/components/x-stackQL-resources/private_registry_public_key/methods/get_org_public_key
         insert: []
         update: []
         delete: []

@@ -31,42 +31,16 @@ npm run split -- \
   --api-doc provider-dev/downloaded/api.github.com.json \
   --svc-discriminator tag \
   --output-dir provider-dev/source \
-  --overwrite \
-  --svc-name-overrides "$(cat <<EOF
-{
-  "repos": "repos",
-  "users": "users",
-  "orgs": "organizations",
-  "pulls": "pull_requests",
-  "issues": "issues",
-  "actions": "actions",
-  "apps": "apps",
-  "code-scanning": "code_scanning",
-  "packages": "packages",
-  "teams": "teams",
-  "projects": "projects",
-  "git": "git",
-  "gists": "gists",
-  "checks": "checks",
-  "codespaces": "codespaces",
-  "search": "search",
-  "rate-limit": "rate_limit",
-  "licenses": "licenses",
-  "meta": "meta",
-  "billing": "billing"
-}
-EOF
-)"
+  --overwrite
 ```
 
-## 2a. Clobber Polymorhism
+## 2a. Clobber Polymorhism and Fix Schema Issues
 
 ```bash
-npm run flatten -- \
+npm run normalize -- \
   --api-dir provider-dev/source \
   --verbose
 ```
-
 
 ## 3. Generate Mappings
 
@@ -74,7 +48,6 @@ Generate the mapping configuration that connects OpenAPI operations to StackQL r
 
 ```bash
 npm run generate-mappings -- \
-  --provider-name github \
   --input-dir provider-dev/source \
   --output-dir provider-dev/config
 ```
@@ -92,8 +65,8 @@ npm run generate-provider -- \
   --input-dir provider-dev/source \
   --output-dir provider-dev/openapi/src/github \
   --config-path provider-dev/config/all_services.csv \
-  --servers '[{"url": "https://api.github.com"}]' \
-  --provider-config '{"auth": {"credentialsenvvar": "GITHUB_TOKEN", "type": "bearer"}}' \
+  --servers='[{"url":"https://api.github.com"}]' \
+  --provider-config='{"auth":{"type":"basic","username_var":"STACKQL_GITHUB_USERNAME","password_var":"STACKQL_GITHUB_PASSWORD"}}' \
   --overwrite
 ```
 
@@ -143,57 +116,23 @@ Example queries to try:
 ```sql
 -- List your repositories
 SELECT 
-id,
 name,
-full_name,
 private,
-html_url,
-description,
-fork,
 created_at,
-updated_at,
-pushed_at,
 language,
 default_branch,
-visibility
-FROM github.repos.repos;
-
--- Get information about a specific repository
-SELECT 
-id,
-name,
-full_name,
-owner,
-private,
-html_url,
-description,
-fork,
-created_at,
-updated_at,
-pushed_at,
-size,
-stargazers_count,
-watchers_count,
-language,
-forks_count,
-open_issues_count,
-license,
-topics
-FROM github.repos.repo
-WHERE owner = 'stackql'
-AND repo = 'stackql';
+visibility,
+stargazers_count as stars
+FROM github.repos.repos
+WHERE org = 'stackql'
+ORDER BY watchers DESC;
 
 -- List repository issues
 SELECT 
 number,
 title,
 state,
-created_at,
-updated_at,
-user,
-labels,
-assignees,
-comments
+created_at
 FROM github.issues.issues
 WHERE owner = 'stackql'
 AND repo = 'stackql';
@@ -203,17 +142,11 @@ SELECT
 number,
 title,
 state,
-created_at,
-updated_at,
-closed_at,
-merged_at,
-user,
-draft,
-labels,
-requested_reviewers
-FROM github.pull_requests.pulls
+created_at
+FROM github.pulls.pull_requests
 WHERE owner = 'stackql'
-AND repo = 'stackql';
+AND repo = 'stackql'
+AND state = 'closed' LIMIT 5;
 
 -- Get organization information
 SELECT 
@@ -222,29 +155,9 @@ id,
 name,
 description,
 email,
-blog,
 location,
-created_at,
-updated_at,
-plan,
-members_can_create_repositories
-FROM github.organizations.org
-WHERE org = 'stackql';
-
--- List organization repositories
-SELECT 
-id,
-name,
-full_name,
-private,
-html_url,
-description,
-fork,
-created_at,
-updated_at,
-language,
-visibility
-FROM github.repos.org_repos
+plan
+FROM github.orgs.orgs
 WHERE org = 'stackql';
 
 -- List GitHub Actions workflow runs
@@ -252,21 +165,20 @@ SELECT
 id,
 name,
 workflow_id,
-head_branch,
-head_sha,
 run_number,
-event,
 status,
 conclusion,
-created_at,
-updated_at
+created_at
 FROM github.actions.workflow_runs
 WHERE owner = 'stackql'
 AND repo = 'stackql';
 
 -- Check your rate limit status
 SELECT 
-*
+JSON_EXTRACT(rate, '$.limit') AS rate_limit,
+JSON_EXTRACT(rate, '$.remaining') AS remaining,
+datetime(JSON_EXTRACT(rate, '$.reset'), 'unixepoch') AS reset_date,
+JSON_EXTRACT(rate, '$.used') AS used
 FROM github.rate_limit.rate_limit;
 ```
 

@@ -9,41 +9,30 @@ keywords:
   - infrastructure-as-code
   - configuration-as-data
   - cloud inventory
-description: Query, deploy and manage GitHub resources using SQL
+description: Query, deploy and manage github resources using SQL
 custom_edit_url: null
 image: /img/stackql-github-provider-featured-image.png
 ---
 
-Monitor Charges And Usage From Actions And Packages.  
-    
-:::info Service Summary
+billing service documentation.
 
-<div class="row">
-<div class="providerDocColumn">
-<span>total resources:&nbsp;<b>3</b></span><br />
-<span>total selectable resources:&nbsp;<b>3</b></span><br />
-<span>total methods:&nbsp;<b>6</b></span><br />
-</div>
-</div>
+:::info[Service Summary]
+
+total resources: __7__  
 
 :::
-
-## Overview
-<table><tbody>
-<tr><td><b>Name</b></td><td><code>github.billing</code></td></tr>
-<tr><td><b>Type</b></td><td>Service</td></tr>
-<tr><td><b>Title</b></td><td>GitHub V3 REST API - Billing</td></tr>
-<tr><td><b>Description</b></td><td>Monitor Charges And Usage From Actions And Packages.</td></tr>
-<tr><td><b>Id</b></td><td><code>billing:v24.04.00227</code></td></tr>
-</tbody></table>
 
 ## Resources
 <div class="row">
 <div class="providerDocColumn">
-<a href="/services/billing/actions_billing_usage/">actions_billing_usage</a><br />
-<a href="/services/billing/combined_billing_usage/">combined_billing_usage</a><br />
+<a href="/services/billing/org_budgets/">org_budgets</a><br />
+<a href="/services/billing/org_premium_request_usage/">org_premium_request_usage</a><br />
+<a href="/services/billing/org_usage/">org_usage</a><br />
+<a href="/services/billing/org_usage_summary/">org_usage_summary</a>
 </div>
 <div class="providerDocColumn">
-<a href="/services/billing/packages_billing_usage/">packages_billing_usage</a><br />
+<a href="/services/billing/premium_request_usage/">premium_request_usage</a><br />
+<a href="/services/billing/usage/">usage</a><br />
+<a href="/services/billing/usage_summary/">usage_summary</a>
 </div>
 </div>
