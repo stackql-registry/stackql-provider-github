@@ -9,33 +9,18 @@ keywords:
   - infrastructure-as-code
   - configuration-as-data
   - cloud inventory
-description: Query, deploy and manage GitHub resources using SQL
+description: Query, deploy and manage github resources using SQL
 custom_edit_url: null
 image: /img/stackql-github-provider-featured-image.png
 ---
 
-View, Modify Your Gists.  
-    
-:::info Service Summary
+gists service documentation.
 
-<div class="row">
-<div class="providerDocColumn">
-<span>total resources:&nbsp;<b>8</b></span><br />
-<span>total selectable resources:&nbsp;<b>8</b></span><br />
-<span>total methods:&nbsp;<b>20</b></span><br />
-</div>
-</div>
+:::info[Service Summary]
+
+total resources: __7__  
 
 :::
-
-## Overview
-<table><tbody>
-<tr><td><b>Name</b></td><td><code>github.gists</code></td></tr>
-<tr><td><b>Type</b></td><td>Service</td></tr>
-<tr><td><b>Title</b></td><td>GitHub V3 REST API - Gists</td></tr>
-<tr><td><b>Description</b></td><td>View, Modify Your Gists.</td></tr>
-<tr><td><b>Id</b></td><td><code>gists:v24.04.00227</code></td></tr>
-</tbody></table>
 
 ## Resources
 <div class="row">
@@ -43,12 +28,11 @@ View, Modify Your Gists.
 <a href="/services/gists/comments/">comments</a><br />
 <a href="/services/gists/commits/">commits</a><br />
 <a href="/services/gists/forks/">forks</a><br />
-<a href="/services/gists/gist/">gist</a><br />
+<a href="/services/gists/gists/">gists</a>
 </div>
 <div class="providerDocColumn">
-<a href="/services/gists/gists/">gists</a><br />
 <a href="/services/gists/public_gists/">public_gists</a><br />
 <a href="/services/gists/revisions/">revisions</a><br />
-<a href="/services/gists/starred_gists/">starred_gists</a><br />
+<a href="/services/gists/starred_gists/">starred_gists</a>
 </div>
 </div>

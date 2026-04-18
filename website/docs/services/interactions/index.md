@@ -9,41 +9,26 @@ keywords:
   - infrastructure-as-code
   - configuration-as-data
   - cloud inventory
-description: Query, deploy and manage GitHub resources using SQL
+description: Query, deploy and manage github resources using SQL
 custom_edit_url: null
 image: /img/stackql-github-provider-featured-image.png
 ---
 
-Owner Or Admin Management Of Users Interactions.  
-    
-:::info Service Summary
+interactions service documentation.
 
-<div class="row">
-<div class="providerDocColumn">
-<span>total resources:&nbsp;<b>3</b></span><br />
-<span>total selectable resources:&nbsp;<b>3</b></span><br />
-<span>total methods:&nbsp;<b>9</b></span><br />
-</div>
-</div>
+:::info[Service Summary]
+
+total resources: __3__  
 
 :::
-
-## Overview
-<table><tbody>
-<tr><td><b>Name</b></td><td><code>github.interactions</code></td></tr>
-<tr><td><b>Type</b></td><td>Service</td></tr>
-<tr><td><b>Title</b></td><td>GitHub V3 REST API - Interactions</td></tr>
-<tr><td><b>Description</b></td><td>Owner Or Admin Management Of Users Interactions.</td></tr>
-<tr><td><b>Id</b></td><td><code>interactions:v24.04.00227</code></td></tr>
-</tbody></table>
 
 ## Resources
 <div class="row">
 <div class="providerDocColumn">
 <a href="/services/interactions/orgs/">orgs</a><br />
-<a href="/services/interactions/repos/">repos</a><br />
+<a href="/services/interactions/repos/">repos</a>
 </div>
 <div class="providerDocColumn">
-<a href="/services/interactions/user/">user</a><br />
+<a href="/services/interactions/user/">user</a>
 </div>
 </div>

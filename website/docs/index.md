@@ -17,19 +17,11 @@ id: 'provider-intro'
 import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
 
 Web-based version-control and collaboration.  
-    
-:::info Provider Summary (v24.04.00227)
 
-<div class="row">
-<div class="providerDocColumn">
-<span>total services:&nbsp;<b>31</b></span><br />
-<span>total methods:&nbsp;<b>885</b></span><br />
-</div>
-<div class="providerDocColumn">
-<span>total resources:&nbsp;<b>281</b></span><br />
-<span>total selectable resources:&nbsp;<b>276</b></span><br />
-</div>
-</div>
+:::info[Provider Summary] 
+
+total services: __44__  
+total resources: __430__  
 
 :::
 
@@ -82,27 +74,40 @@ stackql.exe shell --auth=$Auth
 <div class="providerDocColumn">
 <a href="/services/actions/">actions</a><br />
 <a href="/services/activity/">activity</a><br />
+<a href="/services/agent_tasks/">agent_tasks</a><br />
 <a href="/services/apps/">apps</a><br />
 <a href="/services/billing/">billing</a><br />
+<a href="/services/campaigns/">campaigns</a><br />
 <a href="/services/checks/">checks</a><br />
+<a href="/services/classroom/">classroom</a><br />
 <a href="/services/code_scanning/">code_scanning</a><br />
+<a href="/services/code_security/">code_security</a><br />
 <a href="/services/codes_of_conduct/">codes_of_conduct</a><br />
 <a href="/services/codespaces/">codespaces</a><br />
 <a href="/services/copilot/">copilot</a><br />
+<a href="/services/credentials/">credentials</a><br />
 <a href="/services/dependabot/">dependabot</a><br />
 <a href="/services/dependency_graph/">dependency_graph</a><br />
+<a href="/services/emojis/">emojis</a><br />
+<a href="/services/enterprise_team_memberships/">enterprise_team_memberships</a><br />
+<a href="/services/enterprise_team_organizations/">enterprise_team_organizations</a><br />
+<a href="/services/enterprise_teams/">enterprise_teams</a><br />
 <a href="/services/gists/">gists</a><br />
 <a href="/services/git/">git</a><br />
-<a href="/services/gitignore/">gitignore</a><br />
-<a href="/services/interactions/">interactions</a><br />
-<a href="/services/issues/">issues</a><br />
 </div>
 <div class="providerDocColumn">
+<a href="/services/gitignore/">gitignore</a><br />
+<a href="/services/hosted_compute/">hosted_compute</a><br />
+<a href="/services/interactions/">interactions</a><br />
+<a href="/services/issues/">issues</a><br />
 <a href="/services/licenses/">licenses</a><br />
+<a href="/services/markdown/">markdown</a><br />
+<a href="/services/meta/">meta</a><br />
 <a href="/services/migrations/">migrations</a><br />
 <a href="/services/oidc/">oidc</a><br />
 <a href="/services/orgs/">orgs</a><br />
 <a href="/services/packages/">packages</a><br />
+<a href="/services/private_registries/">private_registries</a><br />
 <a href="/services/projects/">projects</a><br />
 <a href="/services/pulls/">pulls</a><br />
 <a href="/services/rate_limit/">rate_limit</a><br />
