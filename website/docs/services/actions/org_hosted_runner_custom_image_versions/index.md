@@ -94,14 +94,29 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="image_versions" /></td>
-    <td><code>array</code></td>
-    <td></td>
+    <td><CopyableCode code="created_on" /></td>
+    <td><code>string</code></td>
+    <td>The creation date time of the image version. (example: 2024-11-09T23:39:01Z)</td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
+    <td><CopyableCode code="size_gb" /></td>
     <td><code>integer</code></td>
-    <td></td>
+    <td>Image version size in GB.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="state" /></td>
+    <td><code>string</code></td>
+    <td>The state of image version. (example: Ready)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="state_details" /></td>
+    <td><code>string</code></td>
+    <td>The image version status details. (example: None)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="version" /></td>
+    <td><code>string</code></td>
+    <td>The version of image. (example: 1.0.0)</td>
 </tr>
 </tbody>
 </table>
@@ -211,8 +226,11 @@ List image versions of a custom image for an organization.<br /><br />OAuth toke
 
 ```sql
 SELECT
-image_versions,
-total_count
+created_on,
+size_gb,
+state,
+state_details,
+version
 FROM github.actions.org_hosted_runner_custom_image_versions
 WHERE image_definition_id = '{{ image_definition_id }}' -- required
 AND org = '{{ org }}' -- required

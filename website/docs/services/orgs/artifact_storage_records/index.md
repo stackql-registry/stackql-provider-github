@@ -52,14 +52,49 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="storage_records" /></td>
-    <td><code>array</code></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer</code></td>
     <td></td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
-    <td>The number of storage records for this digest and organization</td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="artifact_url" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="digest" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="registry_url" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="repository" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="status" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string</code></td>
+    <td></td>
 </tr>
 </tbody>
 </table>
@@ -138,8 +173,15 @@ List a collection of artifact storage records with a given subject digest that a
 
 ```sql
 SELECT
-storage_records,
-total_count
+id,
+name,
+artifact_url,
+created_at,
+digest,
+registry_url,
+repository,
+status,
+updated_at
 FROM github.orgs.artifact_storage_records
 WHERE org = '{{ org }}' -- required
 AND subject_digest = '{{ subject_digest }}' -- required

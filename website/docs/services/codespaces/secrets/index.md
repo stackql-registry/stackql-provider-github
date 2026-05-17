@@ -94,14 +94,29 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="secrets" /></td>
-    <td><code>array</code></td>
-    <td></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name of the secret (example: SECRET_NAME)</td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
-    <td></td>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>The date and time at which the secret was created, in ISO 8601 format':' YYYY-MM-DDTHH:MM:SSZ.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="selected_repositories_url" /></td>
+    <td><code>string (uri)</code></td>
+    <td>The API URL at which the list of repositories this secret is visible to can be retrieved (example: https://api.github.com/user/secrets/SECRET_NAME/repositories)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>The date and time at which the secret was last updated, in ISO 8601 format':' YYYY-MM-DDTHH:MM:SSZ.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="visibility" /></td>
+    <td><code>string</code></td>
+    <td>The type of repositories in the organization that the secret is visible to (all, private, selected)</td>
 </tr>
 </tbody>
 </table>
@@ -216,8 +231,11 @@ Lists all development environment secrets available for a user's codespaces with
 
 ```sql
 SELECT
-secrets,
-total_count
+name,
+created_at,
+selected_repositories_url,
+updated_at,
+visibility
 FROM github.codespaces.secrets
 WHERE per_page = '{{ per_page }}'
 AND page = '{{ page }}'

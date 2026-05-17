@@ -21,7 +21,7 @@ Web-based version-control and collaboration.
 :::info[Provider Summary] 
 
 total services: __44__  
-total resources: __430__  
+total resources: __433__  
 
 :::
 

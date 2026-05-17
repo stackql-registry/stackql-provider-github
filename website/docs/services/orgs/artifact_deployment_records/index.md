@@ -50,14 +50,59 @@ The following fields are returned by `SELECT` queries:
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="deployment_records" /></td>
-    <td><code>array</code></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer</code></td>
     <td></td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
+    <td><CopyableCode code="attestation_id" /></td>
     <td><code>integer</code></td>
-    <td>The number of deployment records for this digest and organization</td>
+    <td>The ID of the provenance attestation associated with the deployment record.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="cluster" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="digest" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="logical_environment" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="physical_environment" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="runtime_risks" /></td>
+    <td><code>array</code></td>
+    <td>A list of runtime risks associated with the deployment.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="tags" /></td>
+    <td><code>object</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string</code></td>
+    <td></td>
 </tr>
 </tbody>
 </table>
@@ -148,8 +193,17 @@ List deployment records for an artifact metadata associated with an organization
 
 ```sql
 SELECT
-deployment_records,
-total_count
+id,
+attestation_id,
+deployment_name,
+cluster,
+created_at,
+digest,
+logical_environment,
+physical_environment,
+runtime_risks,
+tags,
+updated_at
 FROM github.orgs.artifact_deployment_records
 WHERE org = '{{ org }}' -- required
 AND subject_digest = '{{ subject_digest }}' -- required

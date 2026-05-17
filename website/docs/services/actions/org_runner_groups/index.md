@@ -139,14 +139,74 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="runner_groups" /></td>
-    <td><code>array</code></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>number</code></td>
     <td></td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>number</code></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
     <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="network_configuration_id" /></td>
+    <td><code>string</code></td>
+    <td>The identifier of a hosted compute network configuration.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="allows_public_repositories" /></td>
+    <td><code>boolean</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="default" /></td>
+    <td><code>boolean</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="hosted_runners_url" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="inherited" /></td>
+    <td><code>boolean</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="inherited_allows_public_repositories" /></td>
+    <td><code>boolean</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="restricted_to_workflows" /></td>
+    <td><code>boolean</code></td>
+    <td>If `true`, the runner group will be restricted to running only the workflows specified in the `selected_workflows` array.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="runners_url" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="selected_repositories_url" /></td>
+    <td><code>string</code></td>
+    <td>Link to the selected repositories resource for this runner group. Not present unless visibility was set to `selected`</td>
+</tr>
+<tr>
+    <td><CopyableCode code="selected_workflows" /></td>
+    <td><code>array</code></td>
+    <td>List of workflows the runner group should be allowed to run. This setting will be ignored unless `restricted_to_workflows` is set to `true`.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="visibility" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="workflow_restrictions_read_only" /></td>
+    <td><code>boolean</code></td>
+    <td>If `true`, the `restricted_to_workflows` and `selected_workflows` fields cannot be modified.</td>
 </tr>
 </tbody>
 </table>
@@ -288,8 +348,20 @@ Lists all self-hosted runner groups configured in an organization and inherited 
 
 ```sql
 SELECT
-runner_groups,
-total_count
+id,
+name,
+network_configuration_id,
+allows_public_repositories,
+default,
+hosted_runners_url,
+inherited,
+inherited_allows_public_repositories,
+restricted_to_workflows,
+runners_url,
+selected_repositories_url,
+selected_workflows,
+visibility,
+workflow_restrictions_read_only
 FROM github.actions.org_runner_groups
 WHERE org = '{{ org }}' -- required
 AND per_page = '{{ per_page }}'

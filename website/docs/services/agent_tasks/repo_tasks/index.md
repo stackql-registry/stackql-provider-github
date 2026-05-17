@@ -144,19 +144,79 @@ Tasks retrieved successfully
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="tasks" /></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>string</code></td>
+    <td>Unique task identifier</td>
+</tr>
+<tr>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>Human-readable name derived from the task prompt</td>
+</tr>
+<tr>
+    <td><CopyableCode code="archived_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>Timestamp when the task was archived, null if not archived</td>
+</tr>
+<tr>
+    <td><CopyableCode code="artifacts" /></td>
     <td><code>array</code></td>
-    <td>List of tasks</td>
+    <td>Resources created by this task (PRs, branches, etc.)</td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_active_count" /></td>
-    <td><code>integer (int32)</code></td>
-    <td>Total count of active (non-archived) tasks</td>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>Timestamp when the task was created</td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_archived_count" /></td>
+    <td><CopyableCode code="creator" /></td>
+    <td><code></code></td>
+    <td>The entity who created this task</td>
+</tr>
+<tr>
+    <td><CopyableCode code="creator_type" /></td>
+    <td><code>string</code></td>
+    <td>Type of the task creator (user, organization)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="html_url" /></td>
+    <td><code>string</code></td>
+    <td>Web URL for this task</td>
+</tr>
+<tr>
+    <td><CopyableCode code="owner" /></td>
+    <td><code>object</code></td>
+    <td>The owner of the repository</td>
+</tr>
+<tr>
+    <td><CopyableCode code="repository" /></td>
+    <td><code>object</code></td>
+    <td>The repository this task belongs to</td>
+</tr>
+<tr>
+    <td><CopyableCode code="session_count" /></td>
     <td><code>integer (int32)</code></td>
-    <td>Total count of archived tasks</td>
+    <td>Number of sessions in this task</td>
+</tr>
+<tr>
+    <td><CopyableCode code="state" /></td>
+    <td><code>string</code></td>
+    <td>Current state of the task, derived from its most recent session (queued, in_progress, completed, failed, idle, waiting_for_user, timed_out, cancelled)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>Timestamp of the most recent update</td>
+</tr>
+<tr>
+    <td><CopyableCode code="url" /></td>
+    <td><code>string</code></td>
+    <td>API URL for this task</td>
+</tr>
+<tr>
+    <td><CopyableCode code="user_collaborators" /></td>
+    <td><code>array</code></td>
+    <td>User objects of collaborators on this task</td>
 </tr>
 </tbody>
 </table>
@@ -316,9 +376,21 @@ AND task_id = '{{ task_id }}' -- required
 
 ```sql
 SELECT
-tasks,
-total_active_count,
-total_archived_count
+id,
+name,
+archived_at,
+artifacts,
+created_at,
+creator,
+creator_type,
+html_url,
+owner,
+repository,
+session_count,
+state,
+updated_at,
+url,
+user_collaborators
 FROM github.agent_tasks.repo_tasks
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required

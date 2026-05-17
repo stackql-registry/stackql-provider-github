@@ -52,14 +52,24 @@ A list of custom deployment rule integrations available for this environment.
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="available_custom_deployment_protection_rule_integrations" /></td>
-    <td><code>array</code></td>
-    <td></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer</code></td>
+    <td>The unique identifier of the deployment protection rule integration.</td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
-    <td>The total number of custom deployment protection rule integrations available for this environment.</td>
+    <td><CopyableCode code="node_id" /></td>
+    <td><code>string</code></td>
+    <td>The node ID for the deployment protection rule integration. (example: MDQ6R2F0ZTM1MTU=)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="integration_url" /></td>
+    <td><code>string</code></td>
+    <td>The URL for the endpoint to get details about the app. (example: https://api.github.com/apps/custom-app-slug)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="slug" /></td>
+    <td><code>string</code></td>
+    <td>The slugified name of the deployment protection rule integration. (example: my-custom-app)</td>
 </tr>
 </tbody>
 </table>
@@ -146,8 +156,10 @@ Gets all custom deployment protection rule integrations that are available for a
 
 ```sql
 SELECT
-available_custom_deployment_protection_rule_integrations,
-total_count
+id,
+node_id,
+integration_url,
+slug
 FROM github.repos.deployment_rule_integrations
 WHERE environment_name = '{{ environment_name }}' -- required
 AND repo = '{{ repo }}' -- required

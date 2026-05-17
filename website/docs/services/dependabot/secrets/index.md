@@ -127,13 +127,18 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="secrets" /></td>
-    <td><code>array</code></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name of the secret. (example: MY_ARTIFACTORY_PASSWORD)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string (date-time)</code></td>
     <td></td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string (date-time)</code></td>
     <td></td>
 </tr>
 </tbody>
@@ -153,14 +158,29 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="secrets" /></td>
-    <td><code>array</code></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name of the secret. (example: SECRET_TOKEN)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string (date-time)</code></td>
     <td></td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
+    <td><CopyableCode code="selected_repositories_url" /></td>
+    <td><code>string (uri)</code></td>
+    <td> (example: https://api.github.com/organizations/org/dependabot/secrets/my_secret/repositories)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string (date-time)</code></td>
     <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="visibility" /></td>
+    <td><code>string</code></td>
+    <td>Visibility of a secret (all, private, selected)</td>
 </tr>
 </tbody>
 </table>
@@ -337,8 +357,9 @@ Lists all secrets available in a repository without revealing their encrypted<br
 
 ```sql
 SELECT
-secrets,
-total_count
+name,
+created_at,
+updated_at
 FROM github.dependabot.secrets
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required
@@ -353,8 +374,11 @@ Lists all secrets available in an organization without revealing their<br />encr
 
 ```sql
 SELECT
-secrets,
-total_count
+name,
+created_at,
+selected_repositories_url,
+updated_at,
+visibility
 FROM github.dependabot.secrets
 WHERE org = '{{ org }}' -- required
 AND per_page = '{{ per_page }}'

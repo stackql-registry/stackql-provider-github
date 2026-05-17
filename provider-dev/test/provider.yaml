@@ -1,0 +1,21 @@
+# Per-provider settings consumed by conftest.py.
+# This file is the only piece (besides tier1.yaml) that should differ between
+# providers when reusing this test framework as an archetype.
+
+provider_name: github
+
+# Registry root - path relative to the repo root that contains src/<provider>/...
+registry_root: provider-dev/openapi
+
+# Auth env vars that MUST be set for tier 1 tests to run.
+# If any are missing, the test session fails fast with a clear message.
+required_env:
+  - STACKQL_GITHUB_USERNAME
+  - STACKQL_GITHUB_PASSWORD
+
+# Optional env vars used inside tier1.yaml ${VAR} substitutions.
+# Defaults are applied if the env var is not set.
+test_env_defaults:
+  TEST_ORG: stackql
+  TEST_REPO: stackql
+  TEST_USER: stackql

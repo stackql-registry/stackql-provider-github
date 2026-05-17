@@ -52,14 +52,44 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="runners" /></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer</code></td>
+    <td>The ID of the runner.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name of the runner. (example: iMac)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="runner_group_id" /></td>
+    <td><code>integer</code></td>
+    <td>The ID of the runner group.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="busy" /></td>
+    <td><code>boolean</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="ephemeral" /></td>
+    <td><code>boolean</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="labels" /></td>
     <td><code>array</code></td>
     <td></td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>number</code></td>
-    <td></td>
+    <td><CopyableCode code="os" /></td>
+    <td><code>string</code></td>
+    <td>The Operating System of the runner. (example: macos)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="status" /></td>
+    <td><code>string</code></td>
+    <td>The status of the runner. (example: online)</td>
 </tr>
 </tbody>
 </table>
@@ -167,8 +197,14 @@ Lists self-hosted runners that are in a specific organization group.<br /><br />
 
 ```sql
 SELECT
-runners,
-total_count
+id,
+name,
+runner_group_id,
+busy,
+ephemeral,
+labels,
+os,
+status
 FROM github.actions.org_runner_group_runners
 WHERE org = '{{ org }}' -- required
 AND runner_group_id = '{{ runner_group_id }}' -- required

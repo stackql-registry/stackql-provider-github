@@ -52,13 +52,108 @@ You can find the permissions for the installation under the `permissions` key.
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="installations" /></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer</code></td>
+    <td>The ID of the installation.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="app_id" /></td>
+    <td><code>integer</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="client_id" /></td>
+    <td><code>string</code></td>
+    <td> (example: Iv1.ab1112223334445c)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="target_id" /></td>
+    <td><code>integer</code></td>
+    <td>The ID of the user or organization this token is being scoped to.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="single_file_name" /></td>
+    <td><code>string</code></td>
+    <td> (example: config.yaml)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="access_tokens_url" /></td>
+    <td><code>string (uri)</code></td>
+    <td> (example: https://api.github.com/app/installations/1/access_tokens)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="account" /></td>
+    <td><code>object</code></td>
+    <td>A GitHub user. (title: Simple User)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="app_slug" /></td>
+    <td><code>string</code></td>
+    <td> (example: github-actions)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="contact_email" /></td>
+    <td><code>string</code></td>
+    <td> (example: "test_13f1e99741e3e004@d7e1eb0bc0a1ba12.com")</td>
+</tr>
+<tr>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="events" /></td>
     <td><code>array</code></td>
     <td></td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
+    <td><CopyableCode code="has_multiple_single_files" /></td>
+    <td><code>boolean</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="html_url" /></td>
+    <td><code>string (uri)</code></td>
+    <td> (example: https://github.com/organizations/github/settings/installations/1)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="permissions" /></td>
+    <td><code>object</code></td>
+    <td>The permissions granted to the user access token. (title: App Permissions)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="repositories_url" /></td>
+    <td><code>string (uri)</code></td>
+    <td> (example: https://api.github.com/installation/repositories)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="repository_selection" /></td>
+    <td><code>string</code></td>
+    <td>Describe whether all repositories have been selected or there's a selection involved (all, selected)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="single_file_paths" /></td>
+    <td><code>array</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="suspended_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="suspended_by" /></td>
+    <td><code>object</code></td>
+    <td>A GitHub user. (title: Simple User)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="target_type" /></td>
+    <td><code>string</code></td>
+    <td> (example: Organization)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string (date-time)</code></td>
     <td></td>
 </tr>
 </tbody>
@@ -138,8 +233,27 @@ Lists installations of your GitHub App that the authenticated user has explicit 
 
 ```sql
 SELECT
-installations,
-total_count
+id,
+app_id,
+client_id,
+target_id,
+single_file_name,
+access_tokens_url,
+account,
+app_slug,
+contact_email,
+created_at,
+events,
+has_multiple_single_files,
+html_url,
+permissions,
+repositories_url,
+repository_selection,
+single_file_paths,
+suspended_at,
+suspended_by,
+target_type,
+updated_at
 FROM github.apps.installations
 WHERE per_page = '{{ per_page }}'
 AND page = '{{ page }}'

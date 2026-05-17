@@ -52,14 +52,54 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="seats" /></td>
-    <td><code>array</code></td>
-    <td></td>
+    <td><CopyableCode code="assignee" /></td>
+    <td><code>object</code></td>
+    <td>A GitHub user. (title: Simple User)</td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_seats" /></td>
-    <td><code>integer</code></td>
-    <td>Total number of Copilot seats for the organization currently being billed.</td>
+    <td><CopyableCode code="assigning_team" /></td>
+    <td><code>object</code></td>
+    <td>The team through which the assignee is granted access to GitHub Copilot, if applicable. (title: Team)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>Timestamp of when the assignee was last granted access to GitHub Copilot, in ISO 8601 format.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="last_activity_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>Timestamp of user's last GitHub Copilot activity, in ISO 8601 format.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="last_activity_editor" /></td>
+    <td><code>string</code></td>
+    <td>Last editor that was used by the user for a GitHub Copilot completion.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="last_authenticated_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>Timestamp of the last time the user authenticated with GitHub Copilot, in ISO 8601 format.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="organization" /></td>
+    <td><code>object</code></td>
+    <td>A GitHub organization. (title: Organization Simple)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="pending_cancellation_date" /></td>
+    <td><code>string (date)</code></td>
+    <td>The pending cancellation date for the seat, in `YYYY-MM-DD` format. This will be null unless the assignee's Copilot access has been canceled during the current billing cycle. If the seat has been cancelled, this corresponds to the start of the organization's next billing cycle.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="plan_type" /></td>
+    <td><code>string</code></td>
+    <td>The Copilot plan of the organization, or the parent enterprise, when applicable. (business, enterprise, unknown)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>**Closing down notice:** This field is no longer relevant and is closing down. Use the `created_at` field to determine when the assignee was last granted access to GitHub Copilot. Timestamp of when the assignee's GitHub Copilot access was last updated, in ISO 8601 format.</td>
 </tr>
 </tbody>
 </table>
@@ -87,13 +127,6 @@ The following methods are available for this resource:
     <td><a href="#parameter-org"><code>org</code></a></td>
     <td><a href="#parameter-page"><code>page</code></a>, <a href="#parameter-per_page"><code>per_page</code></a></td>
     <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Lists all Copilot seats for which an organization with a Copilot Business or Copilot Enterprise subscription is currently being billed.<br />Only organization owners can view assigned seats.<br /><br />Each seat object contains information about the assigned user's most recent Copilot activity. Users must have telemetry enabled in their IDE for Copilot in the IDE activity to be reflected in `last_activity_at`.<br />For more information about activity data, see [Metrics data properties for GitHub Copilot](https://docs.github.com/copilot/reference/metrics-data).<br /><br />OAuth app tokens and personal access tokens (classic) need either the `manage_billing:copilot` or `read:org` scopes to use this endpoint.</td>
-</tr>
-<tr>
-    <td><a href="#add_copilot_for_business_seats_for_teams"><CopyableCode code="add_copilot_for_business_seats_for_teams" /></a></td>
-    <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-selected_teams"><code>selected_teams</code></a></td>
-    <td></td>
-    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Purchases a GitHub Copilot seat for all users within each specified team.<br />The organization will be billed for each seat based on the organization's Copilot plan. For more information about Copilot pricing, see "[About billing for GitHub Copilot in your organization](https://docs.github.com/copilot/managing-copilot/managing-github-copilot-in-your-organization/managing-the-copilot-subscription-for-your-organization/about-billing-for-github-copilot-in-your-organization)."<br /><br />Only organization owners can purchase Copilot seats for their organization members. The organization must have a Copilot Business or Copilot Enterprise subscription and a configured suggestion matching policy.<br />For more information about setting up a Copilot subscription, see "[Subscribing to Copilot for your organization](https://docs.github.com/copilot/managing-copilot/managing-github-copilot-in-your-organization/managing-the-copilot-subscription-for-your-organization/subscribing-to-copilot-for-your-organization)."<br />For more information about setting a suggestion matching policy, see "[Managing policies for Copilot in your organization](https://docs.github.com/copilot/managing-copilot/managing-github-copilot-in-your-organization/setting-policies-for-copilot-in-your-organization/managing-policies-for-copilot-in-your-organization#policies-for-suggestion-matching)."<br /><br />The response contains the total number of new seats that were created and existing seats that were refreshed.<br /><br />OAuth app tokens and personal access tokens (classic) need either the `manage_billing:copilot` or `admin:org` scopes to use this endpoint.</td>
 </tr>
 <tr>
     <td><a href="#cancel_copilot_seat_assignment_for_teams"><CopyableCode code="cancel_copilot_seat_assignment_for_teams" /></a></td>
@@ -150,59 +183,22 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 
 ```sql
 SELECT
-seats,
-total_seats
+assignee,
+assigning_team,
+created_at,
+last_activity_at,
+last_activity_editor,
+last_authenticated_at,
+organization,
+pending_cancellation_date,
+plan_type,
+updated_at
 FROM github.copilot.org_seats
 WHERE org = '{{ org }}' -- required
 AND page = '{{ page }}'
 AND per_page = '{{ per_page }}'
 ;
 ```
-</TabItem>
-</Tabs>
-
-
-## `INSERT` examples
-
-<Tabs
-    defaultValue="add_copilot_for_business_seats_for_teams"
-    values={[
-        { label: 'add_copilot_for_business_seats_for_teams', value: 'add_copilot_for_business_seats_for_teams' },
-        { label: 'Manifest', value: 'manifest' }
-    ]}
->
-<TabItem value="add_copilot_for_business_seats_for_teams">
-
-&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Purchases a GitHub Copilot seat for all users within each specified team.<br />The organization will be billed for each seat based on the organization's Copilot plan. For more information about Copilot pricing, see "[About billing for GitHub Copilot in your organization](https://docs.github.com/copilot/managing-copilot/managing-github-copilot-in-your-organization/managing-the-copilot-subscription-for-your-organization/about-billing-for-github-copilot-in-your-organization)."<br /><br />Only organization owners can purchase Copilot seats for their organization members. The organization must have a Copilot Business or Copilot Enterprise subscription and a configured suggestion matching policy.<br />For more information about setting up a Copilot subscription, see "[Subscribing to Copilot for your organization](https://docs.github.com/copilot/managing-copilot/managing-github-copilot-in-your-organization/managing-the-copilot-subscription-for-your-organization/subscribing-to-copilot-for-your-organization)."<br />For more information about setting a suggestion matching policy, see "[Managing policies for Copilot in your organization](https://docs.github.com/copilot/managing-copilot/managing-github-copilot-in-your-organization/setting-policies-for-copilot-in-your-organization/managing-policies-for-copilot-in-your-organization#policies-for-suggestion-matching)."<br /><br />The response contains the total number of new seats that were created and existing seats that were refreshed.<br /><br />OAuth app tokens and personal access tokens (classic) need either the `manage_billing:copilot` or `admin:org` scopes to use this endpoint.
-
-```sql
-INSERT INTO github.copilot.org_seats (
-selected_teams,
-org
-)
-SELECT 
-'{{ selected_teams }}' /* required */,
-'{{ org }}'
-RETURNING
-seats_created
-;
-```
-</TabItem>
-<TabItem value="manifest">
-
-<CodeBlock language="yaml">{`# Description fields are for documentation purposes
-- name: org_seats
-  props:
-    - name: org
-      value: "{{ org }}"
-      description: Required parameter for the org_seats resource.
-    - name: selected_teams
-      value:
-        - "{{ selected_teams }}"
-      description: |
-        List of team names within the organization to which to grant access to GitHub Copilot.
-`}</CodeBlock>
-
 </TabItem>
 </Tabs>
 

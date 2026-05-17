@@ -124,14 +124,59 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
+    <td><CopyableCode code="id" /></td>
     <td><code>integer</code></td>
     <td></td>
 </tr>
 <tr>
-    <td><CopyableCode code="workflows" /></td>
-    <td><code>array</code></td>
-    <td></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td> (example: CI)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="node_id" /></td>
+    <td><code>string</code></td>
+    <td> (example: MDg6V29ya2Zsb3cxMg==)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="badge_url" /></td>
+    <td><code>string</code></td>
+    <td> (example: https://github.com/actions/setup-ruby/workflows/CI/badge.svg)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td> (example: 2019-12-06T14:20:20.000Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="deleted_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td> (example: 2019-12-06T14:20:20.000Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="html_url" /></td>
+    <td><code>string</code></td>
+    <td> (example: https://github.com/actions/setup-ruby/blob/master/.github/workflows/ruby.yaml)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="path" /></td>
+    <td><code>string</code></td>
+    <td> (example: ruby.yaml)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="state" /></td>
+    <td><code>string</code></td>
+    <td> (active, deleted, disabled_fork, disabled_inactivity, disabled_manually) (example: active)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td> (example: 2019-12-06T14:20:20.000Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="url" /></td>
+    <td><code>string</code></td>
+    <td> (example: https://api.github.com/repos/actions/setup-ruby/workflows/5)</td>
 </tr>
 </tbody>
 </table>
@@ -271,8 +316,17 @@ Lists the workflows in a repository.<br /><br />Anyone with read access to the r
 
 ```sql
 SELECT
-total_count,
-workflows
+id,
+name,
+node_id,
+badge_url,
+created_at,
+deleted_at,
+html_url,
+path,
+state,
+updated_at,
+url
 FROM github.actions.workflows
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required

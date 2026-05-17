@@ -52,13 +52,18 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="devcontainers" /></td>
-    <td><code>array</code></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
     <td></td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
+    <td><CopyableCode code="display_name" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="path" /></td>
+    <td><code>string</code></td>
     <td></td>
 </tr>
 </tbody>
@@ -141,8 +146,9 @@ Lists the devcontainer.json files associated with a specified repository and the
 
 ```sql
 SELECT
-devcontainers,
-total_count
+name,
+display_name,
+path
 FROM github.codespaces.devcontainers
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required

@@ -1,0 +1,149 @@
+# Tier 1 smoke tests: read-only SELECT queries that any reasonable user
+# would expect to "just work" against a freshly-built provider.
+#
+# Each entry has:
+#   name           - test id (used in pytest output)
+#   sql            - SQL to execute. ${VAR} is substituted from env / defaults.
+#   assertions:
+#     min_rows         - result set must have at least this many rows (default 1)
+#     required_columns - every named column must be present on every row
+#     row_predicates   - list of Python expressions evaluated with `rows` and `r`
+#                        (r = rows[0]) in scope. Allowed builtins: all, any, len,
+#                        int, float, str, bool, isinstance, abs, min, max, sum,
+#                        range, sorted, set, list, dict, tuple. All must be truthy.
+#   xfail (optional)   - flag known provider/binary bugs without losing visibility:
+#     reason: "..."        (required; printed in pytest output)
+#     modes: [pgwire]      (optional; if omitted, xfails in all modes)
+#
+# Keep this list small (~15 queries). The goal is "is the provider broken?",
+# not exhaustive coverage.
+
+- name: list_org_repos
+  sql: |
+    SELECT name, private, default_branch, visibility
+    FROM github.repos.repos
+    WHERE org = '${TEST_ORG}'
+  assertions:
+    min_rows: 1
+    required_columns: [name, private, default_branch, visibility]
+    row_predicates:
+      - "all(row['name'] for row in rows)"
+
+- name: get_single_repo
+  sql: |
+    SELECT name, full_name, default_branch
+    FROM github.repos.details
+    WHERE owner = '${TEST_ORG}' AND repo = '${TEST_REPO}'
+  assertions:
+    min_rows: 1
+    required_columns: [name, full_name, default_branch]
+    row_predicates:
+      - "r['name'] == '${TEST_REPO}'"
+
+- name: authenticated_user
+  sql: SELECT login, id, type FROM github.users.users
+  assertions:
+    min_rows: 1
+    required_columns: [login, id, type]
+    row_predicates:
+      - "isinstance(r['login'], str) and len(r['login']) > 0"
+
+- name: lookup_user_by_username
+  sql: |
+    SELECT login, id, type
+    FROM github.users.users
+    WHERE username = '${TEST_USER}'
+  assertions:
+    min_rows: 1
+    row_predicates:
+      - "r['login'] == '${TEST_USER}'"
+  xfail:
+    modes: [pgwire]
+    reason: >-
+      stackql pgwire path tries to materialise the result into a cache table
+      that lacks the request-parameter column 'username' (works in exec mode).
+      Upstream stackql binary bug - track and remove this xfail once fixed.
+
+- name: org_detail
+  sql: |
+    SELECT login, id, type
+    FROM github.orgs.orgs
+    WHERE org = '${TEST_ORG}'
+  assertions:
+    min_rows: 1
+    row_predicates:
+      - "r['login'] == '${TEST_ORG}'"
+
+- name: list_repo_issues
+  sql: |
+    SELECT number, title, state
+    FROM github.issues.issues
+    WHERE owner = '${TEST_ORG}' AND repo = '${TEST_REPO}'
+  assertions:
+    min_rows: 0   # repo may legitimately have zero open issues
+    required_columns: [number, title, state]
+
+- name: list_pull_requests
+  sql: |
+    SELECT number, title, state
+    FROM github.pulls.pull_requests
+    WHERE owner = '${TEST_ORG}' AND repo = '${TEST_REPO}' AND state = 'closed'
+  assertions:
+    min_rows: 1
+    required_columns: [number, title, state]
+
+- name: list_workflows
+  # GitHub returns {total_count, workflows: [...]} - stackql exposes the envelope
+  # as a single row when no objectKey unwrap is configured.
+  sql: |
+    SELECT total_count, workflows
+    FROM github.actions.workflows
+    WHERE owner = '${TEST_ORG}' AND repo = '${TEST_REPO}'
+  assertions:
+    min_rows: 1
+    required_columns: [total_count, workflows]
+    row_predicates:
+      - "int(r['total_count']) >= 0"
+
+- name: list_branches
+  sql: |
+    SELECT name, protected
+    FROM github.repos.branches
+    WHERE owner = '${TEST_ORG}' AND repo = '${TEST_REPO}'
+  assertions:
+    min_rows: 1
+    required_columns: [name, protected]
+
+- name: list_commits
+  sql: |
+    SELECT sha
+    FROM github.repos.commits
+    WHERE owner = '${TEST_ORG}' AND repo = '${TEST_REPO}'
+  assertions:
+    min_rows: 1
+    required_columns: [sha]
+    row_predicates:
+      - "all(len(row['sha']) == 40 for row in rows)"
+
+- name: rate_limit
+  sql: |
+    SELECT JSON_EXTRACT(rate, '$.limit') AS rate_limit,
+           JSON_EXTRACT(rate, '$.remaining') AS remaining
+    FROM github.rate_limit.rate_limit
+  assertions:
+    min_rows: 1
+    required_columns: [rate_limit, remaining]
+
+- name: search_repos
+  # GitHub returns {total_count, incomplete_results, items:[...]}. stackql
+  # appears to auto-unwrap `items` here, so we query item-level fields
+  # (id/name/full_name) rather than the envelope.
+  sql: |
+    SELECT id, name, full_name
+    FROM github.search.repos
+    WHERE q = 'stackql in:name'
+  assertions:
+    min_rows: 1
+    required_columns: [id, name, full_name]
+    row_predicates:
+      - "all(row['name'] for row in rows)"
