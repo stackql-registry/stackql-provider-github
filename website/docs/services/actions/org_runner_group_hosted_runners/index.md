@@ -52,14 +52,64 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="runners" /></td>
-    <td><code>array</code></td>
-    <td></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer</code></td>
+    <td>The unique identifier of the hosted runner.</td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>number</code></td>
-    <td></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name of the hosted runner. (example: my-github-hosted-runner)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="runner_group_id" /></td>
+    <td><code>integer</code></td>
+    <td>The unique identifier of the group that the hosted runner belongs to.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="image_details" /></td>
+    <td><code>object</code></td>
+    <td>Provides details of a hosted runner image (title: GitHub-hosted runner image details.)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="image_gen" /></td>
+    <td><code>boolean</code></td>
+    <td>Whether custom image generation is enabled for the hosted runners.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="last_active_on" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>The time at which the runner was last used, in ISO 8601 format. (example: 2022-10-09T23:39:01Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="machine_size_details" /></td>
+    <td><code>object</code></td>
+    <td>Provides details of a particular machine spec. (title: Github-owned VM details.)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="maximum_runners" /></td>
+    <td><code>integer</code></td>
+    <td>The maximum amount of hosted runners. Runners will not scale automatically above this number. Use this setting to limit your cost.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="platform" /></td>
+    <td><code>string</code></td>
+    <td>The operating system of the image. (example: linux-x64)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="public_ip_enabled" /></td>
+    <td><code>boolean</code></td>
+    <td>Whether public IP is enabled for the hosted runners.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="public_ips" /></td>
+    <td><code>array</code></td>
+    <td>The public IP ranges when public IP is enabled for the hosted runners.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="status" /></td>
+    <td><code>string</code></td>
+    <td>The status of the runner. (Ready, Provisioning, Shutdown, Deleting, Stuck) (example: Ready)</td>
 </tr>
 </tbody>
 </table>
@@ -141,8 +191,18 @@ Lists the GitHub-hosted runners in an organization group.<br /><br />OAuth app t
 
 ```sql
 SELECT
-runners,
-total_count
+id,
+name,
+runner_group_id,
+image_details,
+image_gen,
+last_active_on,
+machine_size_details,
+maximum_runners,
+platform,
+public_ip_enabled,
+public_ips,
+status
 FROM github.actions.org_runner_group_hosted_runners
 WHERE org = '{{ org }}' -- required
 AND runner_group_id = '{{ runner_group_id }}' -- required

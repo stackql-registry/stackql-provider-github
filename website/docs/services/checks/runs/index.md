@@ -155,14 +155,89 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="check_runs" /></td>
-    <td><code>array</code></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer (int64)</code></td>
+    <td>The id of the check.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name of the check. (example: test-coverage)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="external_id" /></td>
+    <td><code>string</code></td>
+    <td> (example: 42)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="node_id" /></td>
+    <td><code>string</code></td>
+    <td> (example: MDg6Q2hlY2tSdW40)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="app" /></td>
+    <td><code>object</code></td>
+    <td>GitHub apps are a new way to extend GitHub. They can be installed directly on organizations and user accounts and granted access to specific repositories. They come with granular permissions and built-in webhooks. GitHub apps are first class actors within GitHub. (title: GitHub app)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="check_suite" /></td>
+    <td><code>object</code></td>
     <td></td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
+    <td><CopyableCode code="completed_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td> (example: 2018-05-04T01:14:52Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="conclusion" /></td>
+    <td><code>string</code></td>
+    <td> (success, failure, neutral, cancelled, skipped, timed_out, action_required) (example: neutral)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="deployment" /></td>
+    <td><code>object</code></td>
+    <td>A deployment created as the result of an Actions check run from a workflow that references an environment (title: Deployment)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="details_url" /></td>
+    <td><code>string</code></td>
+    <td> (example: https://example.com)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="head_sha" /></td>
+    <td><code>string</code></td>
+    <td>The SHA of the commit that is being checked. (example: 009b8a3a9ccbb128af87f9b1c0f4c62e8a304f6d)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="html_url" /></td>
+    <td><code>string</code></td>
+    <td> (example: https://github.com/github/hello-world/runs/4)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="output" /></td>
+    <td><code>object</code></td>
     <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="pull_requests" /></td>
+    <td><code>array</code></td>
+    <td>Pull requests that are open with a `head_sha` or `head_branch` that matches the check. The returned pull requests do not necessarily indicate pull requests that triggered the check.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="started_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td> (example: 2018-05-04T01:14:52Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="status" /></td>
+    <td><code>string</code></td>
+    <td>The phase of the lifecycle that the check is currently in. Statuses of waiting, requested, and pending are reserved for GitHub Actions check runs. (queued, in_progress, completed, waiting, requested, pending) (example: queued)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="url" /></td>
+    <td><code>string</code></td>
+    <td> (example: https://api.github.com/repos/github/hello-world/check-runs/4)</td>
 </tr>
 </tbody>
 </table>
@@ -181,14 +256,89 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="check_runs" /></td>
-    <td><code>array</code></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer (int64)</code></td>
+    <td>The id of the check.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name of the check. (example: test-coverage)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="external_id" /></td>
+    <td><code>string</code></td>
+    <td> (example: 42)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="node_id" /></td>
+    <td><code>string</code></td>
+    <td> (example: MDg6Q2hlY2tSdW40)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="app" /></td>
+    <td><code>object</code></td>
+    <td>GitHub apps are a new way to extend GitHub. They can be installed directly on organizations and user accounts and granted access to specific repositories. They come with granular permissions and built-in webhooks. GitHub apps are first class actors within GitHub. (title: GitHub app)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="check_suite" /></td>
+    <td><code>object</code></td>
     <td></td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
+    <td><CopyableCode code="completed_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td> (example: 2018-05-04T01:14:52Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="conclusion" /></td>
+    <td><code>string</code></td>
+    <td> (success, failure, neutral, cancelled, skipped, timed_out, action_required) (example: neutral)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="deployment" /></td>
+    <td><code>object</code></td>
+    <td>A deployment created as the result of an Actions check run from a workflow that references an environment (title: Deployment)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="details_url" /></td>
+    <td><code>string</code></td>
+    <td> (example: https://example.com)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="head_sha" /></td>
+    <td><code>string</code></td>
+    <td>The SHA of the commit that is being checked. (example: 009b8a3a9ccbb128af87f9b1c0f4c62e8a304f6d)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="html_url" /></td>
+    <td><code>string</code></td>
+    <td> (example: https://github.com/github/hello-world/runs/4)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="output" /></td>
+    <td><code>object</code></td>
     <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="pull_requests" /></td>
+    <td><code>array</code></td>
+    <td>Pull requests that are open with a `head_sha` or `head_branch` that matches the check. The returned pull requests do not necessarily indicate pull requests that triggered the check.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="started_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td> (example: 2018-05-04T01:14:52Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="status" /></td>
+    <td><code>string</code></td>
+    <td>The phase of the lifecycle that the check is currently in. Statuses of waiting, requested, and pending are reserved for GitHub Actions check runs. (queued, in_progress, completed, waiting, requested, pending) (example: queued)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="url" /></td>
+    <td><code>string</code></td>
+    <td> (example: https://api.github.com/repos/github/hello-world/check-runs/4)</td>
 </tr>
 </tbody>
 </table>
@@ -372,8 +522,23 @@ Lists check runs for a check suite using its `id`.<br /><br />&gt; [!NOTE]<br />
 
 ```sql
 SELECT
-check_runs,
-total_count
+id,
+name,
+external_id,
+node_id,
+app,
+check_suite,
+completed_at,
+conclusion,
+deployment,
+details_url,
+head_sha,
+html_url,
+output,
+pull_requests,
+started_at,
+status,
+url
 FROM github.checks.runs
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required
@@ -392,8 +557,23 @@ Lists check runs for a commit ref. The `ref` can be a SHA, branch name, or a tag
 
 ```sql
 SELECT
-check_runs,
-total_count
+id,
+name,
+external_id,
+node_id,
+app,
+check_suite,
+completed_at,
+conclusion,
+deployment,
+details_url,
+head_sha,
+html_url,
+output,
+pull_requests,
+started_at,
+status,
+url
 FROM github.checks.runs
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required

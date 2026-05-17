@@ -84,13 +84,18 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="secrets" /></td>
-    <td><code>array</code></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name of the secret. (example: SECRET_TOKEN)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string (date-time)</code></td>
     <td></td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string (date-time)</code></td>
     <td></td>
 </tr>
 </tbody>
@@ -216,8 +221,9 @@ Lists all development environment secrets available in a repository without reve
 
 ```sql
 SELECT
-secrets,
-total_count
+name,
+created_at,
+updated_at
 FROM github.codespaces.repository_secrets
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required

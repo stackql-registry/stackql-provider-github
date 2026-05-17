@@ -79,14 +79,164 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="codespaces" /></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer (int64)</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>Automatically generated name of this codespace. (example: monalisa-octocat-hello-world-g4wpq6h95q)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="environment_id" /></td>
+    <td><code>string</code></td>
+    <td>UUID identifying this codespace's environment. (example: 26a7c758-7299-4a73-b978-5a92a7ae98a0)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="display_name" /></td>
+    <td><code>string</code></td>
+    <td>Display name for this codespace. (example: bookish space pancake)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="billable_owner" /></td>
+    <td><code>object</code></td>
+    <td>A GitHub user. (title: Simple User)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td> (example: 2011-01-26T19:01:12Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="devcontainer_path" /></td>
+    <td><code>string</code></td>
+    <td>Path to devcontainer.json from repo root used to create Codespace. (example: .devcontainer/example/devcontainer.json)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="git_status" /></td>
+    <td><code>object</code></td>
+    <td>Details about the codespace's git repository.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="idle_timeout_minutes" /></td>
+    <td><code>integer</code></td>
+    <td>The number of minutes of inactivity after which this codespace will be automatically stopped.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="idle_timeout_notice" /></td>
+    <td><code>string</code></td>
+    <td>Text to show user when codespace idle timeout minutes has been overriden by an organization policy</td>
+</tr>
+<tr>
+    <td><CopyableCode code="last_known_stop_notice" /></td>
+    <td><code>string</code></td>
+    <td>The text to display to a user when a codespace has been stopped for a potentially actionable reason. (example: you've used 100% of your spending limit for Codespaces)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="last_used_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>Last known time this codespace was started. (example: 2011-01-26T19:01:12Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="location" /></td>
+    <td><code>string</code></td>
+    <td>The initally assigned location of a new codespace. (EastUs, SouthEastAsia, WestEurope, WestUs2) (example: WestUs2)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="machine" /></td>
+    <td><code>object</code></td>
+    <td>A description of the machine powering a codespace. (title: Codespace machine)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="machines_url" /></td>
+    <td><code>string (uri)</code></td>
+    <td>API URL to access available alternate machine types for this codespace.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="owner" /></td>
+    <td><code>object</code></td>
+    <td>A GitHub user. (title: Simple User)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="pending_operation" /></td>
+    <td><code>boolean</code></td>
+    <td>Whether or not a codespace has a pending async operation. This would mean that the codespace is temporarily unavailable. The only thing that you can do with a codespace in this state is delete it.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="pending_operation_disabled_reason" /></td>
+    <td><code>string</code></td>
+    <td>Text to show user when codespace is disabled by a pending operation</td>
+</tr>
+<tr>
+    <td><CopyableCode code="prebuild" /></td>
+    <td><code>boolean</code></td>
+    <td>Whether the codespace was created from a prebuild.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="publish_url" /></td>
+    <td><code>string (uri)</code></td>
+    <td>API URL to publish this codespace to a new repository.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="pulls_url" /></td>
+    <td><code>string (uri)</code></td>
+    <td>API URL for the Pull Request associated with this codespace, if any.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="recent_folders" /></td>
     <td><code>array</code></td>
     <td></td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
+    <td><CopyableCode code="repository" /></td>
+    <td><code>object</code></td>
+    <td>Minimal Repository (title: Minimal Repository)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="retention_expires_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>When a codespace will be auto-deleted based on the "retention_period_minutes" and "last_used_at" (example: 2011-01-26T20:01:12Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="retention_period_minutes" /></td>
     <td><code>integer</code></td>
+    <td>Duration in minutes after codespace has gone idle in which it will be deleted. Must be integer minutes between 0 and 43200 (30 days).</td>
+</tr>
+<tr>
+    <td><CopyableCode code="runtime_constraints" /></td>
+    <td><code>object</code></td>
     <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="start_url" /></td>
+    <td><code>string (uri)</code></td>
+    <td>API URL to start this codespace.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="state" /></td>
+    <td><code>string</code></td>
+    <td>State of this codespace. (Unknown, Created, Queued, Provisioning, Available, Awaiting, Unavailable, Deleted, Moved, Shutdown, Archived, Starting, ShuttingDown, Failed, Exporting, Updating, Rebuilding) (example: Available)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="stop_url" /></td>
+    <td><code>string (uri)</code></td>
+    <td>API URL to stop this codespace.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td> (example: 2011-01-26T19:01:12Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="url" /></td>
+    <td><code>string (uri)</code></td>
+    <td>API URL for this codespace.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="web_url" /></td>
+    <td><code>string (uri)</code></td>
+    <td>URL to access this codespace on the web.</td>
 </tr>
 </tbody>
 </table>
@@ -232,8 +382,38 @@ Lists the codespaces associated to a specified organization.<br /><br />OAuth ap
 
 ```sql
 SELECT
-codespaces,
-total_count
+id,
+name,
+environment_id,
+display_name,
+billable_owner,
+created_at,
+devcontainer_path,
+git_status,
+idle_timeout_minutes,
+idle_timeout_notice,
+last_known_stop_notice,
+last_used_at,
+location,
+machine,
+machines_url,
+owner,
+pending_operation,
+pending_operation_disabled_reason,
+prebuild,
+publish_url,
+pulls_url,
+recent_folders,
+repository,
+retention_expires_at,
+retention_period_minutes,
+runtime_constraints,
+start_url,
+state,
+stop_url,
+updated_at,
+url,
+web_url
 FROM github.codespaces.organizations
 WHERE org = '{{ org }}' -- required
 AND per_page = '{{ per_page }}'

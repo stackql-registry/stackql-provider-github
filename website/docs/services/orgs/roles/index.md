@@ -114,14 +114,49 @@ Response - list of organization roles
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="roles" /></td>
-    <td><code>array</code></td>
-    <td>The list of organization roles available to the organization.</td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer (int64)</code></td>
+    <td>The unique identifier of the role.</td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
-    <td>The total number of organization roles available to the organization.</td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name of the role.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="base_role" /></td>
+    <td><code>string</code></td>
+    <td>The system role from which this role inherits permissions. (read, triage, write, maintain, admin)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>The date and time the role was created.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="description" /></td>
+    <td><code>string</code></td>
+    <td>A short description about who this role is for or what permissions it grants.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="organization" /></td>
+    <td><code>object</code></td>
+    <td>A GitHub user. (title: Simple User)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="permissions" /></td>
+    <td><code>array</code></td>
+    <td>A list of permissions included in this role.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="source" /></td>
+    <td><code>string</code></td>
+    <td>Source answers the question, "where did this role come from?" (Organization, Enterprise, Predefined)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>The date and time the role was last updated.</td>
 </tr>
 </tbody>
 </table>
@@ -222,8 +257,15 @@ Lists the organization roles available in this organization. For more informatio
 
 ```sql
 SELECT
-roles,
-total_count
+id,
+name,
+base_role,
+created_at,
+description,
+organization,
+permissions,
+source,
+updated_at
 FROM github.orgs.roles
 WHERE org = '{{ org }}' -- required
 ;

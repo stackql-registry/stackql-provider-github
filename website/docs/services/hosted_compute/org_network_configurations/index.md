@@ -104,14 +104,39 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="network_configurations" /></td>
-    <td><code>array</code></td>
-    <td></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>string</code></td>
+    <td>The unique identifier of the network configuration. (example: 123ABC456DEF789)</td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
-    <td></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name of the network configuration. (example: my-network-configuration)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="compute_service" /></td>
+    <td><code>string</code></td>
+    <td>The hosted compute service the network configuration supports. (none, actions, codespaces)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="created_on" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>The time at which the network configuration was created, in ISO 8601 format. (example: 2024-04-26T11:31:07Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="failover_network_enabled" /></td>
+    <td><code>boolean</code></td>
+    <td>Indicates whether the failover network resource is enabled.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="failover_network_settings_ids" /></td>
+    <td><code>array</code></td>
+    <td>The unique identifier of each failover network settings in the configuration. (example: 123ABC456DEF789)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="network_settings_ids" /></td>
+    <td><code>array</code></td>
+    <td>The unique identifier of each network settings in the configuration. (example: 123ABC456DEF789)</td>
 </tr>
 </tbody>
 </table>
@@ -241,8 +266,13 @@ Lists all hosted compute network configurations configured in an organization.<b
 
 ```sql
 SELECT
-network_configurations,
-total_count
+id,
+name,
+compute_service,
+created_on,
+failover_network_enabled,
+failover_network_settings_ids,
+network_settings_ids
 FROM github.hosted_compute.org_network_configurations
 WHERE org = '{{ org }}' -- required
 AND per_page = '{{ per_page }}'

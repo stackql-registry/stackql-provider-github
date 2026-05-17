@@ -53,14 +53,19 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="labels" /></td>
-    <td><code>array</code></td>
-    <td></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer</code></td>
+    <td>Unique identifier of the label.</td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
-    <td></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>Name of the label.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="type" /></td>
+    <td><code>string</code></td>
+    <td>The type of label. Read-only labels are applied automatically when the runner is configured. (read-only, custom)</td>
 </tr>
 </tbody>
 </table>
@@ -79,14 +84,19 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="labels" /></td>
-    <td><code>array</code></td>
-    <td></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer</code></td>
+    <td>Unique identifier of the label.</td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
-    <td></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>Name of the label.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="type" /></td>
+    <td><code>string</code></td>
+    <td>The type of label. Read-only labels are applied automatically when the runner is configured. (read-only, custom)</td>
 </tr>
 </tbody>
 </table>
@@ -237,8 +247,9 @@ Lists all labels for a self-hosted runner configured in a repository.<br /><br /
 
 ```sql
 SELECT
-labels,
-total_count
+id,
+name,
+type
 FROM github.actions.runner_labels
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required
@@ -252,8 +263,9 @@ Lists all labels for a self-hosted runner configured in an organization.<br /><b
 
 ```sql
 SELECT
-labels,
-total_count
+id,
+name,
+type
 FROM github.actions.runner_labels
 WHERE org = '{{ org }}' -- required
 AND runner_id = '{{ runner_id }}' -- required

@@ -89,14 +89,24 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="branch_policies" /></td>
-    <td><code>array</code></td>
-    <td></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer</code></td>
+    <td>The unique identifier of the branch or tag policy.</td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
-    <td>The number of deployment branch policies for the environment.</td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name pattern that branches or tags must match in order to deploy to the environment. (example: release/*)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="node_id" /></td>
+    <td><code>string</code></td>
+    <td> (example: MDE2OkdhdGVCcmFuY2hQb2xpY3kzNjE0NzE=)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="type" /></td>
+    <td><code>string</code></td>
+    <td>Whether this rule targets a branch or tag. (branch, tag) (example: branch)</td>
 </tr>
 </tbody>
 </table>
@@ -235,8 +245,10 @@ Lists the deployment branch policies for an environment.<br /><br />Anyone with 
 
 ```sql
 SELECT
-branch_policies,
-total_count
+id,
+name,
+node_id,
+type
 FROM github.repos.branch_policies
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required

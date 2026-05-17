@@ -129,14 +129,24 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
-    <td></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name of the variable. (example: USERNAME)</td>
 </tr>
 <tr>
-    <td><CopyableCode code="variables" /></td>
-    <td><code>array</code></td>
-    <td></td>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>The date and time at which the variable was created, in ISO 8601 format':' YYYY-MM-DDTHH:MM:SSZ. (example: 2019-01-24T22:45:36.000Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>The date and time at which the variable was last updated, in ISO 8601 format':' YYYY-MM-DDTHH:MM:SSZ. (example: 2019-01-24T22:45:36.000Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="value" /></td>
+    <td><code>string</code></td>
+    <td>The value of the variable. (example: octocat)</td>
 </tr>
 </tbody>
 </table>
@@ -201,14 +211,24 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
-    <td></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name of the variable. (example: USERNAME)</td>
 </tr>
 <tr>
-    <td><CopyableCode code="variables" /></td>
-    <td><code>array</code></td>
-    <td></td>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>The date and time at which the variable was created, in ISO 8601 format':' YYYY-MM-DDTHH:MM:SSZ. (example: 2019-01-24T22:45:36.000Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>The date and time at which the variable was last updated, in ISO 8601 format':' YYYY-MM-DDTHH:MM:SSZ. (example: 2019-01-24T22:45:36.000Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="value" /></td>
+    <td><code>string</code></td>
+    <td>The value of the variable. (example: octocat)</td>
 </tr>
 </tbody>
 </table>
@@ -227,14 +247,34 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
-    <td></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name of the variable. (example: USERNAME)</td>
 </tr>
 <tr>
-    <td><CopyableCode code="variables" /></td>
-    <td><code>array</code></td>
-    <td></td>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>The date and time at which the variable was created, in ISO 8601 format':' YYYY-MM-DDTHH:MM:SSZ. (example: 2019-01-24T22:45:36.000Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="selected_repositories_url" /></td>
+    <td><code>string (uri)</code></td>
+    <td> (example: https://api.github.com/organizations/org/variables/USERNAME/repositories)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>The date and time at which the variable was last updated, in ISO 8601 format':' YYYY-MM-DDTHH:MM:SSZ. (example: 2019-01-24T22:45:36.000Z)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="value" /></td>
+    <td><code>string</code></td>
+    <td>The value of the variable. (example: octocat)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="visibility" /></td>
+    <td><code>string</code></td>
+    <td>Visibility of a variable (all, private, selected)</td>
 </tr>
 </tbody>
 </table>
@@ -469,8 +509,10 @@ Lists all environment variables.<br /><br />Authenticated users must have collab
 
 ```sql
 SELECT
-total_count,
-variables
+name,
+created_at,
+updated_at,
+value
 FROM github.actions.variables
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required
@@ -504,8 +546,10 @@ Lists all repository variables.<br /><br />Authenticated users must have collabo
 
 ```sql
 SELECT
-total_count,
-variables
+name,
+created_at,
+updated_at,
+value
 FROM github.actions.variables
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required
@@ -520,8 +564,12 @@ Lists all organization variables.<br /><br />Authenticated users must have colla
 
 ```sql
 SELECT
-total_count,
-variables
+name,
+created_at,
+selected_repositories_url,
+updated_at,
+value,
+visibility
 FROM github.actions.variables
 WHERE org = '{{ org }}' -- required
 AND per_page = '{{ per_page }}'

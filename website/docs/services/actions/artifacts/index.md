@@ -130,13 +130,63 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="artifacts" /></td>
-    <td><code>array</code></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer</code></td>
     <td></td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name of the artifact. (example: AdventureWorks.Framework)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="node_id" /></td>
+    <td><code>string</code></td>
+    <td> (example: MDEwOkNoZWNrU3VpdGU1)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="archive_download_url" /></td>
+    <td><code>string</code></td>
+    <td> (example: https://api.github.com/repos/github/hello-world/actions/artifacts/5/zip)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="digest" /></td>
+    <td><code>string</code></td>
+    <td>The SHA256 digest of the artifact. This field will only be populated on artifacts uploaded with upload-artifact v4 or newer. For older versions, this field will be null. (example: sha256:cfc3236bdad15b5898bca8408945c9e19e1917da8704adc20eaa618444290a8c)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="expired" /></td>
+    <td><code>boolean</code></td>
+    <td>Whether or not the artifact has expired.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="expires_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="size_in_bytes" /></td>
     <td><code>integer</code></td>
+    <td>The size in bytes of the artifact.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="url" /></td>
+    <td><code>string</code></td>
+    <td> (example: https://api.github.com/repos/github/hello-world/actions/artifacts/5)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="workflow_run" /></td>
+    <td><code>object</code></td>
     <td></td>
 </tr>
 </tbody>
@@ -156,13 +206,63 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="artifacts" /></td>
-    <td><code>array</code></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer</code></td>
     <td></td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name of the artifact. (example: AdventureWorks.Framework)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="node_id" /></td>
+    <td><code>string</code></td>
+    <td> (example: MDEwOkNoZWNrU3VpdGU1)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="archive_download_url" /></td>
+    <td><code>string</code></td>
+    <td> (example: https://api.github.com/repos/github/hello-world/actions/artifacts/5/zip)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="digest" /></td>
+    <td><code>string</code></td>
+    <td>The SHA256 digest of the artifact. This field will only be populated on artifacts uploaded with upload-artifact v4 or newer. For older versions, this field will be null. (example: sha256:cfc3236bdad15b5898bca8408945c9e19e1917da8704adc20eaa618444290a8c)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="expired" /></td>
+    <td><code>boolean</code></td>
+    <td>Whether or not the artifact has expired.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="expires_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="size_in_bytes" /></td>
     <td><code>integer</code></td>
+    <td>The size in bytes of the artifact.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="url" /></td>
+    <td><code>string</code></td>
+    <td> (example: https://api.github.com/repos/github/hello-world/actions/artifacts/5)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="workflow_run" /></td>
+    <td><code>object</code></td>
     <td></td>
 </tr>
 </tbody>
@@ -313,8 +413,18 @@ Lists artifacts for a workflow run.<br /><br />Anyone with read access to the re
 
 ```sql
 SELECT
-artifacts,
-total_count
+id,
+name,
+node_id,
+archive_download_url,
+created_at,
+digest,
+expired,
+expires_at,
+size_in_bytes,
+updated_at,
+url,
+workflow_run
 FROM github.actions.artifacts
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required
@@ -332,8 +442,18 @@ Lists all artifacts for a repository.<br /><br />Anyone with read access to the 
 
 ```sql
 SELECT
-artifacts,
-total_count
+id,
+name,
+node_id,
+archive_download_url,
+created_at,
+digest,
+expired,
+expires_at,
+size_in_bytes,
+updated_at,
+url,
+workflow_run
 FROM github.actions.artifacts
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required

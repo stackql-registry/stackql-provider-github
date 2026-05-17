@@ -67,6 +67,7 @@ npm run generate-provider -- \
   --config-path provider-dev/config/all_services.csv \
   --servers='[{"url":"https://api.github.com"}]' \
   --provider-config='{"auth":{"type":"basic","username_var":"STACKQL_GITHUB_USERNAME","password_var":"STACKQL_GITHUB_PASSWORD"}}' \
+  --naive-req-body-translate \
   --overwrite
 ```
 
@@ -218,12 +219,26 @@ const providerTitle = "GitHub Provider";
 c. Then generate docs using...
 
 ```bash
+rm -rf website/docs/*
 npm run generate-docs -- \
   --provider-name github \
   --provider-dir ./provider-dev/openapi/src/github/v00.00.00000 \
   --output-dir ./website \
   --provider-data-dir ./provider-dev/docgen/provider-data
 ```  
+
+```bash
+find website/docs/services -type f -name "*.md" -exec sed -i -E 's#\]\(/(rest/|developers/|actions/|code-security/|github/)#](https://docs.github.com/\1#g' {} +
+```
+
+```bash
+find website/docs/services -type f -name "*.md" -exec sed -i 's|(#set-github-actions-permissions-for-a-repository)|(https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository)|g; s|(#set-github-actions-permissions-for-an-organization)|(https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository)|g' {} +
+```
+
+```bash
+find website/docs/services -type f -name "*.md" -exec sed -i 's|(#create-a-self-hosted-runner-group-for-an-organization)|(https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/manage-access)|g' {} +
+```
+
 
 ## 8. Test web docs locally
 

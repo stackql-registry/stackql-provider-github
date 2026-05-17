@@ -109,14 +109,44 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="images" /></td>
-    <td><code>array</code></td>
-    <td></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer</code></td>
+    <td>The ID of the image. Use this ID for the `image` parameter when creating a new larger runner.</td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>Display name for this image. (example: CustomImage)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="latest_version" /></td>
+    <td><code>string</code></td>
+    <td>The latest image version associated with the image. (example: 1.3.0)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="platform" /></td>
+    <td><code>string</code></td>
+    <td>The operating system of the image. (example: linux-x64)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="source" /></td>
+    <td><code>string</code></td>
+    <td>The image provider. (example: custom)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="state" /></td>
+    <td><code>string</code></td>
+    <td>The number of image versions associated with the image. (example: Ready)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="total_versions_size" /></td>
     <td><code>integer</code></td>
-    <td></td>
+    <td>Total size of all the image versions in GB.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="versions_count" /></td>
+    <td><code>integer</code></td>
+    <td>The number of image versions associated with the image.</td>
 </tr>
 </tbody>
 </table>
@@ -223,8 +253,14 @@ List custom images for an organization.<br /><br />OAuth tokens and personal acc
 
 ```sql
 SELECT
-images,
-total_count
+id,
+name,
+latest_version,
+platform,
+source,
+state,
+total_versions_size,
+versions_count
 FROM github.actions.org_hosted_runner_custom_images
 WHERE org = '{{ org }}' -- required
 ;

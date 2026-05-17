@@ -164,14 +164,99 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="configurations" /></td>
-    <td><code>array</code></td>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name of the private registry configuration. (example: MAVEN_REPOSITORY_SECRET)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="account_id" /></td>
+    <td><code>string</code></td>
+    <td>The AWS account ID.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="client_id" /></td>
+    <td><code>string</code></td>
+    <td>The client ID of the Azure AD application.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="tenant_id" /></td>
+    <td><code>string</code></td>
+    <td>The tenant ID of the Azure AD application.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="identity_mapping_name" /></td>
+    <td><code>string</code></td>
+    <td>The JFrog identity mapping name.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="jfrog_oidc_provider_name" /></td>
+    <td><code>string</code></td>
+    <td>The JFrog OIDC provider name.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="role_name" /></td>
+    <td><code>string</code></td>
+    <td>The AWS IAM role name.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="audience" /></td>
+    <td><code>string</code></td>
+    <td>The OIDC audience.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="auth_type" /></td>
+    <td><code>string</code></td>
+    <td>The authentication type for the private registry. (token, username_password, oidc_azure, oidc_aws, oidc_jfrog)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="aws_region" /></td>
+    <td><code>string</code></td>
+    <td>The AWS region.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string (date-time)</code></td>
     <td></td>
 </tr>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
-    <td><code>integer</code></td>
+    <td><CopyableCode code="domain" /></td>
+    <td><code>string</code></td>
+    <td>The CodeArtifact domain.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="domain_owner" /></td>
+    <td><code>string</code></td>
+    <td>The CodeArtifact domain owner.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="registry_type" /></td>
+    <td><code>string</code></td>
+    <td>The registry type. (maven_repository, nuget_feed, goproxy_server, npm_registry, rubygems_server, cargo_registry, composer_repository, docker_registry, git_source, helm_registry, hex_organization, hex_repository, pub_repository, python_index, terraform_registry)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="replaces_base" /></td>
+    <td><code>boolean</code></td>
+    <td>Whether this private registry replaces the base registry (e.g., npmjs.org for npm, rubygems.org for rubygems). When `true`, Dependabot will only use this registry and will not fall back to the public registry. When `false` (default), Dependabot will use this registry for scoped packages but may fall back to the public registry for other packages.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string (date-time)</code></td>
     <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="url" /></td>
+    <td><code>string (uri)</code></td>
+    <td>The URL of the private registry.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="username" /></td>
+    <td><code>string</code></td>
+    <td>The username to use when authenticating with the private registry. (example: monalisa)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="visibility" /></td>
+    <td><code>string</code></td>
+    <td>Which type of organization repositories have access to the private registry. (all, private, selected)</td>
 </tr>
 </tbody>
 </table>
@@ -313,8 +398,25 @@ AND secret_name = '{{ secret_name }}' -- required
 
 ```sql
 SELECT
-configurations,
-total_count
+name,
+account_id,
+client_id,
+tenant_id,
+identity_mapping_name,
+jfrog_oidc_provider_name,
+role_name,
+audience,
+auth_type,
+aws_region,
+created_at,
+domain,
+domain_owner,
+registry_type,
+replaces_base,
+updated_at,
+url,
+username,
+visibility
 FROM github.private_registries.private_registries
 WHERE org = '{{ org }}' -- required
 AND per_page = '{{ per_page }}'

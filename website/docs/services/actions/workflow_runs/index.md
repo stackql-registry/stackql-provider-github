@@ -447,14 +447,184 @@ Response
 </thead>
 <tbody>
 <tr>
-    <td><CopyableCode code="total_count" /></td>
+    <td><CopyableCode code="id" /></td>
+    <td><code>integer</code></td>
+    <td>The ID of the workflow run.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The name of the workflow run. (example: Build)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="check_suite_id" /></td>
+    <td><code>integer</code></td>
+    <td>The ID of the associated check suite.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="check_suite_node_id" /></td>
+    <td><code>string</code></td>
+    <td>The node ID of the associated check suite. (example: MDEwOkNoZWNrU3VpdGU0Mg==)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="head_repository_id" /></td>
     <td><code>integer</code></td>
     <td></td>
 </tr>
 <tr>
-    <td><CopyableCode code="workflow_runs" /></td>
+    <td><CopyableCode code="node_id" /></td>
+    <td><code>string</code></td>
+    <td> (example: MDEwOkNoZWNrU3VpdGU1)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="workflow_id" /></td>
+    <td><code>integer</code></td>
+    <td>The ID of the parent workflow.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="actor" /></td>
+    <td><code>object</code></td>
+    <td>A GitHub user. (title: Simple User)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="artifacts_url" /></td>
+    <td><code>string</code></td>
+    <td>The URL to the artifacts for the workflow run. (example: https://api.github.com/repos/github/hello-world/actions/runs/5/rerun/artifacts)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="cancel_url" /></td>
+    <td><code>string</code></td>
+    <td>The URL to cancel the workflow run. (example: https://api.github.com/repos/github/hello-world/actions/runs/5/cancel)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="check_suite_url" /></td>
+    <td><code>string</code></td>
+    <td>The URL to the associated check suite. (example: https://api.github.com/repos/github/hello-world/check-suites/12)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="conclusion" /></td>
+    <td><code>string</code></td>
+    <td> (example: neutral)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="created_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="display_title" /></td>
+    <td><code>string</code></td>
+    <td>The event-specific title associated with the run or the run-name if set, or the value of `run-name` if it is set in the workflow. (example: Simple Workflow)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="event" /></td>
+    <td><code>string</code></td>
+    <td> (example: push)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="head_branch" /></td>
+    <td><code>string</code></td>
+    <td> (example: master)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="head_commit" /></td>
+    <td><code>object</code></td>
+    <td>A commit. (title: Simple Commit)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="head_repository" /></td>
+    <td><code>object</code></td>
+    <td>Minimal Repository (title: Minimal Repository)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="head_sha" /></td>
+    <td><code>string</code></td>
+    <td>The SHA of the head commit that points to the version of the workflow being run. (example: 009b8a3a9ccbb128af87f9b1c0f4c62e8a304f6d)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="html_url" /></td>
+    <td><code>string</code></td>
+    <td> (example: https://github.com/github/hello-world/suites/4)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="jobs_url" /></td>
+    <td><code>string</code></td>
+    <td>The URL to the jobs for the workflow run. (example: https://api.github.com/repos/github/hello-world/actions/runs/5/jobs)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="logs_url" /></td>
+    <td><code>string</code></td>
+    <td>The URL to download the logs for the workflow run. (example: https://api.github.com/repos/github/hello-world/actions/runs/5/logs)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="path" /></td>
+    <td><code>string</code></td>
+    <td>The full path of the workflow (example: octocat/octo-repo/.github/workflows/ci.yml@main)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="previous_attempt_url" /></td>
+    <td><code>string</code></td>
+    <td>The URL to the previous attempted run of this workflow, if one exists. (example: https://api.github.com/repos/github/hello-world/actions/runs/5/attempts/3)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="pull_requests" /></td>
+    <td><code>array</code></td>
+    <td>Pull requests that are open with a `head_sha` or `head_branch` that matches the workflow run. The returned pull requests do not necessarily indicate pull requests that triggered the run.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="referenced_workflows" /></td>
     <td><code>array</code></td>
     <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="repository" /></td>
+    <td><code>object</code></td>
+    <td>Minimal Repository (title: Minimal Repository)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="rerun_url" /></td>
+    <td><code>string</code></td>
+    <td>The URL to rerun the workflow run. (example: https://api.github.com/repos/github/hello-world/actions/runs/5/rerun)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="run_attempt" /></td>
+    <td><code>integer</code></td>
+    <td>Attempt number of the run, 1 for first attempt and higher if the workflow was re-run.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="run_number" /></td>
+    <td><code>integer</code></td>
+    <td>The auto incrementing run number for the workflow run.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="run_started_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td>The start time of the latest run. Resets on re-run.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="status" /></td>
+    <td><code>string</code></td>
+    <td> (example: completed)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="triggering_actor" /></td>
+    <td><code>object</code></td>
+    <td>A GitHub user. (title: Simple User)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="updated_at" /></td>
+    <td><code>string (date-time)</code></td>
+    <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="url" /></td>
+    <td><code>string</code></td>
+    <td>The URL to the workflow run. (example: https://api.github.com/repos/github/hello-world/actions/runs/5)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="workflow_url" /></td>
+    <td><code>string</code></td>
+    <td>The URL to the workflow. (example: https://api.github.com/repos/github/hello-world/actions/workflows/main.yaml)</td>
 </tr>
 </tbody>
 </table>
@@ -973,8 +1143,42 @@ List all workflow runs for a workflow. You can replace `workflow_id` with the wo
 
 ```sql
 SELECT
-total_count,
-workflow_runs
+id,
+name,
+check_suite_id,
+check_suite_node_id,
+head_repository_id,
+node_id,
+workflow_id,
+actor,
+artifacts_url,
+cancel_url,
+check_suite_url,
+conclusion,
+created_at,
+display_title,
+event,
+head_branch,
+head_commit,
+head_repository,
+head_sha,
+html_url,
+jobs_url,
+logs_url,
+path,
+previous_attempt_url,
+pull_requests,
+referenced_workflows,
+repository,
+rerun_url,
+run_attempt,
+run_number,
+run_started_at,
+status,
+triggering_actor,
+updated_at,
+url,
+workflow_url
 FROM github.actions.workflow_runs
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required
