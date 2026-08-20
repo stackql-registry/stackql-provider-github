@@ -18,7 +18,7 @@ dependency_graph service documentation.
 
 :::info[Service Summary]
 
-total resources: __3__  
+total resources: __4__  
 
 :::
 
@@ -29,6 +29,7 @@ total resources: __3__
 <a href="/services/dependency_graph/dependency_submission/">dependency_submission</a>
 </div>
 <div class="providerDocColumn">
+<a href="/services/dependency_graph/sbom_reports/">sbom_reports</a><br />
 <a href="/services/dependency_graph/sboms/">sboms</a>
 </div>
 </div>

@@ -111,7 +111,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-min_timestamp"><code>min_timestamp</code></a></td>
     <td><a href="#parameter-max_timestamp"><code>max_timestamp</code></a>, <a href="#parameter-page"><code>page</code></a>, <a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-direction"><code>direction</code></a>, <a href="#parameter-sort"><code>sort</code></a>, <a href="#parameter-subject_name_substring"><code>subject_name_substring</code></a></td>
-    <td>Get API request statistics for all subjects within an organization within a specified time frame. Subjects can be users or GitHub Apps.</td>
+    <td>Get API request statistics for all subjects within an organization within a specified time frame. Subjects can be users or GitHub Apps.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.</td>
 </tr>
 </tbody>
 </table>
@@ -182,7 +182,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_subject_stats">
 
-Get API request statistics for all subjects within an organization within a specified time frame. Subjects can be users or GitHub Apps.
+Get API request statistics for all subjects within an organization within a specified time frame. Subjects can be users or GitHub Apps.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
 
 ```sql
 SELECT

@@ -121,7 +121,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-user_id"><code>user_id</code></a>, <a href="#parameter-min_timestamp"><code>min_timestamp</code></a></td>
     <td><a href="#parameter-max_timestamp"><code>max_timestamp</code></a>, <a href="#parameter-page"><code>page</code></a>, <a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-direction"><code>direction</code></a>, <a href="#parameter-sort"><code>sort</code></a>, <a href="#parameter-actor_name_substring"><code>actor_name_substring</code></a></td>
-    <td>Get API usage statistics within an organization for a user broken down by the type of access.</td>
+    <td>Get API usage statistics within an organization for a user broken down by the type of access.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.</td>
 </tr>
 </tbody>
 </table>
@@ -197,7 +197,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_user_stats">
 
-Get API usage statistics within an organization for a user broken down by the type of access.
+Get API usage statistics within an organization for a user broken down by the type of access.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
 
 ```sql
 SELECT

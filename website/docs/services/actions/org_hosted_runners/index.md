@@ -458,8 +458,10 @@ runner_group_id = {{ runner_group_id }},
 maximum_runners = {{ maximum_runners }},
 enable_static_ip = {{ enable_static_ip }},
 size = '{{ size }}',
+image_source = '{{ image_source }}',
 image_id = '{{ image_id }}',
-image_version = '{{ image_version }}'
+image_version = '{{ image_version }}',
+image_gen = {{ image_gen }}
 WHERE 
 org = '{{ org }}' --required
 AND hosted_runner_id = '{{ hosted_runner_id }}' --required

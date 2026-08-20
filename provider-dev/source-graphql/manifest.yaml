@@ -1,0 +1,38 @@
+# GitHub GraphQL operations surfaced in the stackql github provider.
+#
+# Each entry under `ops` names a per-operation spec in ./ops/. The specs are
+# merged into the GENERATED service yamls under
+# provider-dev/openapi/src/github/<version>/services/ by
+# provider-dev/scripts/graphql_merge.mjs (run as the last step of
+# `make provider`). The merge is idempotent: it strips any previously
+# shimmed GraphQL operation before re-adding, and only touches services
+# named here.
+#
+# Selection criteria: surfaces that are GraphQL-only (no REST equivalent)
+# or where GraphQL returns data the REST endpoint cannot (e.g. stargazer
+# timestamps), and that work with an ordinary personal access token.
+#
+# `services` declares services that exist only because of GraphQL (created
+# from scratch by the merge). Ops targeting an existing REST service (users,
+# orgs, pulls, activity) are added alongside the REST resources.
+
+graphql_url: https://api.github.com/graphql
+
+services:
+  discussions:
+    title: discussions API
+    description: >-
+      GitHub Discussions for a repository - discussions, categories and
+      comments. GitHub exposes Discussions through the GraphQL API only;
+      these resources are backed by GraphQL queries.
+
+ops:
+  - ops/discussions.yaml
+  - ops/discussion_categories.yaml
+  - ops/discussion_comments.yaml
+  - ops/star_history.yaml
+  - ops/contribution_calendar.yaml
+  - ops/review_threads.yaml
+  - ops/saml_identities.yaml
+  - ops/user_sponsorships.yaml
+  - ops/org_sponsorships.yaml

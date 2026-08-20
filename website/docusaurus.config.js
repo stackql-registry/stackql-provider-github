@@ -133,6 +133,11 @@ const config = {
           // Remove this to remove the "edit this page" links.
           // editUrl: 'https://github.com/stackql/stackql-deploy/tree/main/website/',
           routeBasePath: '/', // Set the docs to be the root of the site
+          // Date-stamp every doc page ("Last updated on ..."). Timestamps come
+          // from git history, so the regenerated docs tree must be committed
+          // after each provider refresh for pages to carry the refresh date
+          // (the deploy workflow checks out with fetch-depth: 0 for this).
+          showLastUpdateTime: true,
         },
         theme: {
           customCss: './src/css/custom.css',

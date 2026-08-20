@@ -118,6 +118,9 @@ name,
 layout,
 filter,
 visible_fields,
+sort_by,
+group_by,
+vertical_group_by,
 org,
 project_number
 )
@@ -126,6 +129,9 @@ SELECT
 '{{ layout }}' /* required */,
 '{{ filter }}',
 '{{ visible_fields }}',
+'{{ sort_by }}',
+'{{ group_by }}',
+'{{ vertical_group_by }}',
 '{{ org }}',
 '{{ project_number }}'
 RETURNING
@@ -157,6 +163,9 @@ name,
 layout,
 filter,
 visible_fields,
+sort_by,
+group_by,
+vertical_group_by,
 user_id,
 project_number
 )
@@ -165,6 +174,9 @@ SELECT
 '{{ layout }}' /* required */,
 '{{ filter }}',
 '{{ visible_fields }}',
+'{{ sort_by }}',
+'{{ group_by }}',
+'{{ vertical_group_by }}',
 '{{ user_id }}',
 '{{ project_number }}'
 RETURNING
@@ -219,6 +231,21 @@ visible_fields
       description: |
         \`visible_fields\` is not applicable to \`roadmap\` layout views.
         For \`table\` and \`board\` layouts, this represents the field IDs that should be visible in the view. If not provided, the default visible fields will be used.
+    - name: sort_by
+      value:
+        - "{{ sort_by }}"
+      description: |
+        Sorting configuration for the view. Each element is a two-element array of \`[field_id, direction]\` where \`direction\` is \`"asc"\` or \`"desc"\`. Supports multiple sort criteria applied in order.
+    - name: group_by
+      value:
+        - {{ group_by }}
+      description: |
+        The field IDs to group items by (horizontal grouping). Supports a single field. The field must support grouping; fields such as \`Title\`, \`Reviewers\`, \`Linked pull requests\`, \`Sub-issues progress\`, \`Tracked by\`, and \`Tracks\` cannot be grouped on.
+    - name: vertical_group_by
+      value:
+        - {{ vertical_group_by }}
+      description: |
+        The field IDs to use as columns in \`board\` layout (vertical grouping). Supports a single field. The field must support grouping; fields such as \`Title\`, \`Reviewers\`, \`Linked pull requests\`, \`Sub-issues progress\`, \`Tracked by\`, and \`Tracks\` cannot be grouped on.
 `}</CodeBlock>
 
 </TabItem>

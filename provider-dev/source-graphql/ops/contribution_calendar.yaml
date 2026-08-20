@@ -1,0 +1,59 @@
+# A user's contribution calendar (the profile heatmap) - GraphQL only.
+service: users
+resource: contribution_calendar
+title: Contribution Calendar
+description: >-
+  A user's contribution calendar (the profile contribution graph), one row
+  per week with the daily counts as a JSON array - expand with `json_each`.
+  Defaults to the trailing year; pass `from` and `to` (ISO 8601 timestamps,
+  at most one year apart) for another window. Backed by the GitHub GraphQL
+  API (`user.contributionsCollection.contributionCalendar`).
+parameters:
+  - name: username
+    in: query
+    required: true
+    schema: { type: string }
+    description: The handle for the GitHub user account.
+  - name: from
+    in: query
+    required: false
+    schema: { type: string, format: date-time }
+    description: "Only contributions made at this time or later will be counted. ISO 8601, e.g. 2025-01-01T00:00:00Z."
+  - name: to
+    in: query
+    required: false
+    schema: { type: string, format: date-time }
+    description: "Only contributions made before and up to this time will be counted. ISO 8601."
+selection: $.data.user.contributionsCollection.contributionCalendar.weeks
+query: |
+  query {
+    user(login: "{{ .username }}") {
+      contributionsCollection{{ if or .from .to }}({{ if .from }}from: "{{ .from }}" {{ end }}{{ if .to }}to: "{{ .to }}"{{ end }}){{ end }} {
+        contributionCalendar {
+          weeks {
+            first_day: firstDay
+            contribution_days: contributionDays {
+              date
+              weekday
+              contribution_count: contributionCount
+              color
+            }
+          }
+        }
+      }
+    }
+  }
+rowSchema:
+  type: object
+  properties:
+    first_day: { type: string, format: date, description: "The date of the first day (Sunday) of the week." }
+    contribution_days:
+      type: array
+      description: "Daily entries for the week: `date`, `weekday` (0 = Sunday), `contribution_count`, `color`."
+      items:
+        type: object
+        properties:
+          date: { type: string, format: date }
+          weekday: { type: integer }
+          contribution_count: { type: integer }
+          color: { type: string }

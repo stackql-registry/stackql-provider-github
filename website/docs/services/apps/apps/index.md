@@ -123,7 +123,7 @@ Response
 <tr>
     <td><CopyableCode code="permissions" /></td>
     <td><code>object</code></td>
-    <td>The permissions granted to the user access token. (title: App Permissions)</td>
+    <td>The permissions granted to the fine-grained access token. (title: App Permissions)</td>
 </tr>
 <tr>
     <td><CopyableCode code="repositories_url" /></td>
@@ -244,7 +244,7 @@ Response
 <tr>
     <td><CopyableCode code="permissions" /></td>
     <td><code>object</code></td>
-    <td>The permissions granted to the user access token. (title: App Permissions)</td>
+    <td>The permissions granted to the fine-grained access token. (title: App Permissions)</td>
 </tr>
 <tr>
     <td><CopyableCode code="repositories_url" /></td>
@@ -365,7 +365,7 @@ Response
 <tr>
     <td><CopyableCode code="permissions" /></td>
     <td><code>object</code></td>
-    <td>The permissions granted to the user access token. (title: App Permissions)</td>
+    <td>The permissions granted to the fine-grained access token. (title: App Permissions)</td>
 </tr>
 <tr>
     <td><CopyableCode code="repositories_url" /></td>
@@ -486,7 +486,7 @@ Response
 <tr>
     <td><CopyableCode code="permissions" /></td>
     <td><code>object</code></td>
-    <td>The permissions granted to the user access token. (title: App Permissions)</td>
+    <td>The permissions granted to the fine-grained access token. (title: App Permissions)</td>
 </tr>
 <tr>
     <td><CopyableCode code="repositories_url" /></td>
@@ -607,7 +607,7 @@ The permissions the installation has are included under the `permissions` key.
 <tr>
     <td><CopyableCode code="permissions" /></td>
     <td><code>object</code></td>
-    <td>The permissions granted to the user access token. (title: App Permissions)</td>
+    <td>The permissions granted to the fine-grained access token. (title: App Permissions)</td>
 </tr>
 <tr>
     <td><CopyableCode code="repositories_url" /></td>
@@ -711,7 +711,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-installation_id"><code>installation_id</code></a></td>
     <td></td>
-    <td>Creates an installation access token that enables a GitHub App to make authenticated API requests for the app's installation on an organization or individual account. Installation tokens expire one hour from the time you create them. Using an expired token produces a status code of `401 - Unauthorized`, and requires creating a new installation token. By default the installation token has access to all repositories that the installation can access.<br /><br />Optionally, you can use the `repositories` or `repository_ids` body parameters to specify individual repositories that the installation access token can access. If you don't use `repositories` or `repository_ids` to grant access to specific repositories, the installation access token will have access to all repositories that the installation was granted access to. The installation access token cannot be granted access to repositories that the installation was not granted access to. Up to 500 repositories can be listed in this manner.<br /><br />Optionally, use the `permissions` body parameter to specify the permissions that the installation access token should have. If `permissions` is not specified, the installation access token will have all of the permissions that were granted to the app. The installation access token cannot be granted permissions that the app was not granted.<br /><br />You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.</td>
+    <td>Creates an installation access token that enables a GitHub App to make authenticated API requests for the app's installation on an organization or individual account. Installation tokens expire one hour from the time you create them. Using an expired token produces a status code of `401 - Unauthorized`, and requires creating a new installation token. By default the installation token has access to all repositories that the installation can access.<br /><br />&gt; [!NOTE]<br />&gt; Starting April 27, 2026, GitHub began a staged rollout of a stateless format (`ghs_APPID_JWT`) to all newly minted GitHub App installation tokens, making them more performant and improving the reliability of our API surface. If your application expects or relies on installation tokens being exactly 40 characters long, it may not handle this new token format correctly. You can now validate your apps and workflows using a temporary request header that lets you enable the token format on demand. For more information about the temporary header, see [the GitHub blog](https://github.blog/changelog/2026-05-15-github-app-installation-tokens-per-request-override-header).<br /><br />Optionally, you can use the `repositories` or `repository_ids` body parameters to specify individual repositories that the installation access token can access. If you don't use `repositories` or `repository_ids` to grant access to specific repositories, the installation access token will have access to all repositories that the installation was granted access to. The installation access token cannot be granted access to repositories that the installation was not granted access to. Up to 500 repositories can be listed in this manner.<br /><br />Optionally, use the `permissions` body parameter to specify the permissions that the installation access token should have. If `permissions` is not specified, the installation access token will have all of the permissions that were granted to the app. The installation access token cannot be granted permissions that the app was not granted.<br /><br />You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.</td>
 </tr>
 <tr>
     <td><a href="#delete_installation"><CopyableCode code="delete_installation" /></a></td>
@@ -1037,7 +1037,7 @@ webhook_secret
 </TabItem>
 <TabItem value="create_installation_access_token">
 
-Creates an installation access token that enables a GitHub App to make authenticated API requests for the app's installation on an organization or individual account. Installation tokens expire one hour from the time you create them. Using an expired token produces a status code of `401 - Unauthorized`, and requires creating a new installation token. By default the installation token has access to all repositories that the installation can access.<br /><br />Optionally, you can use the `repositories` or `repository_ids` body parameters to specify individual repositories that the installation access token can access. If you don't use `repositories` or `repository_ids` to grant access to specific repositories, the installation access token will have access to all repositories that the installation was granted access to. The installation access token cannot be granted access to repositories that the installation was not granted access to. Up to 500 repositories can be listed in this manner.<br /><br />Optionally, use the `permissions` body parameter to specify the permissions that the installation access token should have. If `permissions` is not specified, the installation access token will have all of the permissions that were granted to the app. The installation access token cannot be granted permissions that the app was not granted.<br /><br />You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
+Creates an installation access token that enables a GitHub App to make authenticated API requests for the app's installation on an organization or individual account. Installation tokens expire one hour from the time you create them. Using an expired token produces a status code of `401 - Unauthorized`, and requires creating a new installation token. By default the installation token has access to all repositories that the installation can access.<br /><br />&gt; [!NOTE]<br />&gt; Starting April 27, 2026, GitHub began a staged rollout of a stateless format (`ghs_APPID_JWT`) to all newly minted GitHub App installation tokens, making them more performant and improving the reliability of our API surface. If your application expects or relies on installation tokens being exactly 40 characters long, it may not handle this new token format correctly. You can now validate your apps and workflows using a temporary request header that lets you enable the token format on demand. For more information about the temporary header, see [the GitHub blog](https://github.blog/changelog/2026-05-15-github-app-installation-tokens-per-request-override-header).<br /><br />Optionally, you can use the `repositories` or `repository_ids` body parameters to specify individual repositories that the installation access token can access. If you don't use `repositories` or `repository_ids` to grant access to specific repositories, the installation access token will have access to all repositories that the installation was granted access to. The installation access token cannot be granted access to repositories that the installation was not granted access to. Up to 500 repositories can be listed in this manner.<br /><br />Optionally, use the `permissions` body parameter to specify the permissions that the installation access token should have. If `permissions` is not specified, the installation access token will have all of the permissions that were granted to the app. The installation access token cannot be granted permissions that the app was not granted.<br /><br />You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
 
 ```sql
 INSERT INTO github.apps.apps (
@@ -1086,13 +1086,14 @@ token
         List of repository IDs that the token should have access to
     - name: permissions
       description: |
-        The permissions granted to the user access token.
+        The permissions granted to the fine-grained access token.
       value:
         actions: "{{ actions }}"
         administration: "{{ administration }}"
         artifact_metadata: "{{ artifact_metadata }}"
         attestations: "{{ attestations }}"
         checks: "{{ checks }}"
+        code_quality: "{{ code_quality }}"
         codespaces: "{{ codespaces }}"
         contents: "{{ contents }}"
         dependabot_secrets: "{{ dependabot_secrets }}"

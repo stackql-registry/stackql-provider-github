@@ -18,7 +18,7 @@ secret_scanning service documentation.
 
 :::info[Service Summary]
 
-total resources: __5__  
+total resources: __7__  
 
 :::
 
@@ -27,9 +27,11 @@ total resources: __5__
 <div class="providerDocColumn">
 <a href="/services/secret_scanning/alerts/">alerts</a><br />
 <a href="/services/secret_scanning/locations/">locations</a><br />
+<a href="/services/secret_scanning/org_custom_patterns/">org_custom_patterns</a><br />
 <a href="/services/secret_scanning/org_secret_scanning_pattern_configurations/">org_secret_scanning_pattern_configurations</a>
 </div>
 <div class="providerDocColumn">
+<a href="/services/secret_scanning/repo_custom_patterns/">repo_custom_patterns</a><br />
 <a href="/services/secret_scanning/repo_push_protection_bypasses/">repo_push_protection_bypasses</a><br />
 <a href="/services/secret_scanning/repo_secret_scan_history/">repo_secret_scan_history</a>
 </div>

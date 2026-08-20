@@ -10,7 +10,7 @@ API. Designed for WSL / Linux. Same suite runs in two modes:
 
 ```bash
 # from repo root
-bash provider-dev/test/bootstrap.sh          # downloads latest stackql into provider-dev/test/.bin/
+bash provider-dev/test/bootstrap.sh          # downloads latest stackql into provider-dev/test/.bin/ (or: make smoke-test)
 python -m venv provider-dev/test/.venv
 source provider-dev/test/.venv/bin/activate
 pip install -r provider-dev/test/requirements.txt
@@ -18,8 +18,11 @@ pip install -r provider-dev/test/requirements.txt
 
 ## Run
 
+The Makefile wraps all of this (`make smoke-test`, `make smoke-test MODE=both`);
+the manual form is:
+
 ```bash
-source provider-dev/.env                     # exports STACKQL_GITHUB_USERNAME / PASSWORD
+set -a; source .env; set +a                 # repo-root .env exports STACKQL_GITHUB_USERNAME / PASSWORD
 
 # exec mode (default)
 pytest provider-dev/test/ -v

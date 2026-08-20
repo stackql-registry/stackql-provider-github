@@ -767,14 +767,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create_configuration_for_enterprise"><CopyableCode code="create_configuration_for_enterprise" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-enterprise"><code>enterprise</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-description"><code>description</code></a></td>
+    <td><a href="#parameter-enterprise"><code>enterprise</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
     <td>Creates a code security configuration in an enterprise.<br /><br />The authenticated user must be an administrator of the enterprise in order to use this endpoint.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:enterprise` scope to use this endpoint.</td>
 </tr>
 <tr>
     <td><a href="#create_configuration"><CopyableCode code="create_configuration" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-description"><code>description</code></a></td>
+    <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
     <td>Creates a code security configuration in an organization.<br /><br />The authenticated user must be an administrator or security manager for the organization to use this endpoint.<br /><br />OAuth app tokens and personal access tokens (classic) need the `write:org` scope to use this endpoint.</td>
 </tr>
@@ -1149,7 +1149,7 @@ enterprise
 )
 SELECT 
 '{{ name }}' /* required */,
-'{{ description }}' /* required */,
+'{{ description }}',
 '{{ advanced_security }}',
 '{{ code_security }}',
 '{{ dependency_graph }}',
@@ -1242,7 +1242,7 @@ org
 )
 SELECT 
 '{{ name }}' /* required */,
-'{{ description }}' /* required */,
+'{{ description }}',
 '{{ advanced_security }}',
 '{{ code_security }}',
 '{{ dependency_graph }}',

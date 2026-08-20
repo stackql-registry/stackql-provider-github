@@ -83,7 +83,7 @@ def test_env(provider_config: ProviderConfig) -> dict[str, str]:
     if missing:
         pytest.exit(
             f"Required env vars not set: {', '.join(missing)}. "
-            f"Source provider-dev/.env (or set them) before running tests.",
+            f"Source the repo-root .env (or set them) before running tests.",
             returncode=2,
         )
     # .strip() defends against CRLF in .env files sourced from WSL - a trailing

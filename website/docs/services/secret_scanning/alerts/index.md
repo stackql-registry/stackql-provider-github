@@ -109,6 +109,11 @@ Response
     <td>The REST API URL of the code locations for this alert.</td>
 </tr>
 <tr>
+    <td><CopyableCode code="metadata" /></td>
+    <td><code>array</code></td>
+    <td>A list of metadata key/value pairs associated with the secret scanning alert.</td>
+</tr>
+<tr>
     <td><CopyableCode code="multi_repo" /></td>
     <td><code>boolean</code></td>
     <td>Whether the detected secret was found in multiple repositories under the same organization or enterprise.</td>
@@ -616,14 +621,14 @@ The following methods are available for this resource:
     <td><a href="#list_alerts_for_repo"><CopyableCode code="list_alerts_for_repo" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a></td>
-    <td><a href="#parameter-state"><code>state</code></a>, <a href="#parameter-secret_type"><code>secret_type</code></a>, <a href="#parameter-exclude_secret_types"><code>exclude_secret_types</code></a>, <a href="#parameter-exclude_providers"><code>exclude_providers</code></a>, <a href="#parameter-providers"><code>providers</code></a>, <a href="#parameter-resolution"><code>resolution</code></a>, <a href="#parameter-assignee"><code>assignee</code></a>, <a href="#parameter-sort"><code>sort</code></a>, <a href="#parameter-direction"><code>direction</code></a>, <a href="#parameter-page"><code>page</code></a>, <a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-before"><code>before</code></a>, <a href="#parameter-after"><code>after</code></a>, <a href="#parameter-validity"><code>validity</code></a>, <a href="#parameter-is_publicly_leaked"><code>is_publicly_leaked</code></a>, <a href="#parameter-is_multi_repo"><code>is_multi_repo</code></a>, <a href="#parameter-hide_secret"><code>hide_secret</code></a></td>
+    <td><a href="#parameter-state"><code>state</code></a>, <a href="#parameter-secret_type"><code>secret_type</code></a>, <a href="#parameter-exclude_secret_types"><code>exclude_secret_types</code></a>, <a href="#parameter-exclude_providers"><code>exclude_providers</code></a>, <a href="#parameter-providers"><code>providers</code></a>, <a href="#parameter-resolution"><code>resolution</code></a>, <a href="#parameter-assignee"><code>assignee</code></a>, <a href="#parameter-sort"><code>sort</code></a>, <a href="#parameter-direction"><code>direction</code></a>, <a href="#parameter-page"><code>page</code></a>, <a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-before"><code>before</code></a>, <a href="#parameter-after"><code>after</code></a>, <a href="#parameter-validity"><code>validity</code></a>, <a href="#parameter-is_publicly_leaked"><code>is_publicly_leaked</code></a>, <a href="#parameter-is_multi_repo"><code>is_multi_repo</code></a>, <a href="#parameter-hide_secret"><code>hide_secret</code></a>, <a href="#parameter-is_bypassed"><code>is_bypassed</code></a>, <a href="#parameter-included_metadata"><code>included_metadata</code></a>, <a href="#parameter-owner_email_hash"><code>owner_email_hash</code></a></td>
     <td>Lists secret scanning alerts for an eligible repository, from newest to oldest.<br /><br />The authenticated user must be an administrator for the repository or for the organization that owns the repository to use this endpoint.<br /><br />OAuth app tokens and personal access tokens (classic) need the `repo` or `security_events` scope to use this endpoint. If this endpoint is only used with public repositories, the token can use the `public_repo` scope instead.</td>
 </tr>
 <tr>
     <td><a href="#list_alerts_for_org"><CopyableCode code="list_alerts_for_org" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-org"><code>org</code></a></td>
-    <td><a href="#parameter-state"><code>state</code></a>, <a href="#parameter-secret_type"><code>secret_type</code></a>, <a href="#parameter-exclude_secret_types"><code>exclude_secret_types</code></a>, <a href="#parameter-exclude_providers"><code>exclude_providers</code></a>, <a href="#parameter-providers"><code>providers</code></a>, <a href="#parameter-resolution"><code>resolution</code></a>, <a href="#parameter-assignee"><code>assignee</code></a>, <a href="#parameter-sort"><code>sort</code></a>, <a href="#parameter-direction"><code>direction</code></a>, <a href="#parameter-page"><code>page</code></a>, <a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-before"><code>before</code></a>, <a href="#parameter-after"><code>after</code></a>, <a href="#parameter-validity"><code>validity</code></a>, <a href="#parameter-is_publicly_leaked"><code>is_publicly_leaked</code></a>, <a href="#parameter-is_multi_repo"><code>is_multi_repo</code></a>, <a href="#parameter-hide_secret"><code>hide_secret</code></a></td>
+    <td><a href="#parameter-state"><code>state</code></a>, <a href="#parameter-secret_type"><code>secret_type</code></a>, <a href="#parameter-exclude_secret_types"><code>exclude_secret_types</code></a>, <a href="#parameter-exclude_providers"><code>exclude_providers</code></a>, <a href="#parameter-providers"><code>providers</code></a>, <a href="#parameter-resolution"><code>resolution</code></a>, <a href="#parameter-assignee"><code>assignee</code></a>, <a href="#parameter-sort"><code>sort</code></a>, <a href="#parameter-direction"><code>direction</code></a>, <a href="#parameter-page"><code>page</code></a>, <a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-before"><code>before</code></a>, <a href="#parameter-after"><code>after</code></a>, <a href="#parameter-validity"><code>validity</code></a>, <a href="#parameter-is_publicly_leaked"><code>is_publicly_leaked</code></a>, <a href="#parameter-is_multi_repo"><code>is_multi_repo</code></a>, <a href="#parameter-hide_secret"><code>hide_secret</code></a>, <a href="#parameter-is_bypassed"><code>is_bypassed</code></a>, <a href="#parameter-included_metadata"><code>included_metadata</code></a>, <a href="#parameter-owner_email_hash"><code>owner_email_hash</code></a></td>
     <td>Lists secret scanning alerts for eligible repositories in an organization, from newest to oldest.<br /><br />The authenticated user must be an administrator or security manager for the organization to use this endpoint.<br /><br />OAuth app tokens and personal access tokens (classic) need the `repo` or `security_events` scope to use this endpoint. If this endpoint is only used with public repositories, the token can use the `public_repo` scope instead.</td>
 </tr>
 <tr>
@@ -704,6 +709,16 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>boolean</code></td>
     <td>A boolean value representing whether or not to hide literal secrets in the results.</td>
 </tr>
+<tr id="parameter-included_metadata">
+    <td><CopyableCode code="included_metadata" /></td>
+    <td><code>string</code></td>
+    <td>A comma-separated list of metadata fields to filter alerts by. Only alerts that have all of the specified metadata fields attached will be returned. Possible values are: `owner-email`, `owner-id`, `owner-name`, `secret-id`, `secret-name`, `secret-issued-date`, `secret-expiration-date`, `organization-name`, `organization-id`, `last-used-date`, and `has-organization-access`.</td>
+</tr>
+<tr id="parameter-is_bypassed">
+    <td><CopyableCode code="is_bypassed" /></td>
+    <td><code>boolean</code></td>
+    <td>A boolean value (`true` or `false`) indicating whether to filter alerts by their push protection bypass status. When set to `true`, only alerts that were created because a push protection rule was bypassed will be returned. When set to `false`, only alerts that were not caused by a push protection bypass will be returned.</td>
+</tr>
 <tr id="parameter-is_multi_repo">
     <td><CopyableCode code="is_multi_repo" /></td>
     <td><code>boolean</code></td>
@@ -713,6 +728,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="is_publicly_leaked" /></td>
     <td><code>boolean</code></td>
     <td>A boolean value representing whether or not to filter alerts by the publicly-leaked tag being present.</td>
+</tr>
+<tr id="parameter-owner_email_hash">
+    <td><CopyableCode code="owner_email_hash" /></td>
+    <td><code>string</code></td>
+    <td>Filters alerts to only those whose attached `owner_email` metadata field matches the provided value. The value must be the lowercase hex-encoded SHA-256 hash of the email address to match (for example, the SHA-256 of `user@example.com`). Only alerts that have an `owner_email` metadata value whose SHA-256 hash equals this parameter are returned.</td>
 </tr>
 <tr id="parameter-page">
     <td><CopyableCode code="page" /></td>
@@ -784,6 +804,7 @@ has_more_locations,
 html_url,
 is_base64_encoded,
 locations_url,
+metadata,
 multi_repo,
 number,
 provider,
@@ -873,6 +894,9 @@ AND validity = '{{ validity }}'
 AND is_publicly_leaked = '{{ is_publicly_leaked }}'
 AND is_multi_repo = '{{ is_multi_repo }}'
 AND hide_secret = '{{ hide_secret }}'
+AND is_bypassed = '{{ is_bypassed }}'
+AND included_metadata = '{{ included_metadata }}'
+AND owner_email_hash = '{{ owner_email_hash }}'
 ;
 ```
 </TabItem>
@@ -935,6 +959,9 @@ AND validity = '{{ validity }}'
 AND is_publicly_leaked = '{{ is_publicly_leaked }}'
 AND is_multi_repo = '{{ is_multi_repo }}'
 AND hide_secret = '{{ hide_secret }}'
+AND is_bypassed = '{{ is_bypassed }}'
+AND included_metadata = '{{ included_metadata }}'
+AND owner_email_hash = '{{ owner_email_hash }}'
 ;
 ```
 </TabItem>
@@ -959,13 +986,15 @@ SET
 state = '{{ state }}',
 resolution = '{{ resolution }}',
 resolution_comment = '{{ resolution_comment }}',
-assignee = '{{ assignee }}'
+assignee = '{{ assignee }}',
+validity = '{{ validity }}'
 WHERE 
 owner = '{{ owner }}' --required
 AND repo = '{{ repo }}' --required
 AND alert_number = '{{ alert_number }}' --required
 AND state = '{{ state }}' --required
 AND assignee = '{{ assignee }}' --required
+AND validity = '{{ validity }}' --required
 RETURNING
 secret_type_display_name,
 assigned_to,
@@ -978,6 +1007,7 @@ has_more_locations,
 html_url,
 is_base64_encoded,
 locations_url,
+metadata,
 multi_repo,
 number,
 provider,

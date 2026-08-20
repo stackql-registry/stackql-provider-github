@@ -18,17 +18,20 @@ interactions service documentation.
 
 :::info[Service Summary]
 
-total resources: __3__  
+total resources: __6__  
 
 :::
 
 ## Resources
 <div class="row">
 <div class="providerDocColumn">
+<a href="/services/interactions/org_pull_request_creation_caps/">org_pull_request_creation_caps</a><br />
 <a href="/services/interactions/orgs/">orgs</a><br />
-<a href="/services/interactions/repos/">repos</a>
+<a href="/services/interactions/repo_pull_request_bypass_lists/">repo_pull_request_bypass_lists</a>
 </div>
 <div class="providerDocColumn">
+<a href="/services/interactions/repo_pull_request_creation_caps/">repo_pull_request_creation_caps</a><br />
+<a href="/services/interactions/repos/">repos</a><br />
 <a href="/services/interactions/user/">user</a>
 </div>
 </div>

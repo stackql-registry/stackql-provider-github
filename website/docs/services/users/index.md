@@ -18,7 +18,7 @@ users service documentation.
 
 :::info[Service Summary]
 
-total resources: __15__  
+total resources: __17__  
 
 :::
 
@@ -29,6 +29,7 @@ total resources: __15__
 <a href="/services/users/attestations_bulk_deletes/">attestations_bulk_deletes</a><br />
 <a href="/services/users/attestations_bulk_list/">attestations_bulk_list</a><br />
 <a href="/services/users/blocking/">blocking</a><br />
+<a href="/services/users/contribution_calendar/">contribution_calendar</a><br />
 <a href="/services/users/emails/">emails</a><br />
 <a href="/services/users/followers/">followers</a><br />
 <a href="/services/users/following/">following</a><br />
@@ -40,6 +41,7 @@ total resources: __15__
 <a href="/services/users/public_emails/">public_emails</a><br />
 <a href="/services/users/public_users/">public_users</a><br />
 <a href="/services/users/social_accounts/">social_accounts</a><br />
+<a href="/services/users/sponsorships/">sponsorships</a><br />
 <a href="/services/users/ssh_signing_keys/">ssh_signing_keys</a><br />
 <a href="/services/users/users/">users</a>
 </div>

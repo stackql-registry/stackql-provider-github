@@ -19,3 +19,5 @@ test_env_defaults:
   TEST_ORG: stackql
   TEST_REPO: stackql
   TEST_USER: stackql
+  TEST_CALENDAR_USER: jeffreyaven   # a user (not an org) - GraphQL user(login:)
+  TEST_PULL_NUMBER: "600"           # any PR number in TEST_REPO

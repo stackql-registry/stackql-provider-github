@@ -62,6 +62,11 @@ Response
     <td></td>
 </tr>
 <tr>
+    <td><CopyableCode code="generic_secrets_backfill_scans" /></td>
+    <td><code>array</code></td>
+    <td></td>
+</tr>
+<tr>
     <td><CopyableCode code="incremental_scans" /></td>
     <td><code>array</code></td>
     <td></td>
@@ -96,7 +101,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a></td>
     <td></td>
-    <td>Lists the latest default incremental and backfill scans by type for a repository. Scans from Copilot Secret Scanning are not included.<br /><br />&gt; [!NOTE]<br />&gt; This endpoint requires [GitHub Advanced Security](https://docs.github.com/get-started/learning-about-github/about-github-advanced-security)."<br /><br />OAuth app tokens and personal access tokens (classic) need the `repo` or `security_events` scope to use this endpoint. If this endpoint is only used with public repositories, the token can use the `public_repo` scope instead.</td>
+    <td>Lists the latest default incremental and backfill scans by type for a repository.<br /><br />&gt; [!NOTE]<br />&gt; This endpoint requires [GitHub Advanced Security](https://docs.github.com/get-started/learning-about-github/about-github-advanced-security).<br /><br />OAuth app tokens and personal access tokens (classic) need the `repo` or `security_events` scope to use this endpoint. If this endpoint is only used with public repositories, the token can use the `public_repo` scope instead.</td>
 </tr>
 </tbody>
 </table>
@@ -137,12 +142,13 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_scan_history">
 
-Lists the latest default incremental and backfill scans by type for a repository. Scans from Copilot Secret Scanning are not included.<br /><br />&gt; [!NOTE]<br />&gt; This endpoint requires [GitHub Advanced Security](https://docs.github.com/get-started/learning-about-github/about-github-advanced-security)."<br /><br />OAuth app tokens and personal access tokens (classic) need the `repo` or `security_events` scope to use this endpoint. If this endpoint is only used with public repositories, the token can use the `public_repo` scope instead.
+Lists the latest default incremental and backfill scans by type for a repository.<br /><br />&gt; [!NOTE]<br />&gt; This endpoint requires [GitHub Advanced Security](https://docs.github.com/get-started/learning-about-github/about-github-advanced-security).<br /><br />OAuth app tokens and personal access tokens (classic) need the `repo` or `security_events` scope to use this endpoint. If this endpoint is only used with public repositories, the token can use the `public_repo` scope instead.
 
 ```sql
 SELECT
 backfill_scans,
 custom_pattern_backfill_scans,
+generic_secrets_backfill_scans,
 incremental_scans,
 pattern_update_scans
 FROM github.secret_scanning.repo_secret_scan_history

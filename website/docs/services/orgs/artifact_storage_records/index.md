@@ -121,7 +121,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-subject_digest"><code>subject_digest</code></a></td>
     <td></td>
-    <td>List a collection of artifact storage records with a given subject digest that are associated with repositories owned by an organization.<br /><br />The collection of storage records returned by this endpoint is filtered according to the authenticated user's permissions; if the authenticated user cannot read a repository, the attestations associated with that repository will not be included in the response. In addition, when using a fine-grained access token the `content:read` permission is required.</td>
+    <td>List artifact storage records with a given subject digest for repositories owned by an organization.<br /><br />Results are filtered by the authenticated user's permissions; records for repositories the user cannot read are omitted. Fine-grained access tokens require the `artifact-metadata:read` permission.</td>
 </tr>
 <tr>
     <td><a href="#create_artifact_storage_record"><CopyableCode code="create_artifact_storage_record" /></a></td>
@@ -169,7 +169,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list_artifact_storage_records">
 
-List a collection of artifact storage records with a given subject digest that are associated with repositories owned by an organization.<br /><br />The collection of storage records returned by this endpoint is filtered according to the authenticated user's permissions; if the authenticated user cannot read a repository, the attestations associated with that repository will not be included in the response. In addition, when using a fine-grained access token the `content:read` permission is required.
+List artifact storage records with a given subject digest for repositories owned by an organization.<br /><br />Results are filtered by the authenticated user's permissions; records for repositories the user cannot read are omitted. Fine-grained access tokens require the `artifact-metadata:read` permission.
 
 ```sql
 SELECT

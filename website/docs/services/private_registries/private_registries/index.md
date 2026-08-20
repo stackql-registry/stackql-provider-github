@@ -88,6 +88,11 @@ The specified private registry configuration for the organization
     <td>The AWS IAM role name.</td>
 </tr>
 <tr>
+    <td><CopyableCode code="api_host" /></td>
+    <td><code>string</code></td>
+    <td>The Cloudsmith API host.</td>
+</tr>
+<tr>
     <td><CopyableCode code="audience" /></td>
     <td><code>string</code></td>
     <td>The OIDC audience.</td>
@@ -95,7 +100,7 @@ The specified private registry configuration for the organization
 <tr>
     <td><CopyableCode code="auth_type" /></td>
     <td><code>string</code></td>
-    <td>The authentication type for the private registry. (token, username_password, oidc_azure, oidc_aws, oidc_jfrog)</td>
+    <td>The authentication type for the private registry. (token, username_password, oidc_azure, oidc_aws, oidc_jfrog, oidc_cloudsmith, oidc_gcp)</td>
 </tr>
 <tr>
     <td><CopyableCode code="aws_region" /></td>
@@ -118,6 +123,11 @@ The specified private registry configuration for the organization
     <td>The CodeArtifact domain owner.</td>
 </tr>
 <tr>
+    <td><CopyableCode code="namespace" /></td>
+    <td><code>string</code></td>
+    <td>The Cloudsmith organization namespace.</td>
+</tr>
+<tr>
     <td><CopyableCode code="registry_type" /></td>
     <td><code>string</code></td>
     <td>The registry type. (maven_repository, nuget_feed, goproxy_server, npm_registry, rubygems_server, cargo_registry, composer_repository, docker_registry, git_source, helm_registry, hex_organization, hex_repository, pub_repository, python_index, terraform_registry)</td>
@@ -126,6 +136,16 @@ The specified private registry configuration for the organization
     <td><CopyableCode code="replaces_base" /></td>
     <td><code>boolean</code></td>
     <td>Whether this private registry replaces the base registry (e.g., npmjs.org for npm, rubygems.org for rubygems). When `true`, Dependabot will only use this registry and will not fall back to the public registry. When `false` (default), Dependabot will use this registry for scoped packages but may fall back to the public registry for other packages.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="service_account" /></td>
+    <td><code>string</code></td>
+    <td>The GCP service account email to impersonate. If omitted, the federated token is used directly (direct WIF).</td>
+</tr>
+<tr>
+    <td><CopyableCode code="service_slug" /></td>
+    <td><code>string</code></td>
+    <td>The Cloudsmith service account slug.</td>
 </tr>
 <tr>
     <td><CopyableCode code="updated_at" /></td>
@@ -146,6 +166,11 @@ The specified private registry configuration for the organization
     <td><CopyableCode code="visibility" /></td>
     <td><code>string</code></td>
     <td>Which type of organization repositories have access to the private registry. (all, private, selected)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="workload_identity_provider" /></td>
+    <td><code>string</code></td>
+    <td>The full resource name of the GCP Workload Identity Provider (e.g. `projects/<NUM>/locations/global/workloadIdentityPools/<POOL>/providers/<PROVIDER>`).</td>
 </tr>
 </tbody>
 </table>
@@ -199,6 +224,11 @@ Response
     <td>The AWS IAM role name.</td>
 </tr>
 <tr>
+    <td><CopyableCode code="api_host" /></td>
+    <td><code>string</code></td>
+    <td>The Cloudsmith API host.</td>
+</tr>
+<tr>
     <td><CopyableCode code="audience" /></td>
     <td><code>string</code></td>
     <td>The OIDC audience.</td>
@@ -206,7 +236,7 @@ Response
 <tr>
     <td><CopyableCode code="auth_type" /></td>
     <td><code>string</code></td>
-    <td>The authentication type for the private registry. (token, username_password, oidc_azure, oidc_aws, oidc_jfrog)</td>
+    <td>The authentication type for the private registry. (token, username_password, oidc_azure, oidc_aws, oidc_jfrog, oidc_cloudsmith, oidc_gcp)</td>
 </tr>
 <tr>
     <td><CopyableCode code="aws_region" /></td>
@@ -229,6 +259,11 @@ Response
     <td>The CodeArtifact domain owner.</td>
 </tr>
 <tr>
+    <td><CopyableCode code="namespace" /></td>
+    <td><code>string</code></td>
+    <td>The Cloudsmith organization namespace.</td>
+</tr>
+<tr>
     <td><CopyableCode code="registry_type" /></td>
     <td><code>string</code></td>
     <td>The registry type. (maven_repository, nuget_feed, goproxy_server, npm_registry, rubygems_server, cargo_registry, composer_repository, docker_registry, git_source, helm_registry, hex_organization, hex_repository, pub_repository, python_index, terraform_registry)</td>
@@ -237,6 +272,16 @@ Response
     <td><CopyableCode code="replaces_base" /></td>
     <td><code>boolean</code></td>
     <td>Whether this private registry replaces the base registry (e.g., npmjs.org for npm, rubygems.org for rubygems). When `true`, Dependabot will only use this registry and will not fall back to the public registry. When `false` (default), Dependabot will use this registry for scoped packages but may fall back to the public registry for other packages.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="service_account" /></td>
+    <td><code>string</code></td>
+    <td>The GCP service account email to impersonate. If omitted, the federated token is used directly (direct WIF).</td>
+</tr>
+<tr>
+    <td><CopyableCode code="service_slug" /></td>
+    <td><code>string</code></td>
+    <td>The Cloudsmith service account slug.</td>
 </tr>
 <tr>
     <td><CopyableCode code="updated_at" /></td>
@@ -257,6 +302,11 @@ Response
     <td><CopyableCode code="visibility" /></td>
     <td><code>string</code></td>
     <td>Which type of organization repositories have access to the private registry. (all, private, selected)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="workload_identity_provider" /></td>
+    <td><code>string</code></td>
+    <td>The full resource name of the GCP Workload Identity Provider (e.g. `projects/<NUM>/locations/global/workloadIdentityPools/<POOL>/providers/<PROVIDER>`).</td>
 </tr>
 </tbody>
 </table>
@@ -297,14 +347,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-registry_type"><code>registry_type</code></a>, <a href="#parameter-url"><code>url</code></a>, <a href="#parameter-visibility"><code>visibility</code></a></td>
     <td></td>
-    <td><br />Creates a private registry configuration with an encrypted value for an organization. Encrypt your secret using [LibSodium](https://libsodium.gitbook.io/doc/bindings_for_other_languages). For more information, see "[Encrypting secrets for the REST API](https://docs.github.com/rest/guides/encrypting-secrets-for-the-rest-api)."<br />For OIDC-based registries (`oidc_azure`, `oidc_aws`, or `oidc_jfrog`), the `encrypted_value` and `key_id` fields should be omitted.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.</td>
+    <td><br />Creates a private registry configuration with an encrypted value for an organization. Encrypt your secret using [LibSodium](https://libsodium.gitbook.io/doc/bindings_for_other_languages). For more information, see "[Encrypting secrets for the REST API](https://docs.github.com/rest/guides/encrypting-secrets-for-the-rest-api)."<br />For OIDC-based registries (`oidc_azure`, `oidc_aws`, `oidc_jfrog`, `oidc_cloudsmith`, or `oidc_gcp`), the `encrypted_value` and `key_id` fields should be omitted.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.</td>
 </tr>
 <tr>
     <td><a href="#update_org_private_registry"><CopyableCode code="update_org_private_registry" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-secret_name"><code>secret_name</code></a></td>
     <td></td>
-    <td><br />Updates a private registry configuration with an encrypted value for an organization. Encrypt your secret using [LibSodium](https://libsodium.gitbook.io/doc/bindings_for_other_languages). For more information, see "[Encrypting secrets for the REST API](https://docs.github.com/rest/guides/encrypting-secrets-for-the-rest-api)."<br />For OIDC-based registries (`oidc_azure`, `oidc_aws`, or `oidc_jfrog`), the `encrypted_value` and `key_id` fields should be omitted.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.</td>
+    <td><br />Updates a private registry configuration with an encrypted value for an organization. Encrypt your secret using [LibSodium](https://libsodium.gitbook.io/doc/bindings_for_other_languages). For more information, see "[Encrypting secrets for the REST API](https://docs.github.com/rest/guides/encrypting-secrets-for-the-rest-api)."<br />For OIDC-based registries (`oidc_azure`, `oidc_aws`, `oidc_jfrog`, `oidc_cloudsmith`, or `oidc_gcp`), the `encrypted_value` and `key_id` fields should be omitted.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.</td>
 </tr>
 <tr>
     <td><a href="#delete_org_private_registry"><CopyableCode code="delete_org_private_registry" /></a></td>
@@ -374,18 +424,23 @@ tenant_id,
 identity_mapping_name,
 jfrog_oidc_provider_name,
 role_name,
+api_host,
 audience,
 auth_type,
 aws_region,
 created_at,
 domain,
 domain_owner,
+namespace,
 registry_type,
 replaces_base,
+service_account,
+service_slug,
 updated_at,
 url,
 username,
-visibility
+visibility,
+workload_identity_provider
 FROM github.private_registries.private_registries
 WHERE org = '{{ org }}' -- required
 AND secret_name = '{{ secret_name }}' -- required
@@ -405,18 +460,23 @@ tenant_id,
 identity_mapping_name,
 jfrog_oidc_provider_name,
 role_name,
+api_host,
 audience,
 auth_type,
 aws_region,
 created_at,
 domain,
 domain_owner,
+namespace,
 registry_type,
 replaces_base,
+service_account,
+service_slug,
 updated_at,
 url,
 username,
-visibility
+visibility,
+workload_identity_provider
 FROM github.private_registries.private_registries
 WHERE org = '{{ org }}' -- required
 AND per_page = '{{ per_page }}'
@@ -438,7 +498,7 @@ AND page = '{{ page }}'
 >
 <TabItem value="create_org_private_registry">
 
-<br />Creates a private registry configuration with an encrypted value for an organization. Encrypt your secret using [LibSodium](https://libsodium.gitbook.io/doc/bindings_for_other_languages). For more information, see "[Encrypting secrets for the REST API](https://docs.github.com/rest/guides/encrypting-secrets-for-the-rest-api)."<br />For OIDC-based registries (`oidc_azure`, `oidc_aws`, or `oidc_jfrog`), the `encrypted_value` and `key_id` fields should be omitted.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+<br />Creates a private registry configuration with an encrypted value for an organization. Encrypt your secret using [LibSodium](https://libsodium.gitbook.io/doc/bindings_for_other_languages). For more information, see "[Encrypting secrets for the REST API](https://docs.github.com/rest/guides/encrypting-secrets-for-the-rest-api)."<br />For OIDC-based registries (`oidc_azure`, `oidc_aws`, `oidc_jfrog`, `oidc_cloudsmith`, or `oidc_gcp`), the `encrypted_value` and `key_id` fields should be omitted.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
 
 ```sql
 INSERT INTO github.private_registries.private_registries (
@@ -461,6 +521,11 @@ domain_owner,
 jfrog_oidc_provider_name,
 audience,
 identity_mapping_name,
+namespace,
+service_slug,
+api_host,
+workload_identity_provider,
+service_account,
 org
 )
 SELECT 
@@ -483,6 +548,11 @@ SELECT
 '{{ jfrog_oidc_provider_name }}',
 '{{ audience }}',
 '{{ identity_mapping_name }}',
+'{{ namespace }}',
+'{{ service_slug }}',
+'{{ api_host }}',
+'{{ workload_identity_provider }}',
+'{{ service_account }}',
 '{{ org }}'
 RETURNING
 name,
@@ -492,19 +562,24 @@ tenant_id,
 identity_mapping_name,
 jfrog_oidc_provider_name,
 role_name,
+api_host,
 audience,
 auth_type,
 aws_region,
 created_at,
 domain,
 domain_owner,
+namespace,
 registry_type,
 replaces_base,
 selected_repository_ids,
+service_account,
+service_slug,
 updated_at,
 url,
 username,
-visibility
+visibility,
+workload_identity_provider
 ;
 ```
 </TabItem>
@@ -555,8 +630,8 @@ visibility
     - name: auth_type
       value: "{{ auth_type }}"
       description: |
-        The authentication type for the private registry. Defaults to \`token\` if not specified. Use \`oidc_azure\`, \`oidc_aws\`, or \`oidc_jfrog\` for OIDC authentication.
-      valid_values: ['token', 'username_password', 'oidc_azure', 'oidc_aws', 'oidc_jfrog']
+        The authentication type for the private registry. Defaults to \`token\` if not specified. Use \`oidc_azure\`, \`oidc_aws\`, \`oidc_jfrog\`, \`oidc_cloudsmith\`, or \`oidc_gcp\` for OIDC authentication.
+      valid_values: ['token', 'username_password', 'oidc_azure', 'oidc_aws', 'oidc_jfrog', 'oidc_cloudsmith', 'oidc_gcp']
     - name: tenant_id
       value: "{{ tenant_id }}"
       description: |
@@ -592,11 +667,31 @@ visibility
     - name: audience
       value: "{{ audience }}"
       description: |
-        The OIDC audience. Optional for \`oidc_aws\` and \`oidc_jfrog\` auth types.
+        The OIDC audience. Optional for \`oidc_aws\`, \`oidc_jfrog\`, and \`oidc_gcp\`, and required for \`oidc_cloudsmith\` auth types.
     - name: identity_mapping_name
       value: "{{ identity_mapping_name }}"
       description: |
         The JFrog identity mapping name. Optional for \`oidc_jfrog\` auth type.
+    - name: namespace
+      value: "{{ namespace }}"
+      description: |
+        The Cloudsmith organization namespace. Required when \`auth_type\` is \`oidc_cloudsmith\`.
+    - name: service_slug
+      value: "{{ service_slug }}"
+      description: |
+        The Cloudsmith service account slug. Required when \`auth_type\` is \`oidc_cloudsmith\`.
+    - name: api_host
+      value: "{{ api_host }}"
+      description: |
+        The Cloudsmith API host. Optional for \`oidc_cloudsmith\` auth type. If omitted, \`api.cloudsmith.io\` is used by default.
+    - name: workload_identity_provider
+      value: "{{ workload_identity_provider }}"
+      description: |
+        The full resource name of the GCP Workload Identity Provider (e.g. \`projects/<NUM>/locations/global/workloadIdentityPools/<POOL>/providers/<PROVIDER>\`). Required when \`auth_type\` is \`oidc_gcp\`.
+    - name: service_account
+      value: "{{ service_account }}"
+      description: |
+        The GCP service account email to impersonate. Optional for \`oidc_gcp\` auth type. If omitted, the federated token is used directly (direct WIF).
 `}</CodeBlock>
 
 </TabItem>
@@ -613,7 +708,7 @@ visibility
 >
 <TabItem value="update_org_private_registry">
 
-<br />Updates a private registry configuration with an encrypted value for an organization. Encrypt your secret using [LibSodium](https://libsodium.gitbook.io/doc/bindings_for_other_languages). For more information, see "[Encrypting secrets for the REST API](https://docs.github.com/rest/guides/encrypting-secrets-for-the-rest-api)."<br />For OIDC-based registries (`oidc_azure`, `oidc_aws`, or `oidc_jfrog`), the `encrypted_value` and `key_id` fields should be omitted.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+<br />Updates a private registry configuration with an encrypted value for an organization. Encrypt your secret using [LibSodium](https://libsodium.gitbook.io/doc/bindings_for_other_languages). For more information, see "[Encrypting secrets for the REST API](https://docs.github.com/rest/guides/encrypting-secrets-for-the-rest-api)."<br />For OIDC-based registries (`oidc_azure`, `oidc_aws`, `oidc_jfrog`, `oidc_cloudsmith`, or `oidc_gcp`), the `encrypted_value` and `key_id` fields should be omitted.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
 
 ```sql
 UPDATE github.private_registries.private_registries
@@ -636,7 +731,12 @@ domain = '{{ domain }}',
 domain_owner = '{{ domain_owner }}',
 jfrog_oidc_provider_name = '{{ jfrog_oidc_provider_name }}',
 audience = '{{ audience }}',
-identity_mapping_name = '{{ identity_mapping_name }}'
+identity_mapping_name = '{{ identity_mapping_name }}',
+namespace = '{{ namespace }}',
+service_slug = '{{ service_slug }}',
+api_host = '{{ api_host }}',
+workload_identity_provider = '{{ workload_identity_provider }}',
+service_account = '{{ service_account }}'
 WHERE 
 org = '{{ org }}' --required
 AND secret_name = '{{ secret_name }}' --required;

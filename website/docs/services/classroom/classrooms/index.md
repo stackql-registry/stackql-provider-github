@@ -138,14 +138,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-classroom_id"><code>classroom_id</code></a></td>
     <td></td>
-    <td>Gets a GitHub Classroom classroom for the current user. Classroom will only be returned if the current user is an administrator of the GitHub Classroom.</td>
+    <td>&gt; [!WARNING]<br />&gt; **Closing down notice:** This operation is closing down and will be removed on August 28, 2026.<br />&gt; For more information, see the [GitHub Classroom sunset notice](https://gh.io/classroom-sunset).<br /><br />Gets a GitHub Classroom classroom for the current user. Classroom will only be returned if the current user is an administrator of the GitHub Classroom.</td>
 </tr>
 <tr>
     <td><a href="#list_classrooms"><CopyableCode code="list_classrooms" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td></td>
     <td><a href="#parameter-page"><code>page</code></a>, <a href="#parameter-per_page"><code>per_page</code></a></td>
-    <td>Lists GitHub Classroom classrooms for the current user. Classrooms will only be returned if the current user is an administrator of one or more GitHub Classrooms.</td>
+    <td>&gt; [!WARNING]<br />&gt; **Closing down notice:** This operation is closing down and will be removed on August 28, 2026.<br />&gt; For more information, see the [GitHub Classroom sunset notice](https://gh.io/classroom-sunset).<br /><br />Lists GitHub Classroom classrooms for the current user. Classrooms will only be returned if the current user is an administrator of one or more GitHub Classrooms.</td>
 </tr>
 </tbody>
 </table>
@@ -192,7 +192,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_a_classroom">
 
-Gets a GitHub Classroom classroom for the current user. Classroom will only be returned if the current user is an administrator of the GitHub Classroom.
+&gt; [!WARNING]<br />&gt; **Closing down notice:** This operation is closing down and will be removed on August 28, 2026.<br />&gt; For more information, see the [GitHub Classroom sunset notice](https://gh.io/classroom-sunset).<br /><br />Gets a GitHub Classroom classroom for the current user. Classroom will only be returned if the current user is an administrator of the GitHub Classroom.
 
 ```sql
 SELECT
@@ -208,7 +208,7 @@ WHERE classroom_id = '{{ classroom_id }}' -- required
 </TabItem>
 <TabItem value="list_classrooms">
 
-Lists GitHub Classroom classrooms for the current user. Classrooms will only be returned if the current user is an administrator of one or more GitHub Classrooms.
+&gt; [!WARNING]<br />&gt; **Closing down notice:** This operation is closing down and will be removed on August 28, 2026.<br />&gt; For more information, see the [GitHub Classroom sunset notice](https://gh.io/classroom-sunset).<br /><br />Lists GitHub Classroom classrooms for the current user. Classrooms will only be returned if the current user is an administrator of one or more GitHub Classrooms.
 
 ```sql
 SELECT

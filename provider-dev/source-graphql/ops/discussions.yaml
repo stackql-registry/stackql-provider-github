@@ -1,0 +1,116 @@
+# GitHub Discussions in a repository (GraphQL only - no REST equivalent).
+service: discussions
+resource: discussions
+title: Discussions
+description: >-
+  Discussions in a repository, newest first. Backed by the GitHub GraphQL
+  API (`repository.discussions`); GitHub Discussions are not available
+  through the REST API. Use `discussion_comments` for the comment thread
+  of a single discussion.
+parameters:
+  - name: owner
+    in: query
+    required: true
+    schema: { type: string }
+    description: The account owner of the repository.
+  - name: repo
+    in: query
+    required: true
+    schema: { type: string }
+    description: The name of the repository.
+selection: $.data.repository.discussions.nodes
+cursor:
+  strategy: page_info
+  jsonPath: $.data.repository.discussions.pageInfo.endCursor
+  terminateOnJsonPath: $.data.repository.discussions.pageInfo.hasNextPage
+query: |
+  query {
+    repository(owner: "{{ .owner }}", name: "{{ .repo }}") {
+      discussions(first: 100, orderBy: {field: CREATED_AT, direction: DESC}{{ .cursor }}) {
+        pageInfo { endCursor hasNextPage }
+        nodes {
+          id
+          number
+          title
+          url
+          body
+          created_at: createdAt
+          updated_at: updatedAt
+          published_at: publishedAt
+          last_edited_at: lastEditedAt
+          locked
+          closed
+          closed_at: closedAt
+          is_answered: isAnswered
+          answer_chosen_at: answerChosenAt
+          upvote_count: upvoteCount
+          author { login }
+          category { id name slug }
+          comments { total_count: totalCount }
+          reactions { total_count: totalCount }
+          labels(first: 20) { nodes { name } }
+          answer { id url author { login } }
+        }
+      }
+    }
+  }
+rowSchema:
+  type: object
+  properties:
+    id: { type: string, description: "The GraphQL node ID of the discussion." }
+    number: { type: integer, description: "The discussion number, unique within the repository." }
+    title: { type: string }
+    url: { type: string, description: "The HTML URL of the discussion." }
+    body: { type: string, description: "The discussion body as Markdown." }
+    created_at: { type: string, format: date-time }
+    updated_at: { type: string, format: date-time }
+    published_at: { type: string, format: date-time }
+    last_edited_at: { type: string, format: date-time }
+    locked: { type: boolean }
+    closed: { type: boolean }
+    closed_at: { type: string, format: date-time }
+    is_answered: { type: boolean, description: "Whether an answer has been chosen (answerable categories only)." }
+    answer_chosen_at: { type: string, format: date-time }
+    upvote_count: { type: integer }
+    author:
+      type: object
+      description: "The author of the discussion (`login`)."
+      properties:
+        login: { type: string }
+    category:
+      type: object
+      description: "The discussion category (`id`, `name`, `slug`)."
+      properties:
+        id: { type: string }
+        name: { type: string }
+        slug: { type: string }
+    comments:
+      type: object
+      description: "Comment counts (`total_count`)."
+      properties:
+        total_count: { type: integer }
+    reactions:
+      type: object
+      description: "Reaction counts (`total_count`)."
+      properties:
+        total_count: { type: integer }
+    labels:
+      type: object
+      description: "Up to 20 labels applied to the discussion (`nodes[].name`)."
+      properties:
+        nodes:
+          type: array
+          items:
+            type: object
+            properties:
+              name: { type: string }
+    answer:
+      type: object
+      description: "The chosen answer comment, if any (`id`, `url`, `author.login`)."
+      properties:
+        id: { type: string }
+        url: { type: string }
+        author:
+          type: object
+          properties:
+            login: { type: string }

@@ -166,7 +166,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-classroom_id"><code>classroom_id</code></a></td>
     <td><a href="#parameter-page"><code>page</code></a>, <a href="#parameter-per_page"><code>per_page</code></a></td>
-    <td>Lists GitHub Classroom assignments for a classroom. Assignments will only be returned if the current user is an administrator of the GitHub Classroom.</td>
+    <td>&gt; [!WARNING]<br />&gt; **Closing down notice:** This operation is closing down and will be removed on August 28, 2026.<br />&gt; For more information, see the [GitHub Classroom sunset notice](https://gh.io/classroom-sunset).<br /><br />Lists GitHub Classroom assignments for a classroom. Assignments will only be returned if the current user is an administrator of the GitHub Classroom.</td>
 </tr>
 </tbody>
 </table>
@@ -212,7 +212,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list_assignments_for_a_classroom">
 
-Lists GitHub Classroom assignments for a classroom. Assignments will only be returned if the current user is an administrator of the GitHub Classroom.
+&gt; [!WARNING]<br />&gt; **Closing down notice:** This operation is closing down and will be removed on August 28, 2026.<br />&gt; For more information, see the [GitHub Classroom sunset notice](https://gh.io/classroom-sunset).<br /><br />Lists GitHub Classroom assignments for a classroom. Assignments will only be returned if the current user is an administrator of the GitHub Classroom.
 
 ```sql
 SELECT

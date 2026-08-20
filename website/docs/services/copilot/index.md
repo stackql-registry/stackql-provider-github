@@ -18,33 +18,38 @@ copilot service documentation.
 
 :::info[Service Summary]
 
-total resources: __19__  
+total resources: __24__  
 
 :::
 
 ## Resources
 <div class="row">
 <div class="providerDocColumn">
-<a href="/services/copilot/copilot_metrics/">copilot_metrics</a><br />
+<a href="/services/copilot/coding_agent_policy/">coding_agent_policy</a><br />
+<a href="/services/copilot/coding_agent_policy_orgs/">coding_agent_policy_orgs</a><br />
 <a href="/services/copilot/copilot_one_day_usage_metrics/">copilot_one_day_usage_metrics</a><br />
+<a href="/services/copilot/copilot_repos_one_day_report/">copilot_repos_one_day_report</a><br />
 <a href="/services/copilot/copilot_usage_metrics/">copilot_usage_metrics</a><br />
 <a href="/services/copilot/copilot_user_one_day_usage_metrics/">copilot_user_one_day_usage_metrics</a><br />
+<a href="/services/copilot/copilot_user_teams_one_day_report/">copilot_user_teams_one_day_report</a><br />
 <a href="/services/copilot/copilot_user_usage_metrics/">copilot_user_usage_metrics</a><br />
 <a href="/services/copilot/org_coding_agent_permissions/">org_coding_agent_permissions</a><br />
 <a href="/services/copilot/org_coding_agent_repos/">org_coding_agent_repos</a><br />
 <a href="/services/copilot/org_content_exclusion/">org_content_exclusion</a><br />
-<a href="/services/copilot/org_copilot_metrics/">org_copilot_metrics</a><br />
 <a href="/services/copilot/org_copilot_one_day_usage_metrics/">org_copilot_one_day_usage_metrics</a>
 </div>
 <div class="providerDocColumn">
+<a href="/services/copilot/org_copilot_repos_one_day_report/">org_copilot_repos_one_day_report</a><br />
 <a href="/services/copilot/org_copilot_seats_teams/">org_copilot_seats_teams</a><br />
 <a href="/services/copilot/org_copilot_seats_users/">org_copilot_seats_users</a><br />
 <a href="/services/copilot/org_copilot_usage_metrics/">org_copilot_usage_metrics</a><br />
 <a href="/services/copilot/org_copilot_user_one_day_usage_metrics/">org_copilot_user_one_day_usage_metrics</a><br />
+<a href="/services/copilot/org_copilot_user_teams_one_day_report/">org_copilot_user_teams_one_day_report</a><br />
 <a href="/services/copilot/org_copilot_user_usage_metrics/">org_copilot_user_usage_metrics</a><br />
 <a href="/services/copilot/org_details/">org_details</a><br />
 <a href="/services/copilot/org_member_copilot_seats/">org_member_copilot_seats</a><br />
 <a href="/services/copilot/org_seats/">org_seats</a><br />
+<a href="/services/copilot/repo_cloud_agent_configuration/">repo_cloud_agent_configuration</a><br />
 <a href="/services/copilot/user_seats/">user_seats</a>
 </div>
 </div>

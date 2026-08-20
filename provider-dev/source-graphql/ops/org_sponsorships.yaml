@@ -1,0 +1,67 @@
+# GitHub Sponsors sponsorships received by a org - GraphQL only.
+service: orgs
+resource: sponsorships
+title: Sponsorships
+description: >-
+  GitHub Sponsors sponsorships where the org is the maintainer being
+  sponsored. Backed by the GitHub GraphQL API
+  (`organization.sponsorshipsAsMaintainer`). Private sponsorships are only
+  visible to the sponsored account.
+parameters:
+  - name: org
+    in: query
+    required: true
+    schema: { type: string }
+    description: The organization name.
+selection: $.data.organization.sponsorshipsAsMaintainer.nodes
+cursor:
+  strategy: page_info
+  jsonPath: $.data.organization.sponsorshipsAsMaintainer.pageInfo.endCursor
+  terminateOnJsonPath: $.data.organization.sponsorshipsAsMaintainer.pageInfo.hasNextPage
+query: |
+  query {
+    organization(login: "{{ .org }}") {
+      sponsorshipsAsMaintainer(first: 100, includePrivate: true{{ .cursor }}) {
+        pageInfo { endCursor hasNextPage }
+        nodes {
+          id
+          created_at: createdAt
+          is_one_time_payment: isOneTimePayment
+          is_active: isActive
+          privacy_level: privacyLevel
+          tier {
+            name
+            monthly_price_in_dollars: monthlyPriceInDollars
+            monthly_price_in_cents: monthlyPriceInCents
+            is_one_time: isOneTime
+          }
+          sponsor_entity: sponsorEntity {
+            ... on User { login name }
+            ... on Organization { login name }
+          }
+        }
+      }
+    }
+  }
+rowSchema:
+  type: object
+  properties:
+    id: { type: string, description: "The GraphQL node ID of the sponsorship." }
+    created_at: { type: string, format: date-time }
+    is_one_time_payment: { type: boolean }
+    is_active: { type: boolean }
+    privacy_level: { type: string, description: "PUBLIC or PRIVATE." }
+    tier:
+      type: object
+      description: "The sponsorship tier (`name`, `monthly_price_in_dollars`, `monthly_price_in_cents`, `is_one_time`)."
+      properties:
+        name: { type: string }
+        monthly_price_in_dollars: { type: integer }
+        monthly_price_in_cents: { type: integer }
+        is_one_time: { type: boolean }
+    sponsor_entity:
+      type: object
+      description: "The sponsoring user or organization (`login`, `name`)."
+      properties:
+        login: { type: string }
+        name: { type: string }

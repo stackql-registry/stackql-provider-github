@@ -74,7 +74,7 @@ Response
 <tr>
     <td><CopyableCode code="data_type" /></td>
     <td><code>string</code></td>
-    <td>The data type of the issue field. (text, date, single_select, number)</td>
+    <td>The data type of the issue field. (text, date, single_select, multi_select, number)</td>
 </tr>
 <tr>
     <td><CopyableCode code="description" /></td>
@@ -84,7 +84,7 @@ Response
 <tr>
     <td><CopyableCode code="options" /></td>
     <td><code>array</code></td>
-    <td>Available options for single select fields.</td>
+    <td>Available options for single select and multi select fields.</td>
 </tr>
 <tr>
     <td><CopyableCode code="updated_at" /></td>
@@ -266,7 +266,7 @@ visibility
       value: "{{ data_type }}"
       description: |
         The data type of the issue field.
-      valid_values: ['text', 'date', 'single_select', 'number']
+      valid_values: ['text', 'date', 'single_select', 'multi_select', 'number']
     - name: visibility
       value: "{{ visibility }}"
       description: |
@@ -274,7 +274,7 @@ visibility
       valid_values: ['organization_members_only', 'all']
     - name: options
       description: |
-        Options for single select fields. Required when data_type is 'single_select'.
+        Options for select fields. Required when data_type is 'single_select' or 'multi_select'.
       value:
         - name: "{{ name }}"
           description: "{{ description }}"

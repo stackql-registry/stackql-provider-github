@@ -396,8 +396,7 @@ user
       value: {{ issue_number }}
       description: Required parameter for the assignees resource.
     - name: assignees
-      value:
-        - "{{ assignees }}"
+      value: "{{ assignees }}"
       description: |
         Usernames of people to assign this issue to. _NOTE: Only users with push access can add assignees to an issue. Assignees are silently ignored otherwise._
 `}</CodeBlock>

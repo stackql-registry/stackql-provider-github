@@ -77,6 +77,11 @@ Response
     <td>Unique identifier of the organization to which this team belongs</td>
 </tr>
 <tr>
+    <td><CopyableCode code="access_source" /></td>
+    <td><code>string</code></td>
+    <td>How the team's access to the repository was granted. This property is only present when the team is returned in a repository context, such as `GET /repos/&#123;owner&#125;/&#123;repo&#125;/teams`. (direct, organization, enterprise) (example: direct)</td>
+</tr>
+<tr>
     <td><CopyableCode code="description" /></td>
     <td><code>string</code></td>
     <td></td>
@@ -221,6 +226,7 @@ name,
 enterprise_id,
 node_id,
 organization_id,
+access_source,
 description,
 html_url,
 members_url,

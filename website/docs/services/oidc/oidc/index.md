@@ -147,7 +147,8 @@ Creates or updates the customization template for an OpenID Connect (OIDC) subje
 ```sql
 REPLACE github.oidc.oidc
 SET 
-include_claim_keys = '{{ include_claim_keys }}'
+include_claim_keys = '{{ include_claim_keys }}',
+use_immutable_subject = {{ use_immutable_subject }}
 WHERE 
 org = '{{ org }}' --required;
 ```

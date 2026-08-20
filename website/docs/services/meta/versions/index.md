@@ -51,6 +51,11 @@ Response
     </tr>
 </thead>
 <tbody>
+<tr>
+    <td><CopyableCode code="meta/get_all_version" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
 </tbody>
 </table>
 </TabItem>
@@ -111,7 +116,7 @@ Get all supported GitHub API versions.
 
 ```sql
 SELECT
-*
+meta/get_all_version
 FROM github.meta.versions
 ;
 ```

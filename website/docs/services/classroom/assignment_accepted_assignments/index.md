@@ -116,7 +116,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-assignment_id"><code>assignment_id</code></a></td>
     <td><a href="#parameter-page"><code>page</code></a>, <a href="#parameter-per_page"><code>per_page</code></a></td>
-    <td>Lists any assignment repositories that have been created by students accepting a GitHub Classroom assignment. Accepted assignments will only be returned if the current user is an administrator of the GitHub Classroom for the assignment.</td>
+    <td>&gt; [!WARNING]<br />&gt; **Closing down notice:** This operation is closing down and will be removed on August 28, 2026.<br />&gt; For more information, see the [GitHub Classroom sunset notice](https://gh.io/classroom-sunset).<br /><br />Lists any assignment repositories that have been created by students accepting a GitHub Classroom assignment. Accepted assignments will only be returned if the current user is an administrator of the GitHub Classroom for the assignment.</td>
 </tr>
 </tbody>
 </table>
@@ -162,7 +162,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list_accepted_assignments_for_an_assignment">
 
-Lists any assignment repositories that have been created by students accepting a GitHub Classroom assignment. Accepted assignments will only be returned if the current user is an administrator of the GitHub Classroom for the assignment.
+&gt; [!WARNING]<br />&gt; **Closing down notice:** This operation is closing down and will be removed on August 28, 2026.<br />&gt; For more information, see the [GitHub Classroom sunset notice](https://gh.io/classroom-sunset).<br /><br />Lists any assignment repositories that have been created by students accepting a GitHub Classroom assignment. Accepted assignments will only be returned if the current user is an administrator of the GitHub Classroom for the assignment.
 
 ```sql
 SELECT

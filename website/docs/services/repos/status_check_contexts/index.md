@@ -51,6 +51,11 @@ Response
     </tr>
 </thead>
 <tbody>
+<tr>
+    <td><CopyableCode code="repos/get_all_status_check_context" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
 </tbody>
 </table>
 </TabItem>
@@ -147,7 +152,7 @@ Protected branches are available in public repositories with GitHub Free and Git
 
 ```sql
 SELECT
-*
+repos/get_all_status_check_context
 FROM github.repos.status_check_contexts
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required
@@ -183,6 +188,8 @@ SELECT
 '{{ owner }}',
 '{{ repo }}',
 '{{ branch }}'
+RETURNING
+repos/add_status_check_context
 ;
 ```
 </TabItem>
@@ -231,7 +238,9 @@ WHERE
 owner = '{{ owner }}' --required
 AND repo = '{{ repo }}' --required
 AND branch = '{{ branch }}' --required
-AND contexts = '{{ contexts }}' --required;
+AND contexts = '{{ contexts }}' --required
+RETURNING
+repos/set_status_check_context;
 ```
 </TabItem>
 </Tabs>

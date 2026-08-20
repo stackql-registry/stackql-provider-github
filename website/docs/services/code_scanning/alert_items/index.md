@@ -85,7 +85,7 @@ Response
 <tr>
     <td><CopyableCode code="dismissed_reason" /></td>
     <td><code>string</code></td>
-    <td>**Required when the state is dismissed.** The reason for dismissing or closing the alert. (false positive, won't fix, used in tests)</td>
+    <td>**Required when the state is dismissed.** The reason for dismissing or closing the alert. (false positive, won't fix, used in tests, mitigated)</td>
 </tr>
 <tr>
     <td><CopyableCode code="fixed_at" /></td>
@@ -186,7 +186,7 @@ Response
 <tr>
     <td><CopyableCode code="dismissed_reason" /></td>
     <td><code>string</code></td>
-    <td>**Required when the state is dismissed.** The reason for dismissing or closing the alert. (false positive, won't fix, used in tests)</td>
+    <td>**Required when the state is dismissed.** The reason for dismissing or closing the alert. (false positive, won't fix, used in tests, mitigated)</td>
 </tr>
 <tr>
     <td><CopyableCode code="fixed_at" /></td>

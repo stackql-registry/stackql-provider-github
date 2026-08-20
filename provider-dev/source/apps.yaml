@@ -624,6 +624,9 @@ paths:
       description: |-
         Creates an installation access token that enables a GitHub App to make authenticated API requests for the app's installation on an organization or individual account. Installation tokens expire one hour from the time you create them. Using an expired token produces a status code of `401 - Unauthorized`, and requires creating a new installation token. By default the installation token has access to all repositories that the installation can access.
 
+        > [!NOTE]
+        > Starting April 27, 2026, GitHub began a staged rollout of a stateless format (`ghs_APPID_JWT`) to all newly minted GitHub App installation tokens, making them more performant and improving the reliability of our API surface. If your application expects or relies on installation tokens being exactly 40 characters long, it may not handle this new token format correctly. You can now validate your apps and workflows using a temporary request header that lets you enable the token format on demand. For more information about the temporary header, see [the GitHub blog](https://github.blog/changelog/2026-05-15-github-app-installation-tokens-per-request-override-header).
+
         Optionally, you can use the `repositories` or `repository_ids` body parameters to specify individual repositories that the installation access token can access. If you don't use `repositories` or `repository_ids` to grant access to specific repositories, the installation access token will have access to all repositories that the installation was granted access to. The installation access token cannot be granted access to repositories that the installation was not granted access to. Up to 500 repositories can be listed in this manner.
 
         Optionally, use the `permissions` body parameter to specify the permissions that the installation access token should have. If `permissions` is not specified, the installation access token will have all of the permissions that were granted to the app. The installation access token cannot be granted permissions that the app was not granted.
@@ -1473,6 +1476,10 @@ paths:
                               type: boolean
                             lexical_commit_sha:
                               type: string
+                        custom_properties:
+                          type: object
+                          description: The custom properties that were defined for the repository. The keys are the custom property names, and the values are the corresponding custom property values. Present for org repos only.
+                          additionalProperties: true
                       required:
                         - archive_url
                         - assignees_url
@@ -2508,6 +2515,10 @@ paths:
                               type: boolean
                             lexical_commit_sha:
                               type: string
+                        custom_properties:
+                          type: object
+                          description: The custom properties that were defined for the repository. The keys are the custom property names, and the values are the corresponding custom property values. Present for org repos only.
+                          additionalProperties: true
                       required:
                         - archive_url
                         - assignees_url
@@ -3667,7 +3678,7 @@ components:
     app-permissions:
       title: App Permissions
       type: object
-      description: The permissions granted to the user access token.
+      description: The permissions granted to the fine-grained access token.
       properties:
         actions:
           type: string
@@ -3696,6 +3707,12 @@ components:
         checks:
           type: string
           description: The level of permission to grant the access token for checks on code.
+          enum:
+            - read
+            - write
+        code_quality:
+          type: string
+          description: The level of permission to grant the access token to view and manage code quality data.
           enum:
             - read
             - write
@@ -3872,10 +3889,11 @@ components:
           type: string
           description: The level of permission to grant the access token for managing access to GitHub Copilot for members of an organization with a Copilot Business subscription. This property is in public preview and is subject to change.
           enum:
+            - read
             - write
         organization_copilot_agent_settings:
           type: string
-          description: The level of permission to grant the access token to view and manage Copilot coding agent settings for an organization.
+          description: The level of permission to grant the access token to view and manage Copilot cloud agent settings for an organization.
           enum:
             - read
             - write
@@ -5942,7 +5960,7 @@ components:
         token_last_eight: Ae178B4a
         hashed_token: 25f94a2a5c7fbaf499c665bc73d67c1c87e496da8985131633ee0a95819db2e8
         app:
-          url: http://my-github-app.com
+          url: https://example.com
           name: my github app
           client_id: Iv1.8a61f9b3a7aba766
         note: optional note
@@ -5979,7 +5997,7 @@ components:
         token_last_eight: Ae178B4a
         hashed_token: 25f94a2a5c7fbaf499c665bc73d67c1c87e496da8985131633ee0a95819db2e8
         app:
-          url: http://my-github-app.com
+          url: https://example.com
           name: my github app
           client_id: Iv1.8a61f9b3a7aba766
         note: optional note
@@ -6153,6 +6171,9 @@ components:
             forks: 1
             open_issues: 1
             watchers: 1
+            custom_properties:
+              environment: production
+              service: web
     marketplace-purchase:
       value:
         url: https://api.github.com/orgs/github

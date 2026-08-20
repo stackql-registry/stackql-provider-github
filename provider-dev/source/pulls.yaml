@@ -982,6 +982,220 @@ paths:
         category: pulls
         subcategory: pulls
       x-stackQL-resource: pulls
+  /repos/{owner}/{repo}/pulls/{pull_number}/merge-async:
+    put:
+      summary: Merge a pull request asynchronously
+      description: |-
+        Merges a pull request into the base branch in the background. Merging in this way allows certain types of errors to be retried, and avoids the risk of timeouts for particularly complex merges.
+
+        This is the required method for merging stacked PRs, but also supports unstacked PRs. When using this endpoint to merge a stacked pull request, all pull requests in the stack up to and including the requested PR will be merged into the base branch.
+
+        The response includes a UUID that can be used to fetch the result of the merge. If another asynchronous merge request has already been made for this pull request, the UUID of that request will be returned instead with a 409 response status to indicate that the merge options may be different from those that were requested. If there isn't an existing asynchronous merge request, a 202 response status is used.
+
+        If the pull request is already merged, the merge commit OID will be returned immediately with a 200 status.
+
+        If the pull request cannot be merged (e.g. because it is closed, or still a draft) this result will be returned immediately with a 400 response status. Branch protection rules and repository rules are not run at this stage, only basic pull request state checks are performed.
+      tags:
+        - pulls
+      operationId: pulls/merge-async
+      externalDocs:
+        description: API method documentation
+        url: https://docs.github.com/rest/pulls/pulls#merge-a-pull-request-asynchronously
+      x-github:
+        triggersNotification: true
+        githubCloudOnly: false
+        enabledForGitHubApps: true
+        category: pulls
+        subcategory: pulls
+      parameters:
+        - $ref: '#/components/parameters/owner'
+        - $ref: '#/components/parameters/repo'
+        - $ref: '#/components/parameters/pull-number'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              nullable: true
+              properties:
+                commit_title:
+                  type: string
+                  description: Title for the automatic commit message.
+                commit_message:
+                  type: string
+                  description: Extra detail to append to automatic commit message.
+                sha:
+                  type: string
+                  description: SHA that pull request head must match to allow merge. If not provided, the current head of the PR at the time of the request will be used; if the PR is pushed in between the merge being requested and being executed, the merge will be cancelled.
+                merge_method:
+                  type: string
+                  description: The merge method to use.
+                  enum:
+                    - merge
+                    - squash
+                    - rebase
+                merge_action:
+                  type: string
+                  description: The action that will be taken to merge the pull request. `direct_merge` merges the pull request directly without using a merge queue; `merge_queue` adds the pull request to a merge queue; `default` selects the most appropriate option.
+                  enum:
+                    - default
+                    - direct_merge
+                    - merge_queue
+            examples:
+              default:
+                value:
+                  commit_title: Fix race condition
+                  commit_message: Avoids a race by trying to read the file and handling the exception if it does not exist.
+                  sha: 6358cd125586d9def8c3e5943f23506202da81cc
+                  merge_method: squash
+                  merge_action: default
+      responses:
+        '200':
+          description: if the pull request was already merged, or is already in a merge queue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pull-request-merge-async-result'
+              examples:
+                response-if-pull-request-was-already-merged:
+                  summary: Already merged
+                  value:
+                    status: merged
+                    details:
+                      message: Pull request is already merged.
+                      sha: 6dcb09b5b57875f334f61aebed695e2e4193db5e
+                response-if-pull-request-is-already-enqueued:
+                  summary: Already enqueued
+                  value:
+                    status: enqueued
+                    details:
+                      message: Pull request is already in the merge queue.
+        '202':
+          description: if the merge request was accepted and will run in the background
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pull-request-merge-async-result'
+              examples:
+                response-if-merge-request-was-accepted:
+                  summary: Request accepted
+                  value:
+                    status: pending
+                    details:
+                      message: Merge request enqueued.
+                      uuid: 630b9d5e-3f2a-4f7e-8b0c-2d5f9a8c1e42
+                      merge_method: merge
+                      merge_action: default
+                      expected_head_sha: 6dcb09b5b57875f334f61aebed695e2e4193db5e
+        '400':
+          description: if the pull request is not ready to be merged, e.g. because it is closed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pull-request-merge-async-result'
+              examples:
+                response-if-pull-request-is-not-ready-to-be-merged:
+                  value:
+                    status: failed
+                    details:
+                      message: Pull request is closed.
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not_found'
+        '409':
+          description: if there is an existing merge request already enqueued for this pull request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pull-request-merge-async-result'
+              examples:
+                response-if-a-merge-request-already-exists:
+                  value:
+                    status: pending
+                    details:
+                      message: A merge request already exists for this pull request.
+                      uuid: 630b9d5e-3f2a-4f7e-8b0c-2d5f9a8c1e42
+                      merge_method: squash
+                      merge_action: default
+                      expected_head_sha: 6dcb09b5b57875f334f61aebed695e2e4193db5e
+        '422':
+          $ref: '#/components/responses/validation_failed'
+      x-stackQL-resource: pulls
+  /repos/{owner}/{repo}/pulls/{pull_number}/merge-async/{uuid}:
+    get:
+      summary: Get the result of an asynchronous merge
+      description: |-
+        Fetches the current result of an asynchronous merge request, identified by the UUID that was returned when the merge was requested.
+
+        While the merge is still queued, the response includes the UUID, merge method, and expected head SHA of the request. Once the merge has completed, the response reports whether it was merged, including the merge commit OID on success or a message describing why it could not be merged on failure.
+
+        The result of an asynchronous merge request is retained for 24 hours after its most recent update. After this window the request expires and this endpoint returns a `404` response for its UUID.
+      tags:
+        - pulls
+      operationId: pulls/get-merge-async-result
+      externalDocs:
+        description: API method documentation
+        url: https://docs.github.com/rest/pulls/pulls#get-the-result-of-an-asynchronous-merge
+      x-github:
+        triggersNotification: false
+        githubCloudOnly: false
+        enabledForGitHubApps: true
+        category: pulls
+        subcategory: pulls
+      parameters:
+        - $ref: '#/components/parameters/owner'
+        - $ref: '#/components/parameters/repo'
+        - $ref: '#/components/parameters/pull-number'
+        - name: uuid
+          description: The UUID of the asynchronous merge request, as returned when the merge was requested.
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: the current result of the asynchronous merge request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/pull-request-merge-async-result'
+              examples:
+                response-if-the-merge-is-still-queued:
+                  summary: Still queued
+                  value:
+                    status: pending
+                    details:
+                      message: Merge request is in progress.
+                      uuid: 630b9d5e-3f2a-4f7e-8b0c-2d5f9a8c1e42
+                      merge_method: merge
+                      merge_action: default
+                      expected_head_sha: 6dcb09b5b57875f334f61aebed695e2e4193db5e
+                response-if-the-pull-request-is-enqueued:
+                  summary: Enqueued in the merge queue
+                  value:
+                    status: enqueued
+                    details:
+                      message: Pull request is in the merge queue.
+                response-if-the-merge-succeeded:
+                  summary: Merge succeeded
+                  value:
+                    status: merged
+                    details:
+                      message: Pull request was merged.
+                      sha: 6dcb09b5b57875f334f61aebed695e2e4193db5e
+                response-if-the-merge-failed:
+                  summary: Merge failed
+                  value:
+                    status: failed
+                    details:
+                      message: 'Merge conflict: the pull request could not be merged.'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/not_found'
+      x-stackQL-resource: pulls
   /repos/{owner}/{repo}/pulls/{pull_number}/requested_reviewers:
     get:
       summary: Get all requested reviewers for a pull request
@@ -1677,6 +1891,932 @@ paths:
         category: pulls
         subcategory: pulls
       x-stackQL-resource: pulls
+  /repos/{owner}/{repo}/stacks:
+    get:
+      summary: List pull request stacks
+      description: Lists pull request stacks in a repository.
+      tags:
+        - pulls
+      operationId: pull-request-stacks/list
+      externalDocs:
+        description: API method documentation
+        url: https://docs.github.com/rest/pulls/stacks#list-pull-request-stacks
+      parameters:
+        - $ref: '#/components/parameters/owner'
+        - $ref: '#/components/parameters/repo'
+        - name: pull_request
+          description: Filter to the stack containing this repository pull request number.
+          in: query
+          required: false
+          schema:
+            type: integer
+        - $ref: '#/components/parameters/per-page'
+        - $ref: '#/components/parameters/page'
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/pull-request-stack-minimal'
+              examples:
+                default:
+                  value:
+                    - id: 9876543
+                      number: 42
+                      node_id: S_kwDOABCDEF4AAAAA
+                      url: https://api.github.com/repos/octocat/hello-world/stacks/42
+                      base:
+                        ref: main
+                      pull_requests:
+                        - number: 101
+                          state: open
+                          draft: false
+                          merged_at: null
+                          head:
+                            ref: user-model
+                            sha: aaa1111aaa1111aaa1111aaa1111aaa1111aaa11
+                        - number: 102
+                          state: open
+                          draft: false
+                          merged_at: null
+                          head:
+                            ref: user-api
+                            sha: bbb2222bbb2222bbb2222bbb2222bbb2222bbb22
+                      open: true
+                      created_at: '2026-04-15T10:00:00Z'
+        '404':
+          $ref: '#/components/responses/not_found'
+        '422':
+          $ref: '#/components/responses/validation_failed'
+      x-github:
+        githubCloudOnly: false
+        enabledForGitHubApps: true
+        category: pulls
+        subcategory: stacks
+      x-stackQL-resource: stacks
+    post:
+      summary: Create a pull request stack
+      description: |-
+        Creates a stack from an ordered list of pull request numbers. Provide the pull
+        request numbers from the bottom of the stack to the top. Each pull request's
+        base ref must match the previous pull request's head ref.
+      tags:
+        - pulls
+      operationId: pull-request-stacks/create
+      externalDocs:
+        description: API method documentation
+        url: https://docs.github.com/rest/pulls/stacks#create-a-pull-request-stack
+      parameters:
+        - $ref: '#/components/parameters/owner'
+        - $ref: '#/components/parameters/repo'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - pull_requests
+              properties:
+                pull_requests:
+                  type: array
+                  description: An ordered list of pull request numbers forming the stack from bottom to top.
+                  items:
+                    type: integer
+                  minItems: 2
+                  maxItems: 100
+            examples:
+              default:
+                value:
+                  pull_requests:
+                    - 101
+                    - 102
+                    - 103
+      responses:
+        '201':
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - number
+                  - node_id
+                  - url
+                  - base
+                  - open
+                  - created_at
+                  - pull_requests
+                properties:
+                  id:
+                    type: integer
+                  number:
+                    type: integer
+                  node_id:
+                    type: string
+                  url:
+                    type: string
+                    format: uri
+                  base:
+                    type: object
+                    required:
+                      - ref
+                    properties:
+                      ref:
+                        type: string
+                  open:
+                    type: boolean
+                    description: Whether the stack has any open pull request. False when all pull requests are merged or closed.
+                  created_at:
+                    type: string
+                    format: date-time
+                  pull_requests:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/pull-request-stack-pull-request'
+              examples:
+                default:
+                  value:
+                    id: 9876543
+                    number: 42
+                    node_id: S_kwDOABCDEF4AAAAA
+                    url: https://api.github.com/repos/octocat/hello-world/stacks/42
+                    base:
+                      ref: main
+                    open: true
+                    created_at: '2026-04-15T10:00:00Z'
+                    pull_requests:
+                      - id: 100001
+                        node_id: PR_kwDOABCDEF4AAAAA
+                        title: Add user model
+                        state: open
+                        merged_at: null
+                        draft: false
+                        html_url: https://github.com/octocat/hello-world/pull/101
+                        user:
+                          login: octocat
+                          id: 1
+                          node_id: MDQ6VXNlcjE=
+                          avatar_url: https://github.com/images/error/octocat_happy.gif
+                          gravatar_id: ''
+                          url: https://api.github.com/users/octocat
+                          html_url: https://github.com/octocat
+                          followers_url: https://api.github.com/users/octocat/followers
+                          following_url: https://api.github.com/users/octocat/following{/other_user}
+                          gists_url: https://api.github.com/users/octocat/gists{/gist_id}
+                          starred_url: https://api.github.com/users/octocat/starred{/owner}{/repo}
+                          subscriptions_url: https://api.github.com/users/octocat/subscriptions
+                          organizations_url: https://api.github.com/users/octocat/orgs
+                          repos_url: https://api.github.com/users/octocat/repos
+                          events_url: https://api.github.com/users/octocat/events{/privacy}
+                          received_events_url: https://api.github.com/users/octocat/received_events
+                          type: User
+                          site_admin: false
+                          user_view_type: public
+                        number: 101
+                        url: https://api.github.com/repos/octocat/hello-world/pulls/101
+                        head:
+                          ref: user-model
+                          sha: aaa1111aaa1111aaa1111aaa1111aaa1111aaa11
+                          repo:
+                            id: 1296269
+                            url: https://api.github.com/repos/octocat/hello-world
+                            name: hello-world
+                        base:
+                          ref: main
+                          sha: 6dcb09b5b57875f334f61aebed695e2e4193db5e
+                          repo:
+                            id: 1296269
+                            url: https://api.github.com/repos/octocat/hello-world
+                            name: hello-world
+                      - id: 100002
+                        node_id: PR_kwDOABCDEF4AAAAB
+                        title: Add user API
+                        state: open
+                        merged_at: null
+                        draft: true
+                        html_url: https://github.com/octocat/hello-world/pull/102
+                        user:
+                          login: octocat
+                          id: 1
+                          node_id: MDQ6VXNlcjE=
+                          avatar_url: https://github.com/images/error/octocat_happy.gif
+                          gravatar_id: ''
+                          url: https://api.github.com/users/octocat
+                          html_url: https://github.com/octocat
+                          followers_url: https://api.github.com/users/octocat/followers
+                          following_url: https://api.github.com/users/octocat/following{/other_user}
+                          gists_url: https://api.github.com/users/octocat/gists{/gist_id}
+                          starred_url: https://api.github.com/users/octocat/starred{/owner}{/repo}
+                          subscriptions_url: https://api.github.com/users/octocat/subscriptions
+                          organizations_url: https://api.github.com/users/octocat/orgs
+                          repos_url: https://api.github.com/users/octocat/repos
+                          events_url: https://api.github.com/users/octocat/events{/privacy}
+                          received_events_url: https://api.github.com/users/octocat/received_events
+                          type: User
+                          site_admin: false
+                          user_view_type: public
+                        number: 102
+                        url: https://api.github.com/repos/octocat/hello-world/pulls/102
+                        head:
+                          ref: user-api
+                          sha: bbb2222bbb2222bbb2222bbb2222bbb2222bbb22
+                          repo:
+                            id: 1296269
+                            url: https://api.github.com/repos/octocat/hello-world
+                            name: hello-world
+                        base:
+                          ref: user-model
+                          sha: aaa1111aaa1111aaa1111aaa1111aaa1111aaa11
+                          repo:
+                            id: 1296269
+                            url: https://api.github.com/repos/octocat/hello-world
+                            name: hello-world
+        '404':
+          $ref: '#/components/responses/not_found'
+        '422':
+          description: |-
+            Validation failed. Returned when the request references pull requests that
+            don't exist in the repository, or when the pull requests can't form a
+            valid stack.
+          content:
+            application/json:
+              schema:
+                title: Validation Error
+                description: Validation Error
+                type: object
+                required:
+                  - message
+                  - documentation_url
+                properties:
+                  message:
+                    type: string
+                  documentation_url:
+                    type: string
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - code
+                      properties:
+                        resource:
+                          type: string
+                        field:
+                          type: string
+                        message:
+                          type: string
+                        code:
+                          type: string
+                        index:
+                          type: integer
+                        value:
+                          oneOf:
+                            - type: string
+                              nullable: true
+                            - type: integer
+                              nullable: true
+                            - type: array
+                              nullable: true
+                              items:
+                                oneOf:
+                                  - type: string
+                                  - type: integer
+              examples:
+                missing_pull_requests:
+                  summary: One or more pull request numbers don't exist in the repository
+                  value:
+                    message: Validation Failed
+                    documentation_url: https://docs.github.com/rest/pulls/stacks#create-a-pull-request-stack
+                    errors:
+                      - resource: Stack
+                        field: pull_requests
+                        code: missing
+                        value:
+                          - 123
+                not_a_linear_stack:
+                  summary: The pull requests don't form a linear stack
+                  value:
+                    message: Pull requests must form a stack, where each PR's base ref is the previous PR's head ref
+                    documentation_url: https://docs.github.com/rest/pulls/stacks#create-a-pull-request-stack
+                already_stacked:
+                  summary: A pull request already belongs to a stack
+                  value:
+                    message: 'Pull request #123 is already part of a stack'
+                    documentation_url: https://docs.github.com/rest/pulls/stacks#create-a-pull-request-stack
+      x-github:
+        githubCloudOnly: false
+        enabledForGitHubApps: true
+        category: pulls
+        subcategory: stacks
+      x-stackQL-resource: stacks
+  /repos/{owner}/{repo}/stacks/{stack_number}:
+    get:
+      summary: Get a pull request stack
+      description: Gets a pull request stack by providing its stack number.
+      tags:
+        - pulls
+      operationId: pull-request-stacks/get
+      externalDocs:
+        description: API method documentation
+        url: https://docs.github.com/rest/pulls/stacks#get-a-pull-request-stack
+      parameters:
+        - $ref: '#/components/parameters/owner'
+        - $ref: '#/components/parameters/repo'
+        - name: stack_number
+          description: The number that identifies the pull request stack.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - number
+                  - node_id
+                  - url
+                  - base
+                  - open
+                  - created_at
+                  - pull_requests
+                properties:
+                  id:
+                    type: integer
+                  number:
+                    type: integer
+                  node_id:
+                    type: string
+                  url:
+                    type: string
+                    format: uri
+                  base:
+                    type: object
+                    required:
+                      - ref
+                    properties:
+                      ref:
+                        type: string
+                  open:
+                    type: boolean
+                    description: Whether the stack has any open pull request. False when all pull requests are merged or closed.
+                  created_at:
+                    type: string
+                    format: date-time
+                  pull_requests:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/pull-request-stack-pull-request'
+              examples:
+                default:
+                  value:
+                    id: 9876543
+                    number: 42
+                    node_id: S_kwDOABCDEF4AAAAA
+                    url: https://api.github.com/repos/octocat/hello-world/stacks/42
+                    base:
+                      ref: main
+                    open: true
+                    created_at: '2026-04-15T10:00:00Z'
+                    pull_requests:
+                      - id: 100001
+                        node_id: PR_kwDOABCDEF4AAAAA
+                        title: Add user model
+                        state: open
+                        merged_at: null
+                        draft: false
+                        html_url: https://github.com/octocat/hello-world/pull/101
+                        user:
+                          login: octocat
+                          id: 1
+                          node_id: MDQ6VXNlcjE=
+                          avatar_url: https://github.com/images/error/octocat_happy.gif
+                          gravatar_id: ''
+                          url: https://api.github.com/users/octocat
+                          html_url: https://github.com/octocat
+                          followers_url: https://api.github.com/users/octocat/followers
+                          following_url: https://api.github.com/users/octocat/following{/other_user}
+                          gists_url: https://api.github.com/users/octocat/gists{/gist_id}
+                          starred_url: https://api.github.com/users/octocat/starred{/owner}{/repo}
+                          subscriptions_url: https://api.github.com/users/octocat/subscriptions
+                          organizations_url: https://api.github.com/users/octocat/orgs
+                          repos_url: https://api.github.com/users/octocat/repos
+                          events_url: https://api.github.com/users/octocat/events{/privacy}
+                          received_events_url: https://api.github.com/users/octocat/received_events
+                          type: User
+                          site_admin: false
+                          user_view_type: public
+                        number: 101
+                        url: https://api.github.com/repos/octocat/hello-world/pulls/101
+                        head:
+                          ref: user-model
+                          sha: aaa1111aaa1111aaa1111aaa1111aaa1111aaa11
+                          repo:
+                            id: 1296269
+                            url: https://api.github.com/repos/octocat/hello-world
+                            name: hello-world
+                        base:
+                          ref: main
+                          sha: 6dcb09b5b57875f334f61aebed695e2e4193db5e
+                          repo:
+                            id: 1296269
+                            url: https://api.github.com/repos/octocat/hello-world
+                            name: hello-world
+                      - id: 100002
+                        node_id: PR_kwDOABCDEF4AAAAB
+                        title: Add user API
+                        state: open
+                        merged_at: null
+                        draft: true
+                        html_url: https://github.com/octocat/hello-world/pull/102
+                        user:
+                          login: octocat
+                          id: 1
+                          node_id: MDQ6VXNlcjE=
+                          avatar_url: https://github.com/images/error/octocat_happy.gif
+                          gravatar_id: ''
+                          url: https://api.github.com/users/octocat
+                          html_url: https://github.com/octocat
+                          followers_url: https://api.github.com/users/octocat/followers
+                          following_url: https://api.github.com/users/octocat/following{/other_user}
+                          gists_url: https://api.github.com/users/octocat/gists{/gist_id}
+                          starred_url: https://api.github.com/users/octocat/starred{/owner}{/repo}
+                          subscriptions_url: https://api.github.com/users/octocat/subscriptions
+                          organizations_url: https://api.github.com/users/octocat/orgs
+                          repos_url: https://api.github.com/users/octocat/repos
+                          events_url: https://api.github.com/users/octocat/events{/privacy}
+                          received_events_url: https://api.github.com/users/octocat/received_events
+                          type: User
+                          site_admin: false
+                          user_view_type: public
+                        number: 102
+                        url: https://api.github.com/repos/octocat/hello-world/pulls/102
+                        head:
+                          ref: user-api
+                          sha: bbb2222bbb2222bbb2222bbb2222bbb2222bbb22
+                          repo:
+                            id: 1296269
+                            url: https://api.github.com/repos/octocat/hello-world
+                            name: hello-world
+                        base:
+                          ref: user-model
+                          sha: aaa1111aaa1111aaa1111aaa1111aaa1111aaa11
+                          repo:
+                            id: 1296269
+                            url: https://api.github.com/repos/octocat/hello-world
+                            name: hello-world
+        '404':
+          $ref: '#/components/responses/not_found'
+      x-github:
+        githubCloudOnly: false
+        enabledForGitHubApps: true
+        category: pulls
+        subcategory: stacks
+      x-stackQL-resource: stacks
+  /repos/{owner}/{repo}/stacks/{stack_number}/add:
+    post:
+      summary: Add pull requests to a pull request stack
+      description: |-
+        Appends an ordered list of pull request numbers onto the top of an existing
+        stack. Provide only the pull requests you want to add, from the current top of
+        the stack upward. The first new pull request's base ref must match the current
+        top pull request's head ref.
+      tags:
+        - pulls
+      operationId: pull-request-stacks/add
+      externalDocs:
+        description: API method documentation
+        url: https://docs.github.com/rest/pulls/stacks#add-pull-requests-to-a-pull-request-stack
+      parameters:
+        - $ref: '#/components/parameters/owner'
+        - $ref: '#/components/parameters/repo'
+        - name: stack_number
+          description: The number that identifies the pull request stack.
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - pull_requests
+              properties:
+                pull_requests:
+                  type: array
+                  description: An ordered list of pull request numbers to append to the stack, from the current top upward.
+                  items:
+                    type: integer
+                  minItems: 1
+                  maxItems: 100
+            examples:
+              default:
+                value:
+                  pull_requests:
+                    - 104
+                    - 102
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - number
+                  - node_id
+                  - url
+                  - base
+                  - open
+                  - created_at
+                  - pull_requests
+                properties:
+                  id:
+                    type: integer
+                  number:
+                    type: integer
+                  node_id:
+                    type: string
+                  url:
+                    type: string
+                    format: uri
+                  base:
+                    type: object
+                    required:
+                      - ref
+                    properties:
+                      ref:
+                        type: string
+                  open:
+                    type: boolean
+                    description: Whether the stack has any open pull request. False when all pull requests are merged or closed.
+                  created_at:
+                    type: string
+                    format: date-time
+                  pull_requests:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/pull-request-stack-pull-request'
+              examples:
+                default:
+                  value:
+                    id: 9876543
+                    number: 42
+                    node_id: S_kwDOABCDEF4AAAAA
+                    url: https://api.github.com/repos/octocat/hello-world/stacks/42
+                    base:
+                      ref: main
+                    open: true
+                    created_at: '2026-04-15T10:00:00Z'
+                    pull_requests:
+                      - id: 100001
+                        node_id: PR_kwDOABCDEF4AAAAA
+                        title: Add user model
+                        state: open
+                        merged_at: null
+                        draft: false
+                        html_url: https://github.com/octocat/hello-world/pull/101
+                        user:
+                          login: octocat
+                          id: 1
+                          node_id: MDQ6VXNlcjE=
+                          avatar_url: https://github.com/images/error/octocat_happy.gif
+                          gravatar_id: ''
+                          url: https://api.github.com/users/octocat
+                          html_url: https://github.com/octocat
+                          followers_url: https://api.github.com/users/octocat/followers
+                          following_url: https://api.github.com/users/octocat/following{/other_user}
+                          gists_url: https://api.github.com/users/octocat/gists{/gist_id}
+                          starred_url: https://api.github.com/users/octocat/starred{/owner}{/repo}
+                          subscriptions_url: https://api.github.com/users/octocat/subscriptions
+                          organizations_url: https://api.github.com/users/octocat/orgs
+                          repos_url: https://api.github.com/users/octocat/repos
+                          events_url: https://api.github.com/users/octocat/events{/privacy}
+                          received_events_url: https://api.github.com/users/octocat/received_events
+                          type: User
+                          site_admin: false
+                          user_view_type: public
+                        number: 101
+                        url: https://api.github.com/repos/octocat/hello-world/pulls/101
+                        head:
+                          ref: user-model
+                          sha: aaa1111aaa1111aaa1111aaa1111aaa1111aaa11
+                          repo:
+                            id: 1296269
+                            url: https://api.github.com/repos/octocat/hello-world
+                            name: hello-world
+                        base:
+                          ref: main
+                          sha: 6dcb09b5b57875f334f61aebed695e2e4193db5e
+                          repo:
+                            id: 1296269
+                            url: https://api.github.com/repos/octocat/hello-world
+                            name: hello-world
+                      - id: 100002
+                        node_id: PR_kwDOABCDEF4AAAAB
+                        title: Add user API
+                        state: open
+                        merged_at: null
+                        draft: true
+                        html_url: https://github.com/octocat/hello-world/pull/102
+                        user:
+                          login: octocat
+                          id: 1
+                          node_id: MDQ6VXNlcjE=
+                          avatar_url: https://github.com/images/error/octocat_happy.gif
+                          gravatar_id: ''
+                          url: https://api.github.com/users/octocat
+                          html_url: https://github.com/octocat
+                          followers_url: https://api.github.com/users/octocat/followers
+                          following_url: https://api.github.com/users/octocat/following{/other_user}
+                          gists_url: https://api.github.com/users/octocat/gists{/gist_id}
+                          starred_url: https://api.github.com/users/octocat/starred{/owner}{/repo}
+                          subscriptions_url: https://api.github.com/users/octocat/subscriptions
+                          organizations_url: https://api.github.com/users/octocat/orgs
+                          repos_url: https://api.github.com/users/octocat/repos
+                          events_url: https://api.github.com/users/octocat/events{/privacy}
+                          received_events_url: https://api.github.com/users/octocat/received_events
+                          type: User
+                          site_admin: false
+                          user_view_type: public
+                        number: 102
+                        url: https://api.github.com/repos/octocat/hello-world/pulls/102
+                        head:
+                          ref: user-api
+                          sha: bbb2222bbb2222bbb2222bbb2222bbb2222bbb22
+                          repo:
+                            id: 1296269
+                            url: https://api.github.com/repos/octocat/hello-world
+                            name: hello-world
+                        base:
+                          ref: user-model
+                          sha: aaa1111aaa1111aaa1111aaa1111aaa1111aaa11
+                          repo:
+                            id: 1296269
+                            url: https://api.github.com/repos/octocat/hello-world
+                            name: hello-world
+        '404':
+          $ref: '#/components/responses/not_found'
+        '409':
+          description: Conflict. Returned when the stack is being modified by another request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/basic-error'
+              examples:
+                being_modified:
+                  summary: Another request is currently modifying the stack
+                  value:
+                    message: Stack is currently being modified
+                    documentation_url: https://docs.github.com/rest/pulls/stacks#add-pull-requests-to-a-pull-request-stack
+                    status: '409'
+        '422':
+          description: |-
+            Validation failed. Returned when the request references pull requests that
+            don't exist in the repository, or when the pull requests can't be appended
+            to the stack.
+          content:
+            application/json:
+              schema:
+                title: Validation Error
+                description: Validation Error
+                type: object
+                required:
+                  - message
+                  - documentation_url
+                properties:
+                  message:
+                    type: string
+                  documentation_url:
+                    type: string
+                  errors:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - code
+                      properties:
+                        resource:
+                          type: string
+                        field:
+                          type: string
+                        message:
+                          type: string
+                        code:
+                          type: string
+                        index:
+                          type: integer
+                        value:
+                          oneOf:
+                            - type: string
+                              nullable: true
+                            - type: integer
+                              nullable: true
+                            - type: array
+                              nullable: true
+                              items:
+                                oneOf:
+                                  - type: string
+                                  - type: integer
+              examples:
+                missing_pull_requests:
+                  summary: One or more pull request numbers don't exist in the repository
+                  value:
+                    message: Validation Failed
+                    documentation_url: https://docs.github.com/rest/pulls/stacks#add-pull-requests-to-a-pull-request-stack
+                    errors:
+                      - resource: Stack
+                        field: pull_requests
+                        code: missing
+                        value:
+                          - 123
+                not_a_linear_stack:
+                  summary: The pull requests don't continue the stack linearly
+                  value:
+                    message: Pull requests must form a stack, where each PR's base ref is the previous PR's head ref
+                    documentation_url: https://docs.github.com/rest/pulls/stacks#add-pull-requests-to-a-pull-request-stack
+                already_stacked:
+                  summary: A pull request already belongs to a stack
+                  value:
+                    message: 'Pull request #123 is already part of a stack'
+                    documentation_url: https://docs.github.com/rest/pulls/stacks#add-pull-requests-to-a-pull-request-stack
+      x-github:
+        githubCloudOnly: false
+        enabledForGitHubApps: true
+        category: pulls
+        subcategory: stacks
+      x-stackQL-resource: stacks
+  /repos/{owner}/{repo}/stacks/{stack_number}/unstack:
+    post:
+      summary: Remove pull requests from a pull request stack
+      description: |-
+        Removes the unmerged pull requests from a stack. Pull requests that cannot be
+        unstacked (for example, those that are queued for merge) are left in place. When pull requests remain in the stack, the updated
+        stack is returned with a `200`. When no pull requests remain, the stack is
+        dissolved and a `204` is returned.
+      tags:
+        - pulls
+      operationId: pull-request-stacks/unstack
+      externalDocs:
+        description: API method documentation
+        url: https://docs.github.com/rest/pulls/stacks#remove-pull-requests-from-a-pull-request-stack
+      parameters:
+        - $ref: '#/components/parameters/owner'
+        - $ref: '#/components/parameters/repo'
+        - name: stack_number
+          description: The number that identifies the pull request stack.
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - number
+                  - node_id
+                  - url
+                  - base
+                  - open
+                  - created_at
+                  - pull_requests
+                properties:
+                  id:
+                    type: integer
+                  number:
+                    type: integer
+                  node_id:
+                    type: string
+                  url:
+                    type: string
+                    format: uri
+                  base:
+                    type: object
+                    required:
+                      - ref
+                    properties:
+                      ref:
+                        type: string
+                  open:
+                    type: boolean
+                    description: Whether the stack has any open pull request. False when all pull requests are merged or closed.
+                  created_at:
+                    type: string
+                    format: date-time
+                  pull_requests:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/pull-request-stack-pull-request'
+              examples:
+                default:
+                  value:
+                    id: 9876543
+                    number: 42
+                    node_id: S_kwDOABCDEF4AAAAA
+                    url: https://api.github.com/repos/octocat/hello-world/stacks/42
+                    base:
+                      ref: main
+                    open: true
+                    created_at: '2026-04-15T10:00:00Z'
+                    pull_requests:
+                      - id: 100001
+                        node_id: PR_kwDOABCDEF4AAAAA
+                        title: Add user model
+                        state: open
+                        merged_at: null
+                        draft: false
+                        html_url: https://github.com/octocat/hello-world/pull/101
+                        user:
+                          login: octocat
+                          id: 1
+                          node_id: MDQ6VXNlcjE=
+                          avatar_url: https://github.com/images/error/octocat_happy.gif
+                          gravatar_id: ''
+                          url: https://api.github.com/users/octocat
+                          html_url: https://github.com/octocat
+                          followers_url: https://api.github.com/users/octocat/followers
+                          following_url: https://api.github.com/users/octocat/following{/other_user}
+                          gists_url: https://api.github.com/users/octocat/gists{/gist_id}
+                          starred_url: https://api.github.com/users/octocat/starred{/owner}{/repo}
+                          subscriptions_url: https://api.github.com/users/octocat/subscriptions
+                          organizations_url: https://api.github.com/users/octocat/orgs
+                          repos_url: https://api.github.com/users/octocat/repos
+                          events_url: https://api.github.com/users/octocat/events{/privacy}
+                          received_events_url: https://api.github.com/users/octocat/received_events
+                          type: User
+                          site_admin: false
+                          user_view_type: public
+                        number: 101
+                        url: https://api.github.com/repos/octocat/hello-world/pulls/101
+                        head:
+                          ref: user-model
+                          sha: aaa1111aaa1111aaa1111aaa1111aaa1111aaa11
+                          repo:
+                            id: 1296269
+                            url: https://api.github.com/repos/octocat/hello-world
+                            name: hello-world
+                        base:
+                          ref: main
+                          sha: 6dcb09b5b57875f334f61aebed695e2e4193db5e
+                          repo:
+                            id: 1296269
+                            url: https://api.github.com/repos/octocat/hello-world
+                            name: hello-world
+        '204':
+          $ref: '#/components/responses/no_content'
+        '404':
+          $ref: '#/components/responses/not_found'
+        '409':
+          description: Conflict. Returned when the stack is being modified by another request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/basic-error'
+              examples:
+                being_modified:
+                  summary: Another request is currently modifying the stack
+                  value:
+                    message: Stack is currently being modified
+                    documentation_url: https://docs.github.com/rest/pulls/stacks#remove-pull-requests-from-a-pull-request-stack
+                    status: '409'
+        '422':
+          description: |-
+            Validation failed. Returned when the stack can't be unstacked because every
+            pull request in it is locked and cannot be removed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/validation-error'
+              examples:
+                cannot_be_removed:
+                  summary: Every pull request in the stack is locked and can't be removed
+                  value:
+                    message: Pull requests in this stack cannot be removed
+                    documentation_url: https://docs.github.com/rest/pulls/stacks#remove-pull-requests-from-a-pull-request-stack
+      x-github:
+        githubCloudOnly: false
+        enabledForGitHubApps: true
+        category: pulls
+        subcategory: stacks
+      x-stackQL-resource: stacks
 components:
   schemas:
     pull-request-simple:
@@ -1888,6 +3028,8 @@ components:
           $ref: '#/components/schemas/author-association'
         auto_merge:
           $ref: '#/components/schemas/auto-merge'
+        stack:
+          $ref: '#/components/schemas/pull-request-stack'
         draft:
           description: Indicates whether or not the pull request is a draft.
           example: false
@@ -2214,6 +3356,8 @@ components:
           $ref: '#/components/schemas/author-association'
         auto_merge:
           $ref: '#/components/schemas/auto-merge'
+        stack:
+          $ref: '#/components/schemas/pull-request-stack'
         draft:
           description: Indicates whether or not the pull request is a draft.
           example: false
@@ -2951,6 +4095,56 @@ components:
         - merged
         - message
         - sha
+    pull-request-merge-async-result:
+      title: Pull Request Merge Async Result
+      description: Pull Request Merge Async Result
+      type: object
+      additionalProperties: false
+      properties:
+        status:
+          type: string
+          enum:
+            - pending
+            - merged
+            - enqueued
+            - failed
+        details:
+          description: When an asynchronous merge request was created or already existed
+          type: object
+          additionalProperties: false
+          properties:
+            message:
+              type: string
+            uuid:
+              type: string
+            merge_method:
+              type: string
+              enum:
+                - default
+                - merge
+                - squash
+                - rebase
+            merge_action:
+              type: string
+              enum:
+                - default
+                - merge_queue
+                - direct_merge
+            expected_head_sha:
+              type: string
+              description: SHA that the pull request head must match for the enqueued merge to proceed.
+            sha:
+              type: string
+          required:
+            - message
+            - uuid
+            - merge_method
+            - merge_action
+            - expected_head_sha
+            - sha
+      required:
+        - status
+        - details
     pull-request-review-request:
       title: Pull Request Review Request
       description: Pull Request Review Request
@@ -3185,6 +4379,221 @@ components:
         - author_association
         - created_at
         - updated_at
+    pull-request-stack-minimal:
+      title: Pull Request Stack Minimal
+      type: object
+      required:
+        - id
+        - number
+        - node_id
+        - url
+        - base
+        - open
+        - created_at
+        - pull_requests
+      properties:
+        id:
+          type: integer
+        number:
+          type: integer
+        node_id:
+          type: string
+        url:
+          type: string
+          format: uri
+        base:
+          type: object
+          required:
+            - ref
+          properties:
+            ref:
+              type: string
+        open:
+          type: boolean
+          description: Whether the stack has any open pull request. False when all pull requests are merged or closed.
+        created_at:
+          type: string
+          format: date-time
+        pull_requests:
+          type: array
+          items:
+            type: object
+            required:
+              - number
+              - state
+              - draft
+              - merged_at
+              - head
+            properties:
+              number:
+                type: integer
+              state:
+                type: string
+                enum:
+                  - open
+                  - closed
+              draft:
+                type: boolean
+              merged_at:
+                type: string
+                format: date-time
+                nullable: true
+              head:
+                type: object
+                required:
+                  - ref
+                  - sha
+                properties:
+                  ref:
+                    type: string
+                  sha:
+                    type: string
+    pull-request-stack-pull-request:
+      title: Pull Request Stack Pull Request
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        number:
+          type: integer
+        url:
+          type: string
+        head:
+          type: object
+          properties:
+            ref:
+              type: string
+            sha:
+              type: string
+            repo:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                url:
+                  type: string
+                name:
+                  type: string
+              required:
+                - id
+                - url
+                - name
+          required:
+            - ref
+            - sha
+            - repo
+        base:
+          type: object
+          properties:
+            ref:
+              type: string
+            sha:
+              type: string
+            repo:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                url:
+                  type: string
+                name:
+                  type: string
+              required:
+                - id
+                - url
+                - name
+          required:
+            - ref
+            - sha
+            - repo
+        node_id:
+          type: string
+        title:
+          type: string
+        state:
+          type: string
+          enum:
+            - open
+            - closed
+        merged_at:
+          type: string
+          format: date-time
+          nullable: true
+        draft:
+          type: boolean
+        html_url:
+          type: string
+          format: uri
+        user:
+          $ref: '#/components/schemas/nullable-simple-user'
+      required:
+        - id
+        - number
+        - url
+        - head
+        - base
+        - node_id
+        - title
+        - state
+        - merged_at
+        - draft
+        - html_url
+        - user
+    basic-error:
+      title: Basic Error
+      description: Basic Error
+      type: object
+      properties:
+        message:
+          type: string
+        documentation_url:
+          type: string
+        url:
+          type: string
+        status:
+          type: string
+    validation-error:
+      title: Validation Error
+      description: Validation Error
+      type: object
+      required:
+        - message
+        - documentation_url
+      properties:
+        message:
+          type: string
+        documentation_url:
+          type: string
+        errors:
+          type: array
+          items:
+            type: object
+            required:
+              - code
+            properties:
+              resource:
+                type: string
+              field:
+                type: string
+              message:
+                type: string
+              code:
+                type: string
+              index:
+                type: integer
+              value:
+                oneOf:
+                  - type: string
+                    nullable: true
+                  - type: integer
+                    nullable: true
+                  - type: array
+                    nullable: true
+                    items:
+                      type: string
     nullable-simple-user:
       title: Simple User
       description: A GitHub user.
@@ -3530,6 +4939,17 @@ components:
           enum:
             - enterprise
             - organization
+        access_source:
+          description: |-
+            How the team's access to the repository was granted. This property is only
+            present when the team is returned in a repository context, such as
+            `GET /repos/{owner}/{repo}/teams`.
+          type: string
+          enum:
+            - direct
+            - organization
+            - enterprise
+          example: direct
         organization_id:
           type: integer
           description: Unique identifier of the organization to which this team belongs
@@ -4179,45 +5599,38 @@ components:
         - commit_title
         - commit_message
       nullable: true
-    validation-error:
-      title: Validation Error
-      description: Validation Error
+    pull-request-stack:
+      title: Pull Request Stack
+      description: The stack information associated with a pull request.
       type: object
-      required:
-        - message
-        - documentation_url
       properties:
-        message:
-          type: string
-        documentation_url:
-          type: string
-        errors:
-          type: array
-          items:
-            type: object
-            required:
-              - code
-            properties:
-              resource:
-                type: string
-              field:
-                type: string
-              message:
-                type: string
-              code:
-                type: string
-              index:
-                type: integer
-              value:
-                oneOf:
-                  - type: string
-                    nullable: true
-                  - type: integer
-                    nullable: true
-                  - type: array
-                    nullable: true
-                    items:
-                      type: string
+        base:
+          type: object
+          properties:
+            ref:
+              type: string
+              description: The base ref of the stack this pull request belongs to.
+            sha:
+              type: string
+              description: The base SHA of the stack this pull request belongs to.
+          required:
+            - ref
+            - sha
+        size:
+          type: integer
+          description: The total number of pull requests in the stack.
+        position:
+          type: integer
+          description: The one-based position of this pull request within the stack, where 1 is the bottom of the stack.
+        id:
+          type: integer
+          description: The ID of the stack that this pull request belongs to.
+        number:
+          type: integer
+          description: The number of the stack that this pull request belongs to.
+      required:
+        - base
+      nullable: true
     team-simple:
       title: Team Simple
       description: Groups of organization members that gives permissions on specified repositories.
@@ -4300,19 +5713,6 @@ components:
         - repositories_url
         - slug
         - type
-    basic-error:
-      title: Basic Error
-      description: Basic Error
-      type: object
-      properties:
-        message:
-          type: string
-        documentation_url:
-          type: string
-        url:
-          type: string
-        status:
-          type: string
     reaction-rollup:
       title: Reaction Rollup
       type: object
@@ -4410,6 +5810,73 @@ components:
           type: array
           items:
             type: string
+    pull-request-minimal:
+      title: Pull Request Minimal
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        number:
+          type: integer
+        url:
+          type: string
+        head:
+          type: object
+          properties:
+            ref:
+              type: string
+            sha:
+              type: string
+            repo:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                url:
+                  type: string
+                name:
+                  type: string
+              required:
+                - id
+                - url
+                - name
+          required:
+            - ref
+            - sha
+            - repo
+        base:
+          type: object
+          properties:
+            ref:
+              type: string
+            sha:
+              type: string
+            repo:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                url:
+                  type: string
+                name:
+                  type: string
+              required:
+                - id
+                - url
+                - name
+          required:
+            - ref
+            - sha
+            - repo
+      required:
+        - id
+        - number
+        - url
+        - head
+        - base
     nullable-team-simple:
       title: Team Simple
       description: Groups of organization members that gives permissions on specified repositories.
@@ -4578,6 +6045,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/validation-error-simple'
+    no_content:
+      description: A header with no content is returned.
   parameters:
     owner:
       name: owner
@@ -5621,6 +7090,17 @@ components:
         additions: 100
         deletions: 3
         changed_files: 5
+      x-github-breaking-changes:
+        - changeset: remove_pull_request_merge_commit_sha
+          patch:
+            - op: remove
+              path: /value/merge_commit_sha
+          version: '2026-03-10'
+        - changeset: remove_singular_assignee_from_issues_and_pull_requests
+          patch:
+            - op: remove
+              path: /value/assignee
+          version: '2026-03-10'
     pull-request-review-comment-items:
       value:
         - url: https://api.github.com/repos/octocat/Hello-World/pulls/comments/1
@@ -6938,6 +8418,17 @@ components:
         author_association: OWNER
         auto_merge: null
         draft: false
+      x-github-breaking-changes:
+        - changeset: remove_pull_request_merge_commit_sha
+          patch:
+            - op: remove
+              path: /value/merge_commit_sha
+          version: '2026-03-10'
+        - changeset: remove_singular_assignee_from_issues_and_pull_requests
+          patch:
+            - op: remove
+              path: /value/assignee
+          version: '2026-03-10'
     pull-request-review-items:
       value:
         - id: 80

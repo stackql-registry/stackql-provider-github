@@ -57,9 +57,19 @@ Status response
     <td>Array of unique strings. Each claim key can only contain alphanumeric characters and underscores.</td>
 </tr>
 <tr>
+    <td><CopyableCode code="sub_claim_prefix" /></td>
+    <td><code>string</code></td>
+    <td>The current `sub` claim prefix for this repository.</td>
+</tr>
+<tr>
     <td><CopyableCode code="use_default" /></td>
     <td><code>boolean</code></td>
     <td>Whether to use the default template or not. If `true`, the `include_claim_keys` field is ignored.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="use_immutable_subject" /></td>
+    <td><code>boolean</code></td>
+    <td>Whether the repository has opted in to the immutable OIDC subject claim format. When `true`, OIDC tokens will use a stable, repository-ID-based `sub` claim. If not set at the repository level, falls back to the organization-level setting.</td>
 </tr>
 </tbody>
 </table>
@@ -139,7 +149,9 @@ Gets the customization template for an OpenID Connect (OIDC) subject claim.<br /
 ```sql
 SELECT
 include_claim_keys,
-use_default
+sub_claim_prefix,
+use_default,
+use_immutable_subject
 FROM github.actions.oidc
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required
@@ -165,7 +177,8 @@ Sets the customization template and `opt-in` or `opt-out` flag for an OpenID Con
 REPLACE github.actions.oidc
 SET 
 use_default = {{ use_default }},
-include_claim_keys = '{{ include_claim_keys }}'
+include_claim_keys = '{{ include_claim_keys }}',
+use_immutable_subject = {{ use_immutable_subject }}
 WHERE 
 owner = '{{ owner }}' --required
 AND repo = '{{ repo }}' --required

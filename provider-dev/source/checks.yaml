@@ -2424,6 +2424,7 @@ components:
       required: true
       schema:
         type: integer
+        format: int64
     per-page:
       name: per_page
       description: The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the-rest-api)."

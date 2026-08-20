@@ -91,21 +91,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a>, <a href="#parameter-alert_number"><code>alert_number</code></a></td>
     <td></td>
-    <td>Gets the status and description of an autofix for a code scanning alert.<br /><br />OAuth app tokens and personal access tokens (classic) need the `security_events` scope to use this endpoint with private or public repositories, or the `public_repo` scope to use this endpoint with only public repositories.</td>
+    <td>Gets the status and description of an autofix for a code scanning alert on the repository's default branch.<br /><br />OAuth app tokens and personal access tokens (classic) need the `security_events` scope to use this endpoint with private or public repositories, or the `public_repo` scope to use this endpoint with only public repositories.</td>
 </tr>
 <tr>
     <td><a href="#create_autofix"><CopyableCode code="create_autofix" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a>, <a href="#parameter-alert_number"><code>alert_number</code></a></td>
     <td></td>
-    <td>Creates an autofix for a code scanning alert.<br /><br />If a new autofix is to be created as a result of this request or is currently being generated, then this endpoint will return a 202 Accepted response.<br /><br />If an autofix already exists for a given alert, then this endpoint will return a 200 OK response.<br /><br />OAuth app tokens and personal access tokens (classic) need the `security_events` scope to use this endpoint with private or public repositories, or the `public_repo` scope to use this endpoint with only public repositories.</td>
+    <td>Creates an autofix for a code scanning alert from the repository's default branch.<br /><br />If a new autofix is to be created as a result of this request or is currently being generated, then this endpoint will return a 202 Accepted response.<br /><br />If an autofix already exists for a given alert, then this endpoint will return a 200 OK response.<br /><br />OAuth app tokens and personal access tokens (classic) need the `security_events` scope to use this endpoint with private or public repositories, or the `public_repo` scope to use this endpoint with only public repositories.</td>
 </tr>
 <tr>
     <td><a href="#commit_autofix"><CopyableCode code="commit_autofix" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a>, <a href="#parameter-alert_number"><code>alert_number</code></a></td>
     <td></td>
-    <td>Commits an autofix for a code scanning alert.<br /><br />If an autofix is committed as a result of this request, then this endpoint will return a 201 Created response.<br /><br />OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint with private or public repositories, or the `public_repo` scope to use this endpoint with only public repositories.</td>
+    <td>Commits an autofix for a code scanning alert from the repository's default branch.<br /><br />If an autofix is committed as a result of this request, then this endpoint will return a 201 Created response.<br /><br />OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint with private or public repositories, or the `public_repo` scope to use this endpoint with only public repositories.</td>
 </tr>
 </tbody>
 </table>
@@ -151,7 +151,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_autofix">
 
-Gets the status and description of an autofix for a code scanning alert.<br /><br />OAuth app tokens and personal access tokens (classic) need the `security_events` scope to use this endpoint with private or public repositories, or the `public_repo` scope to use this endpoint with only public repositories.
+Gets the status and description of an autofix for a code scanning alert on the repository's default branch.<br /><br />OAuth app tokens and personal access tokens (classic) need the `security_events` scope to use this endpoint with private or public repositories, or the `public_repo` scope to use this endpoint with only public repositories.
 
 ```sql
 SELECT
@@ -179,7 +179,7 @@ AND alert_number = '{{ alert_number }}' -- required
 >
 <TabItem value="create_autofix">
 
-Creates an autofix for a code scanning alert.<br /><br />If a new autofix is to be created as a result of this request or is currently being generated, then this endpoint will return a 202 Accepted response.<br /><br />If an autofix already exists for a given alert, then this endpoint will return a 200 OK response.<br /><br />OAuth app tokens and personal access tokens (classic) need the `security_events` scope to use this endpoint with private or public repositories, or the `public_repo` scope to use this endpoint with only public repositories.
+Creates an autofix for a code scanning alert from the repository's default branch.<br /><br />If a new autofix is to be created as a result of this request or is currently being generated, then this endpoint will return a 202 Accepted response.<br /><br />If an autofix already exists for a given alert, then this endpoint will return a 200 OK response.<br /><br />OAuth app tokens and personal access tokens (classic) need the `security_events` scope to use this endpoint with private or public repositories, or the `public_repo` scope to use this endpoint with only public repositories.
 
 ```sql
 INSERT INTO github.code_scanning.alert_autofixes (
@@ -228,7 +228,7 @@ status
 >
 <TabItem value="commit_autofix">
 
-Commits an autofix for a code scanning alert.<br /><br />If an autofix is committed as a result of this request, then this endpoint will return a 201 Created response.<br /><br />OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint with private or public repositories, or the `public_repo` scope to use this endpoint with only public repositories.
+Commits an autofix for a code scanning alert from the repository's default branch.<br /><br />If an autofix is committed as a result of this request, then this endpoint will return a 201 Created response.<br /><br />OAuth app tokens and personal access tokens (classic) need the `repo` scope to use this endpoint with private or public repositories, or the `public_repo` scope to use this endpoint with only public repositories.
 
 ```sql
 EXEC github.code_scanning.alert_autofixes.commit_autofix 

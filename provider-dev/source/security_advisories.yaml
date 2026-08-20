@@ -2811,6 +2811,17 @@ components:
           enum:
             - enterprise
             - organization
+        access_source:
+          description: |-
+            How the team's access to the repository was granted. This property is only
+            present when the team is returned in a repository context, such as
+            `GET /repos/{owner}/{repo}/teams`.
+          type: string
+          enum:
+            - direct
+            - organization
+            - enterprise
+          example: direct
         organization_id:
           type: integer
           description: Unique identifier of the organization to which this team belongs
@@ -4847,6 +4858,12 @@ components:
               type: User
               site_admin: false
             type: analyst
+      x-github-breaking-changes:
+        - changeset: deprecate_cvss
+          patch:
+            - op: remove
+              path: /value/cvss
+          version: '2026-03-10'
     list-repository-advisories:
       value:
         - ghsa_id: GHSA-abcd-1234-efgh
@@ -5418,6 +5435,12 @@ components:
           tags_url: https://api.github.com/repos/octo-org/octo-repo-ghsa-abcd-1234-efgh/tags
           teams_url: https://api.github.com/repos/octo-org/octo-repo-ghsa-abcd-1234-efgh/teams
           trees_url: https://api.github.com/repos/octo-org/octo-repo-ghsa-abcd-1234-efgh/git/trees{/sha}
+      x-github-breaking-changes:
+        - changeset: deprecate_cvss
+          patch:
+            - op: remove
+              path: /value/cvss
+          version: '2026-03-10'
     repository-advisory-pvr:
       value:
         ghsa_id: GHSA-abcd-1234-efgh
@@ -5536,6 +5559,12 @@ components:
             permission: admin
             parent: null
         private_fork: null
+      x-github-breaking-changes:
+        - changeset: deprecate_cvss
+          patch:
+            - op: remove
+              path: /value/cvss
+          version: '2026-03-10'
     full-repository:
       value:
         id: 1296269
@@ -6026,5 +6055,11 @@ components:
           forks: 1
           open_issues: 1
           watchers: 1
+      x-github-breaking-changes:
+        - changeset: remove_has_downloads
+          patch:
+            - op: remove
+              path: /value/has_downloads
+          version: '2026-03-10'
 servers:
   - url: https://api.github.com

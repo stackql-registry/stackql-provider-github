@@ -370,14 +370,14 @@ The following methods are available for this resource:
     <td><a href="#get_repo_rule_suites"><CopyableCode code="get_repo_rule_suites" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a></td>
-    <td><a href="#parameter-ref"><code>ref</code></a>, <a href="#parameter-time_period"><code>time_period</code></a>, <a href="#parameter-actor_name"><code>actor_name</code></a>, <a href="#parameter-rule_suite_result"><code>rule_suite_result</code></a>, <a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-page"><code>page</code></a></td>
+    <td><a href="#parameter-ref"><code>ref</code></a>, <a href="#parameter-time_period"><code>time_period</code></a>, <a href="#parameter-actor_name"><code>actor_name</code></a>, <a href="#parameter-rule_suite_result"><code>rule_suite_result</code></a>, <a href="#parameter-evaluate_status"><code>evaluate_status</code></a>, <a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-page"><code>page</code></a></td>
     <td>Lists suites of rule evaluations at the repository level.<br />For more information, see "[Managing rulesets for a repository](https://docs.github.com/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/managing-rulesets-for-a-repository#viewing-insights-for-rulesets)."</td>
 </tr>
 <tr>
     <td><a href="#get_org_rule_suites"><CopyableCode code="get_org_rule_suites" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-org"><code>org</code></a></td>
-    <td><a href="#parameter-ref"><code>ref</code></a>, <a href="#parameter-repository_name"><code>repository_name</code></a>, <a href="#parameter-time_period"><code>time_period</code></a>, <a href="#parameter-actor_name"><code>actor_name</code></a>, <a href="#parameter-rule_suite_result"><code>rule_suite_result</code></a>, <a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-page"><code>page</code></a></td>
+    <td><a href="#parameter-ref"><code>ref</code></a>, <a href="#parameter-repository_name"><code>repository_name</code></a>, <a href="#parameter-time_period"><code>time_period</code></a>, <a href="#parameter-actor_name"><code>actor_name</code></a>, <a href="#parameter-rule_suite_result"><code>rule_suite_result</code></a>, <a href="#parameter-evaluate_status"><code>evaluate_status</code></a>, <a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-page"><code>page</code></a></td>
     <td>Lists suites of rule evaluations at the organization level.<br />For more information, see "[Managing rulesets for repositories in your organization](https://docs.github.com/organizations/managing-organization-settings/managing-rulesets-for-repositories-in-your-organization#viewing-insights-for-rulesets)."</td>
 </tr>
 </tbody>
@@ -420,6 +420,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="actor_name" /></td>
     <td><code>string</code></td>
     <td>The handle for the GitHub user account to filter on. When specified, only rule evaluations triggered by this actor will be returned.</td>
+</tr>
+<tr id="parameter-evaluate_status">
+    <td><CopyableCode code="evaluate_status" /></td>
+    <td><code>string</code></td>
+    <td>The evaluate status to filter on. When specified, only rule suites resulting from rulesets with the specified evaluate status will be returned.   - `all` - all rule suites will be returned.   - `active` - only rule suites resulting from rulesets in active (non-evaluate) mode will be returned.   - `evaluate` - only rule suites resulting from rulesets in evaluate mode will be returned.</td>
 </tr>
 <tr id="parameter-page">
     <td><CopyableCode code="page" /></td>
@@ -538,6 +543,7 @@ AND ref = '{{ ref }}'
 AND time_period = '{{ time_period }}'
 AND actor_name = '{{ actor_name }}'
 AND rule_suite_result = '{{ rule_suite_result }}'
+AND evaluate_status = '{{ evaluate_status }}'
 AND per_page = '{{ per_page }}'
 AND page = '{{ page }}'
 ;
@@ -567,6 +573,7 @@ AND repository_name = '{{ repository_name }}'
 AND time_period = '{{ time_period }}'
 AND actor_name = '{{ actor_name }}'
 AND rule_suite_result = '{{ rule_suite_result }}'
+AND evaluate_status = '{{ evaluate_status }}'
 AND per_page = '{{ per_page }}'
 AND page = '{{ page }}'
 ;

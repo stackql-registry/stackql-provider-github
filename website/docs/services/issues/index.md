@@ -18,7 +18,7 @@ issues service documentation.
 
 :::info[Service Summary]
 
-total resources: __14__  
+total resources: __15__  
 
 :::
 
@@ -31,11 +31,12 @@ total resources: __14__
 <a href="/services/issues/issue_blocked_by_dependencies/">issue_blocked_by_dependencies</a><br />
 <a href="/services/issues/issue_blocking_dependencies/">issue_blocking_dependencies</a><br />
 <a href="/services/issues/issue_comment_pins/">issue_comment_pins</a><br />
-<a href="/services/issues/issue_field_values/">issue_field_values</a>
+<a href="/services/issues/issue_field_values/">issue_field_values</a><br />
+<a href="/services/issues/issue_parent/">issue_parent</a>
 </div>
 <div class="providerDocColumn">
-<a href="/services/issues/issue_parent/">issue_parent</a><br />
 <a href="/services/issues/issue_sub_issues/">issue_sub_issues</a><br />
+<a href="/services/issues/issue_suggestions/">issue_suggestions</a><br />
 <a href="/services/issues/issues/">issues</a><br />
 <a href="/services/issues/labels/">labels</a><br />
 <a href="/services/issues/milestones/">milestones</a><br />

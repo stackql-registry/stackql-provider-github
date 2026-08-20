@@ -451,7 +451,7 @@ paths:
               default:
                 value:
                   vcs: subversion
-                  vcs_url: http://svn.mycompany.com/svn/myproject
+                  vcs_url: http://svn.example.com/svn/myproject
                   vcs_username: octocat
                   vcs_password: secret
       responses:
@@ -3704,7 +3704,7 @@ components:
       value:
         vcs: subversion
         use_lfs: true
-        vcs_url: http://svn.mycompany.com/svn/myproject
+        vcs_url: http://svn.example.com/svn/myproject
         status: complete
         status_text: Done
         has_large_files: true
@@ -3719,7 +3719,7 @@ components:
       value:
         vcs: subversion
         use_lfs: true
-        vcs_url: http://svn.mycompany.com/svn/myproject
+        vcs_url: http://svn.example.com/svn/myproject
         status: importing
         status_text: Importing...
         has_large_files: false
@@ -3736,7 +3736,7 @@ components:
       value:
         vcs: subversion
         use_lfs: true
-        vcs_url: http://svn.mycompany.com/svn/myproject
+        vcs_url: http://svn.example.com/svn/myproject
         status: detecting
         url: https://api.github.com/repos/octocat/socm/import
         html_url: https://import.github.com/octocat/socm/import
@@ -3747,7 +3747,7 @@ components:
       value:
         vcs: tfvc
         use_lfs: true
-        vcs_url: http://tfs.mycompany.com/tfs/myproject
+        vcs_url: http://tfs.example.com/tfs/myproject
         tfvc_project: project1
         status: importing
         status_text: Importing...
@@ -3765,7 +3765,7 @@ components:
       value:
         vcs: subversion
         use_lfs: true
-        vcs_url: http://svn.mycompany.com/svn/myproject
+        vcs_url: http://svn.example.com/svn/myproject
         status: importing
         status_text: Importing...
         has_large_files: false

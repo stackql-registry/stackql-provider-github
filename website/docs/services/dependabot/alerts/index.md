@@ -483,21 +483,21 @@ The following methods are available for this resource:
     <td><a href="#list_alerts_for_repo"><CopyableCode code="list_alerts_for_repo" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a></td>
-    <td><a href="#parameter-classification"><code>classification</code></a>, <a href="#parameter-state"><code>state</code></a>, <a href="#parameter-severity"><code>severity</code></a>, <a href="#parameter-ecosystem"><code>ecosystem</code></a>, <a href="#parameter-package"><code>package</code></a>, <a href="#parameter-manifest"><code>manifest</code></a>, <a href="#parameter-epss_percentage"><code>epss_percentage</code></a>, <a href="#parameter-has"><code>has</code></a>, <a href="#parameter-assignee"><code>assignee</code></a>, <a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-sort"><code>sort</code></a>, <a href="#parameter-direction"><code>direction</code></a>, <a href="#parameter-before"><code>before</code></a>, <a href="#parameter-after"><code>after</code></a>, <a href="#parameter-per_page"><code>per_page</code></a></td>
+    <td><a href="#parameter-classification"><code>classification</code></a>, <a href="#parameter-state"><code>state</code></a>, <a href="#parameter-severity"><code>severity</code></a>, <a href="#parameter-ecosystem"><code>ecosystem</code></a>, <a href="#parameter-package"><code>package</code></a>, <a href="#parameter-manifest"><code>manifest</code></a>, <a href="#parameter-epss_percentage"><code>epss_percentage</code></a>, <a href="#parameter-has"><code>has</code></a>, <a href="#parameter-assignee"><code>assignee</code></a>, <a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-relationship"><code>relationship</code></a>, <a href="#parameter-sort"><code>sort</code></a>, <a href="#parameter-direction"><code>direction</code></a>, <a href="#parameter-before"><code>before</code></a>, <a href="#parameter-after"><code>after</code></a>, <a href="#parameter-per_page"><code>per_page</code></a></td>
     <td>OAuth app tokens and personal access tokens (classic) need the `security_events` scope to use this endpoint. If this endpoint is only used with public repositories, the token can use the `public_repo` scope instead.</td>
 </tr>
 <tr>
     <td><a href="#list_alerts_for_enterprise"><CopyableCode code="list_alerts_for_enterprise" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-enterprise"><code>enterprise</code></a></td>
-    <td><a href="#parameter-classification"><code>classification</code></a>, <a href="#parameter-state"><code>state</code></a>, <a href="#parameter-severity"><code>severity</code></a>, <a href="#parameter-ecosystem"><code>ecosystem</code></a>, <a href="#parameter-package"><code>package</code></a>, <a href="#parameter-epss_percentage"><code>epss_percentage</code></a>, <a href="#parameter-has"><code>has</code></a>, <a href="#parameter-assignee"><code>assignee</code></a>, <a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-sort"><code>sort</code></a>, <a href="#parameter-direction"><code>direction</code></a>, <a href="#parameter-before"><code>before</code></a>, <a href="#parameter-after"><code>after</code></a>, <a href="#parameter-per_page"><code>per_page</code></a></td>
+    <td><a href="#parameter-classification"><code>classification</code></a>, <a href="#parameter-state"><code>state</code></a>, <a href="#parameter-severity"><code>severity</code></a>, <a href="#parameter-ecosystem"><code>ecosystem</code></a>, <a href="#parameter-package"><code>package</code></a>, <a href="#parameter-epss_percentage"><code>epss_percentage</code></a>, <a href="#parameter-has"><code>has</code></a>, <a href="#parameter-assignee"><code>assignee</code></a>, <a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-relationship"><code>relationship</code></a>, <a href="#parameter-sort"><code>sort</code></a>, <a href="#parameter-direction"><code>direction</code></a>, <a href="#parameter-before"><code>before</code></a>, <a href="#parameter-after"><code>after</code></a>, <a href="#parameter-per_page"><code>per_page</code></a></td>
     <td>Lists Dependabot alerts for repositories that are owned by the specified enterprise.<br /><br />The authenticated user must be a member of the enterprise to use this endpoint.<br /><br />Alerts are only returned for organizations in the enterprise for which you are an organization owner or a security manager. For more information about security managers, see "[Managing security managers in your organization](https://docs.github.com/organizations/managing-peoples-access-to-your-organization-with-roles/managing-security-managers-in-your-organization)."<br /><br />OAuth app tokens and personal access tokens (classic) need the `repo` or `security_events` scope to use this endpoint.</td>
 </tr>
 <tr>
     <td><a href="#list_alerts_for_org"><CopyableCode code="list_alerts_for_org" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-org"><code>org</code></a></td>
-    <td><a href="#parameter-classification"><code>classification</code></a>, <a href="#parameter-state"><code>state</code></a>, <a href="#parameter-severity"><code>severity</code></a>, <a href="#parameter-ecosystem"><code>ecosystem</code></a>, <a href="#parameter-package"><code>package</code></a>, <a href="#parameter-epss_percentage"><code>epss_percentage</code></a>, <a href="#parameter-artifact_registry_url"><code>artifact_registry_url</code></a>, <a href="#parameter-artifact_registry"><code>artifact_registry</code></a>, <a href="#parameter-has"><code>has</code></a>, <a href="#parameter-assignee"><code>assignee</code></a>, <a href="#parameter-runtime_risk"><code>runtime_risk</code></a>, <a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-sort"><code>sort</code></a>, <a href="#parameter-direction"><code>direction</code></a>, <a href="#parameter-before"><code>before</code></a>, <a href="#parameter-after"><code>after</code></a>, <a href="#parameter-per_page"><code>per_page</code></a></td>
+    <td><a href="#parameter-classification"><code>classification</code></a>, <a href="#parameter-state"><code>state</code></a>, <a href="#parameter-severity"><code>severity</code></a>, <a href="#parameter-ecosystem"><code>ecosystem</code></a>, <a href="#parameter-package"><code>package</code></a>, <a href="#parameter-epss_percentage"><code>epss_percentage</code></a>, <a href="#parameter-artifact_registry_url"><code>artifact_registry_url</code></a>, <a href="#parameter-artifact_registry"><code>artifact_registry</code></a>, <a href="#parameter-has"><code>has</code></a>, <a href="#parameter-assignee"><code>assignee</code></a>, <a href="#parameter-runtime_risk"><code>runtime_risk</code></a>, <a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-relationship"><code>relationship</code></a>, <a href="#parameter-sort"><code>sort</code></a>, <a href="#parameter-direction"><code>direction</code></a>, <a href="#parameter-before"><code>before</code></a>, <a href="#parameter-after"><code>after</code></a>, <a href="#parameter-per_page"><code>per_page</code></a></td>
     <td>Lists Dependabot alerts for an organization.<br /><br />The authenticated user must be an owner or security manager for the organization to use this endpoint.<br /><br />OAuth app tokens and personal access tokens (classic) need the `security_events` scope to use this endpoint. If this endpoint is only used with public repositories, the token can use the `public_repo` scope instead.</td>
 </tr>
 <tr>
@@ -613,6 +613,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>integer</code></td>
     <td>The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the-rest-api)."</td>
 </tr>
+<tr id="parameter-relationship">
+    <td><CopyableCode code="relationship" /></td>
+    <td><code>string</code></td>
+    <td>A comma-separated list of relationships of the vulnerable dependency to your project. If specified, only alerts with these relationships will be returned.  &gt; [!NOTE] &gt; We are rolling out support for dependency relationship across ecosystems. This value will be "unknown" for all dependencies in unsupported ecosystems.</td>
+</tr>
 <tr id="parameter-runtime_risk">
     <td><CopyableCode code="runtime_risk" /></td>
     <td><code>string</code></td>
@@ -718,6 +723,7 @@ AND epss_percentage = '{{ epss_percentage }}'
 AND has = '{{ has }}'
 AND assignee = '{{ assignee }}'
 AND scope = '{{ scope }}'
+AND relationship = '{{ relationship }}'
 AND sort = '{{ sort }}'
 AND direction = '{{ direction }}'
 AND before = '{{ before }}'
@@ -761,6 +767,7 @@ AND epss_percentage = '{{ epss_percentage }}'
 AND has = '{{ has }}'
 AND assignee = '{{ assignee }}'
 AND scope = '{{ scope }}'
+AND relationship = '{{ relationship }}'
 AND sort = '{{ sort }}'
 AND direction = '{{ direction }}'
 AND before = '{{ before }}'
@@ -807,6 +814,7 @@ AND has = '{{ has }}'
 AND assignee = '{{ assignee }}'
 AND runtime_risk = '{{ runtime_risk }}'
 AND scope = '{{ scope }}'
+AND relationship = '{{ relationship }}'
 AND sort = '{{ sort }}'
 AND direction = '{{ direction }}'
 AND before = '{{ before }}'
@@ -836,7 +844,8 @@ SET
 state = '{{ state }}',
 dismissed_reason = '{{ dismissed_reason }}',
 dismissed_comment = '{{ dismissed_comment }}',
-assignees = '{{ assignees }}'
+assignees = '{{ assignees }}',
+agent_assignment = '{{ agent_assignment }}'
 WHERE 
 owner = '{{ owner }}' --required
 AND repo = '{{ repo }}' --required

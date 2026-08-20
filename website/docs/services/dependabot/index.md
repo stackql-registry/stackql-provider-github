@@ -18,7 +18,7 @@ dependabot service documentation.
 
 :::info[Service Summary]
 
-total resources: __5__  
+total resources: __6__  
 
 :::
 
@@ -26,10 +26,11 @@ total resources: __5__
 <div class="row">
 <div class="providerDocColumn">
 <a href="/services/dependabot/alerts/">alerts</a><br />
-<a href="/services/dependabot/org_dependabot_repository_access/">org_dependabot_repository_access</a><br />
-<a href="/services/dependabot/public_keys/">public_keys</a>
+<a href="/services/dependabot/enterprise_dependabot_repository_access/">enterprise_dependabot_repository_access</a><br />
+<a href="/services/dependabot/org_dependabot_repository_access/">org_dependabot_repository_access</a>
 </div>
 <div class="providerDocColumn">
+<a href="/services/dependabot/public_keys/">public_keys</a><br />
 <a href="/services/dependabot/repos_for_secret/">repos_for_secret</a><br />
 <a href="/services/dependabot/secrets/">secrets</a>
 </div>

@@ -93,17 +93,17 @@
     required_columns: [number, title, state]
 
 - name: list_workflows
-  # GitHub returns {total_count, workflows: [...]} - stackql exposes the envelope
-  # as a single row when no objectKey unwrap is configured.
+  # GitHub returns {total_count, workflows: [...]}; the provider unwraps the
+  # `workflows` array (objectKey) so each workflow is a row.
   sql: |
-    SELECT total_count, workflows
+    SELECT id, name, state, path
     FROM github.actions.workflows
     WHERE owner = '${TEST_ORG}' AND repo = '${TEST_REPO}'
   assertions:
     min_rows: 1
-    required_columns: [total_count, workflows]
+    required_columns: [id, name, state, path]
     row_predicates:
-      - "int(r['total_count']) >= 0"
+      - "all(row['path'] for row in rows)"
 
 - name: list_branches
   sql: |
@@ -147,3 +147,123 @@
     required_columns: [id, name, full_name]
     row_predicates:
       - "all(row['name'] for row in rows)"
+
+# --- pagination -------------------------------------------------------------
+
+- name: pagination_follows_link_header
+  # The service-level x-stackQL-config declares Link-header pagination. The
+  # default page size is 30, so more than 30 rows proves a second page was
+  # fetched. TEST_REPO must have more than 30 commits.
+  sql: |
+    SELECT sha
+    FROM github.repos.commits
+    WHERE owner = '${TEST_ORG}' AND repo = '${TEST_REPO}'
+  assertions:
+    min_rows: 31
+    required_columns: [sha]
+
+- name: pagination_honours_per_page_param
+  # per_page is an ordinary operation parameter, pushed to the query string.
+  sql: |
+    SELECT count(*) AS n
+    FROM github.repos.commits
+    WHERE owner = '${TEST_ORG}' AND repo = '${TEST_REPO}' AND per_page = 100
+  assertions:
+    min_rows: 1
+    row_predicates:
+      - "int(r['n']) > 100"
+
+# --- resources added in the 2026-08 spec refresh ------------------------------
+
+- name: list_issue_types
+  sql: |
+    SELECT id, name
+    FROM github.repos.issue_types
+    WHERE owner = '${TEST_ORG}' AND repo = '${TEST_REPO}'
+  assertions:
+    min_rows: 0   # only populated for repos in orgs with issue types configured
+
+- name: list_contributors_window_function
+  sql: |
+    SELECT login, contributions,
+           RANK() OVER (ORDER BY contributions DESC) AS rank
+    FROM github.repos.contributors
+    WHERE owner = '${TEST_ORG}' AND repo = '${TEST_REPO}'
+  assertions:
+    min_rows: 1
+    required_columns: [login, contributions, rank]
+    row_predicates:
+      - "int(rows[0]['rank']) == 1"
+
+# --- GraphQL-backed resources ---------------------------------------------------
+# These POST to https://api.github.com/graphql; the same basic-auth PAT is used.
+
+- name: graphql_discussions
+  sql: |
+    SELECT number, title, json_extract(category, '$.name') AS category, created_at
+    FROM github.discussions.discussions
+    WHERE owner = '${TEST_ORG}' AND repo = '${TEST_REPO}'
+  assertions:
+    min_rows: 1   # TEST_REPO must have Discussions enabled with at least one discussion
+    required_columns: [number, title, category, created_at]
+    row_predicates:
+      - "all(int(row['number']) > 0 for row in rows)"
+
+- name: graphql_discussion_categories
+  sql: |
+    SELECT name, slug, is_answerable
+    FROM github.discussions.discussion_categories
+    WHERE owner = '${TEST_ORG}' AND repo = '${TEST_REPO}'
+  assertions:
+    min_rows: 1
+    required_columns: [name, slug, is_answerable]
+
+- name: graphql_contribution_calendar
+  sql: |
+    SELECT first_day, contribution_days
+    FROM github.users.contribution_calendar
+    WHERE username = '${TEST_CALENDAR_USER}'
+  assertions:
+    min_rows: 52   # trailing year, one row per week
+    required_columns: [first_day, contribution_days]
+
+- name: graphql_contribution_calendar_json_each
+  sql: |
+    SELECT json_extract(d.value, '$.date') AS day,
+           json_extract(d.value, '$.contribution_count') AS n
+    FROM github.users.contribution_calendar c, json_each(c.contribution_days) d
+    WHERE c.username = '${TEST_CALENDAR_USER}'
+  assertions:
+    min_rows: 365
+    required_columns: [day, n]
+
+- name: graphql_review_threads
+  sql: |
+    SELECT is_resolved, path, line
+    FROM github.pulls.review_threads
+    WHERE owner = '${TEST_ORG}' AND repo = '${TEST_REPO}' AND pull_number = ${TEST_PULL_NUMBER}
+  assertions:
+    min_rows: 0   # exercises the query path; the PR may have no review threads
+
+- name: graphql_org_sponsorships
+  sql: |
+    SELECT id, privacy_level
+    FROM github.orgs.sponsorships
+    WHERE org = '${TEST_ORG}'
+  assertions:
+    min_rows: 0
+
+- name: graphql_star_history
+  sql: |
+    SELECT starred_at, json_extract(user, '$.login') AS login
+    FROM github.activity.star_history
+    WHERE owner = '${TEST_ORG}' AND repo = '${TEST_REPO}'
+  assertions:
+    min_rows: 1
+    required_columns: [starred_at, login]
+  xfail:
+    reason: >-
+      Since July 2026 GitHub limits stargazer listings (REST and GraphQL) to
+      repository admins and collaborators; other tokens get "Resource not
+      accessible by personal access token". Remove this xfail when running
+      with a token that has admin or collaborator access to TEST_REPO.

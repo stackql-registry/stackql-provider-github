@@ -93,6 +93,11 @@ Response
     <td></td>
 </tr>
 <tr>
+    <td><CopyableCode code="notification_setting" /></td>
+    <td><code>string</code></td>
+    <td>Whether team members will receive notifications when the team is mentioned. (notifications_enabled, notifications_disabled) (example: notifications_enabled)</td>
+</tr>
+<tr>
     <td><CopyableCode code="organization_selection_type" /></td>
     <td><code>string</code></td>
     <td> (example: disabled | selected | all)</td>
@@ -172,6 +177,11 @@ Response
     <td><CopyableCode code="members_url" /></td>
     <td><code>string</code></td>
     <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="notification_setting" /></td>
+    <td><code>string</code></td>
+    <td>Whether team members will receive notifications when the team is mentioned. (notifications_enabled, notifications_disabled) (example: notifications_enabled)</td>
 </tr>
 <tr>
     <td><CopyableCode code="organization_selection_type" /></td>
@@ -315,6 +325,7 @@ created_at,
 description,
 html_url,
 members_url,
+notification_setting,
 organization_selection_type,
 slug,
 sync_to_organizations,
@@ -340,6 +351,7 @@ created_at,
 description,
 html_url,
 members_url,
+notification_setting,
 organization_selection_type,
 slug,
 sync_to_organizations,
@@ -375,6 +387,7 @@ description,
 sync_to_organizations,
 organization_selection_type,
 group_id,
+notification_setting,
 enterprise
 )
 SELECT 
@@ -383,6 +396,7 @@ SELECT
 '{{ sync_to_organizations }}',
 '{{ organization_selection_type }}',
 '{{ group_id }}',
+'{{ notification_setting }}',
 '{{ enterprise }}'
 RETURNING
 id,
@@ -393,6 +407,7 @@ created_at,
 description,
 html_url,
 members_url,
+notification_setting,
 organization_selection_type,
 slug,
 sync_to_organizations,
@@ -438,6 +453,14 @@ url
       value: "{{ group_id }}"
       description: |
         The ID of the IdP group to assign team membership with. You can get this value from the [REST API endpoints for SCIM](https://docs.github.com/rest/scim#list-provisioned-scim-groups-for-an-enterprise).
+    - name: notification_setting
+      value: "{{ notification_setting }}"
+      description: |
+        The notification setting the team is set to. The options are:
+        * \`notifications_enabled\` - team members receive notifications when the team is @mentioned.
+        * \`notifications_disabled\` - no one receives notifications.
+        Default: \`notifications_enabled\`
+      valid_values: ['notifications_enabled', 'notifications_disabled']
 `}</CodeBlock>
 
 </TabItem>
@@ -463,7 +486,8 @@ name = '{{ name }}',
 description = '{{ description }}',
 sync_to_organizations = '{{ sync_to_organizations }}',
 organization_selection_type = '{{ organization_selection_type }}',
-group_id = '{{ group_id }}'
+group_id = '{{ group_id }}',
+notification_setting = '{{ notification_setting }}'
 WHERE 
 enterprise = '{{ enterprise }}' --required
 AND team_slug = '{{ team_slug }}' --required
@@ -476,6 +500,7 @@ created_at,
 description,
 html_url,
 members_url,
+notification_setting,
 organization_selection_type,
 slug,
 sync_to_organizations,

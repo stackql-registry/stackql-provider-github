@@ -99,6 +99,11 @@ Response
     <td></td>
 </tr>
 <tr>
+    <td><CopyableCode code="minimized" /></td>
+    <td><code>object</code></td>
+    <td>Details about why an issue comment was minimized. (title: Minimized Issue Comment)</td>
+</tr>
+<tr>
     <td><CopyableCode code="performed_via_github_app" /></td>
     <td><code>object</code></td>
     <td>GitHub apps are a new way to extend GitHub. They can be installed directly on organizations and user accounts and granted access to specific repositories. They come with granular permissions and built-in webhooks. GitHub apps are first class actors within GitHub. (title: GitHub app)</td>
@@ -190,6 +195,11 @@ Response
     <td></td>
 </tr>
 <tr>
+    <td><CopyableCode code="minimized" /></td>
+    <td><code>object</code></td>
+    <td>Details about why an issue comment was minimized. (title: Minimized Issue Comment)</td>
+</tr>
+<tr>
     <td><CopyableCode code="performed_via_github_app" /></td>
     <td><code>object</code></td>
     <td>GitHub apps are a new way to extend GitHub. They can be installed directly on organizations and user accounts and granted access to specific repositories. They come with granular permissions and built-in webhooks. GitHub apps are first class actors within GitHub. (title: GitHub app)</td>
@@ -279,6 +289,11 @@ Response
     <td><CopyableCode code="issue_url" /></td>
     <td><code>string (uri)</code></td>
     <td></td>
+</tr>
+<tr>
+    <td><CopyableCode code="minimized" /></td>
+    <td><code>object</code></td>
+    <td>Details about why an issue comment was minimized. (title: Minimized Issue Comment)</td>
 </tr>
 <tr>
     <td><CopyableCode code="performed_via_github_app" /></td>
@@ -461,6 +476,7 @@ body_text,
 created_at,
 html_url,
 issue_url,
+minimized,
 performed_via_github_app,
 pin,
 reactions,
@@ -489,6 +505,7 @@ body_text,
 created_at,
 html_url,
 issue_url,
+minimized,
 performed_via_github_app,
 pin,
 reactions,
@@ -520,6 +537,7 @@ body_text,
 created_at,
 html_url,
 issue_url,
+minimized,
 performed_via_github_app,
 pin,
 reactions,
@@ -575,6 +593,7 @@ body_text,
 created_at,
 html_url,
 issue_url,
+minimized,
 performed_via_github_app,
 pin,
 reactions,
@@ -639,6 +658,7 @@ body_text,
 created_at,
 html_url,
 issue_url,
+minimized,
 performed_via_github_app,
 pin,
 reactions,

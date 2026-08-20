@@ -140,21 +140,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-min_timestamp"><code>min_timestamp</code></a>, <a href="#parameter-actor_type"><code>actor_type</code></a>, <a href="#parameter-actor_id"><code>actor_id</code></a></td>
     <td><a href="#parameter-max_timestamp"><code>max_timestamp</code></a></td>
-    <td>Get overall statistics of API requests within the organization made by a specific actor. Actors can be GitHub App installations, OAuth apps or other tokens on behalf of a user.</td>
+    <td>Get overall statistics of API requests within the organization made by a specific actor. Actors can be GitHub App installations, OAuth apps or other tokens on behalf of a user.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.</td>
 </tr>
 <tr>
     <td><a href="#get_summary_stats_by_user"><CopyableCode code="get_summary_stats_by_user" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-user_id"><code>user_id</code></a>, <a href="#parameter-min_timestamp"><code>min_timestamp</code></a></td>
     <td><a href="#parameter-max_timestamp"><code>max_timestamp</code></a></td>
-    <td>Get overall statistics of API requests within the organization for a user.</td>
+    <td>Get overall statistics of API requests within the organization for a user.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.</td>
 </tr>
 <tr>
     <td><a href="#get_summary_stats"><CopyableCode code="get_summary_stats" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-min_timestamp"><code>min_timestamp</code></a></td>
     <td><a href="#parameter-max_timestamp"><code>max_timestamp</code></a></td>
-    <td>Get overall statistics of API requests made within an organization by all users and apps within a specified time frame.</td>
+    <td>Get overall statistics of API requests made within an organization by all users and apps within a specified time frame.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.</td>
 </tr>
 </tbody>
 </table>
@@ -217,7 +217,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_summary_stats_by_actor">
 
-Get overall statistics of API requests within the organization made by a specific actor. Actors can be GitHub App installations, OAuth apps or other tokens on behalf of a user.
+Get overall statistics of API requests within the organization made by a specific actor. Actors can be GitHub App installations, OAuth apps or other tokens on behalf of a user.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
 
 ```sql
 SELECT
@@ -234,7 +234,7 @@ AND max_timestamp = '{{ max_timestamp }}'
 </TabItem>
 <TabItem value="get_summary_stats_by_user">
 
-Get overall statistics of API requests within the organization for a user.
+Get overall statistics of API requests within the organization for a user.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
 
 ```sql
 SELECT
@@ -250,7 +250,7 @@ AND max_timestamp = '{{ max_timestamp }}'
 </TabItem>
 <TabItem value="get_summary_stats">
 
-Get overall statistics of API requests made within an organization by all users and apps within a specified time frame.
+Get overall statistics of API requests made within an organization by all users and apps within a specified time frame.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
 
 ```sql
 SELECT

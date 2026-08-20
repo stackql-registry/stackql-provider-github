@@ -123,6 +123,11 @@ Task retrieved successfully
     <td>Last update timestamp</td>
 </tr>
 <tr>
+    <td><CopyableCode code="usage" /></td>
+    <td><code>object</code></td>
+    <td>Structured information about billing units consumed by the session.</td>
+</tr>
+<tr>
     <td><CopyableCode code="user" /></td>
     <td><code>object</code></td>
     <td>The user who created this session</td>
@@ -177,6 +182,11 @@ Tasks retrieved successfully
     <td><CopyableCode code="creator_type" /></td>
     <td><code>string</code></td>
     <td>Type of the task creator (user, organization)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="custom_agent" /></td>
+    <td><code>object</code></td>
+    <td>Custom agent metadata associated with this task</td>
 </tr>
 <tr>
     <td><CopyableCode code="html_url" /></td>
@@ -243,21 +253,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a>, <a href="#parameter-task_id"><code>task_id</code></a></td>
     <td></td>
-    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Returns a task by ID scoped to an owner/repo path<br /></td>
+    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Returns a task by ID scoped to an owner/repo path<br /><br />**Fine-grained access tokens for "Get a task by repo"**<br /><br />This endpoint works with the following fine-grained token types:<br /><br />* [GitHub App user access tokens](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)<br />* [Fine-grained personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)<br /><br />The fine-grained token must have the following permission set:<br /><br />* "Agent tasks" repository permissions (read)<br /><br />GitHub App installation access tokens are not supported for this endpoint.<br /></td>
 </tr>
 <tr>
     <td><a href="#list_tasks_for_repo"><CopyableCode code="list_tasks_for_repo" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a></td>
     <td><a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-page"><code>page</code></a>, <a href="#parameter-sort"><code>sort</code></a>, <a href="#parameter-direction"><code>direction</code></a>, <a href="#parameter-state"><code>state</code></a>, <a href="#parameter-is_archived"><code>is_archived</code></a>, <a href="#parameter-since"><code>since</code></a>, <a href="#parameter-creator_id"><code>creator_id</code></a></td>
-    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Returns a list of tasks for a specific repository<br /></td>
+    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Returns a list of tasks for a specific repository<br /><br />**Fine-grained access tokens for "List tasks for repository"**<br /><br />This endpoint works with the following fine-grained token types:<br /><br />* [GitHub App user access tokens](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)<br />* [Fine-grained personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)<br /><br />The fine-grained token must have the following permission set:<br /><br />* "Agent tasks" repository permissions (read)<br /><br />GitHub App installation access tokens are not supported for this endpoint.<br /></td>
 </tr>
 <tr>
-    <td><a href="#create_task"><CopyableCode code="create_task" /></a></td>
+    <td><a href="#create_task_in_repo"><CopyableCode code="create_task_in_repo" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a>, <a href="#parameter-prompt"><code>prompt</code></a></td>
     <td></td>
-    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Creates a new task for a repository.<br /></td>
+    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Starts a new Copilot cloud agent task for a repository.<br /><br />This endpoint is only available to users with a Copilot Business or Copilot Enterprise subscription.<br /><br />**Fine-grained access tokens for "Start a task"**<br /><br />This endpoint works with the following fine-grained token types:<br /><br />* [GitHub App user access tokens](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)<br />* [Fine-grained personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)<br /><br />The fine-grained token must have the following permission set:<br /><br />* "Agent tasks" repository permissions (read and write)<br /><br />GitHub App installation access tokens are not supported for this endpoint.<br /></td>
 </tr>
 </tbody>
 </table>
@@ -292,8 +302,8 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-creator_id">
     <td><CopyableCode code="creator_id" /></td>
-    <td><code>integer</code></td>
-    <td>Filter tasks by creator user ID</td>
+    <td><code>array</code></td>
+    <td>Filter tasks by creator user ID. Accepts one or more user IDs.</td>
 </tr>
 <tr id="parameter-direction">
     <td><CopyableCode code="direction" /></td>
@@ -344,7 +354,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_task_by_repo_and_id">
 
-&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Returns a task by ID scoped to an owner/repo path<br />
+&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Returns a task by ID scoped to an owner/repo path<br /><br />**Fine-grained access tokens for "Get a task by repo"**<br /><br />This endpoint works with the following fine-grained token types:<br /><br />* [GitHub App user access tokens](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)<br />* [Fine-grained personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)<br /><br />The fine-grained token must have the following permission set:<br /><br />* "Agent tasks" repository permissions (read)<br /><br />GitHub App installation access tokens are not supported for this endpoint.<br />
 
 ```sql
 SELECT
@@ -362,6 +372,7 @@ prompt,
 repository,
 state,
 updated_at,
+usage,
 user
 FROM github.agent_tasks.repo_tasks
 WHERE owner = '{{ owner }}' -- required
@@ -372,7 +383,7 @@ AND task_id = '{{ task_id }}' -- required
 </TabItem>
 <TabItem value="list_tasks_for_repo">
 
-&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Returns a list of tasks for a specific repository<br />
+&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Returns a list of tasks for a specific repository<br /><br />**Fine-grained access tokens for "List tasks for repository"**<br /><br />This endpoint works with the following fine-grained token types:<br /><br />* [GitHub App user access tokens](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)<br />* [Fine-grained personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)<br /><br />The fine-grained token must have the following permission set:<br /><br />* "Agent tasks" repository permissions (read)<br /><br />GitHub App installation access tokens are not supported for this endpoint.<br />
 
 ```sql
 SELECT
@@ -383,6 +394,7 @@ artifacts,
 created_at,
 creator,
 creator_type,
+custom_agent,
 html_url,
 owner,
 repository,
@@ -411,30 +423,34 @@ AND creator_id = '{{ creator_id }}'
 ## `INSERT` examples
 
 <Tabs
-    defaultValue="create_task"
+    defaultValue="create_task_in_repo"
     values={[
-        { label: 'create_task', value: 'create_task' },
+        { label: 'create_task_in_repo', value: 'create_task_in_repo' },
         { label: 'Manifest', value: 'manifest' }
     ]}
 >
-<TabItem value="create_task">
+<TabItem value="create_task_in_repo">
 
-&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Creates a new task for a repository.<br />
+&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Starts a new Copilot cloud agent task for a repository.<br /><br />This endpoint is only available to users with a Copilot Business or Copilot Enterprise subscription.<br /><br />**Fine-grained access tokens for "Start a task"**<br /><br />This endpoint works with the following fine-grained token types:<br /><br />* [GitHub App user access tokens](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)<br />* [Fine-grained personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)<br /><br />The fine-grained token must have the following permission set:<br /><br />* "Agent tasks" repository permissions (read and write)<br /><br />GitHub App installation access tokens are not supported for this endpoint.<br />
 
 ```sql
 INSERT INTO github.agent_tasks.repo_tasks (
 prompt,
 model,
+custom_agent,
 create_pull_request,
 base_ref,
+head_ref,
 owner,
 repo
 )
 SELECT 
 '{{ prompt }}' /* required */,
 '{{ model }}',
+'{{ custom_agent }}',
 {{ create_pull_request }},
 '{{ base_ref }}',
+'{{ head_ref }}',
 '{{ owner }}',
 '{{ repo }}'
 RETURNING
@@ -445,6 +461,7 @@ artifacts,
 created_at,
 creator,
 creator_type,
+custom_agent,
 html_url,
 owner,
 repository,
@@ -475,6 +492,10 @@ user_collaborators
       value: "{{ model }}"
       description: |
         The model to use for this task. The allowed models may change over time and depend on the user's GitHub Copilot plan and organization policies. Currently supported values: \`claude-sonnet-4.6\`, \`claude-opus-4.6\`, \`gpt-5.2-codex\`, \`gpt-5.3-codex\`, \`gpt-5.4\`, \`claude-sonnet-4.5\`, \`claude-opus-4.5\`
+    - name: custom_agent
+      value: "{{ custom_agent }}"
+      description: |
+        Optional identifier for a custom agent to use for this task. Use the custom agent's filename without the extension - for example, for a \`.github/agents/performance-optimizer.agent.md\` custom agent, use \`performance-optimizer\`.
     - name: create_pull_request
       value: {{ create_pull_request }}
       description: |
@@ -484,6 +505,10 @@ user_collaborators
       value: "{{ base_ref }}"
       description: |
         Base ref for new branch/PR
+    - name: head_ref
+      value: "{{ head_ref }}"
+      description: |
+        Head ref for existing branch/PR. If provided with \`base_ref\`, the agent looks up open PR context for \`head_ref\` targeting \`base_ref\` and commits to \`head_ref\` instead of creating a new branch.
 `}</CodeBlock>
 
 </TabItem>

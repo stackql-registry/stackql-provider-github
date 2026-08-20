@@ -420,7 +420,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 <tbody>
 <tr id="parameter-check_run_id">
     <td><CopyableCode code="check_run_id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>The unique identifier of the check run.</td>
 </tr>
 <tr id="parameter-check_suite_id">
