@@ -89,6 +89,16 @@ Response
     <td>How the author is associated with the repository. (COLLABORATOR, CONTRIBUTOR, FIRST_TIMER, FIRST_TIME_CONTRIBUTOR, MANNEQUIN, MEMBER, NONE, OWNER) (title: author_association, example: OWNER)</td>
 </tr>
 <tr>
+    <td><CopyableCode code="blocked_by" /></td>
+    <td><code>object</code></td>
+    <td>A minimal reference to an issue linked from a timeline event (e.g. sub-issue, parent-issue, or dependency events). (title: Issue Reference)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="blocking" /></td>
+    <td><code>object</code></td>
+    <td>A minimal reference to an issue linked from a timeline event (e.g. sub-issue, parent-issue, or dependency events). (title: Issue Reference)</td>
+</tr>
+<tr>
     <td><CopyableCode code="commit_url" /></td>
     <td><code>string</code></td>
     <td> (example: https://api.github.com/repos/octocat/Hello-World/commits/6dcb09b5b57875f334f61aebed695e2e4193db5e)</td>
@@ -109,9 +119,19 @@ Response
     <td> (example: closed)</td>
 </tr>
 <tr>
+    <td><CopyableCode code="intent" /></td>
+    <td><code>object</code></td>
+    <td>The intent behind an agent's action on an issue, including the rationale and confidence. Present (and `null` when the event carried no agent intent) on supported event types while the issue suggestions feature is enabled for the repository; the property is omitted entirely when the feature is disabled or the event type does not support intent. (title: Issue Event Intent)</td>
+</tr>
+<tr>
     <td><CopyableCode code="issue" /></td>
     <td><code>object</code></td>
     <td>Issues are a great way to keep track of tasks, enhancements, and bugs for your projects. (title: Issue)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="issue_type" /></td>
+    <td><code>object</code></td>
+    <td>The type of issue. (title: Issue Type)</td>
 </tr>
 <tr>
     <td><CopyableCode code="label" /></td>
@@ -129,9 +149,19 @@ Response
     <td>Issue Event Milestone (title: Issue Event Milestone)</td>
 </tr>
 <tr>
+    <td><CopyableCode code="parent_issue" /></td>
+    <td><code>object</code></td>
+    <td>A minimal reference to an issue linked from a timeline event (e.g. sub-issue, parent-issue, or dependency events). (title: Issue Reference)</td>
+</tr>
+<tr>
     <td><CopyableCode code="performed_via_github_app" /></td>
     <td><code>object</code></td>
     <td>GitHub apps are a new way to extend GitHub. They can be installed directly on organizations and user accounts and granted access to specific repositories. They come with granular permissions and built-in webhooks. GitHub apps are first class actors within GitHub. (title: GitHub app)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="prev_issue_type" /></td>
+    <td><code>object</code></td>
+    <td>The type of issue. (title: Issue Type)</td>
 </tr>
 <tr>
     <td><CopyableCode code="project_card" /></td>
@@ -157,6 +187,11 @@ Response
     <td><CopyableCode code="review_requester" /></td>
     <td><code>object</code></td>
     <td>A GitHub user. (title: Simple User)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="sub_issue" /></td>
+    <td><code>object</code></td>
+    <td>A minimal reference to an issue linked from a timeline event (e.g. sub-issue, parent-issue, or dependency events). (title: Issue Reference)</td>
 </tr>
 <tr>
     <td><CopyableCode code="url" /></td>
@@ -210,6 +245,16 @@ Response
     <td>A GitHub user. (title: Simple User)</td>
 </tr>
 <tr>
+    <td><CopyableCode code="blocked_by" /></td>
+    <td><code>object</code></td>
+    <td>A minimal reference to an issue linked from a timeline event (e.g. sub-issue, parent-issue, or dependency events). (title: Issue Reference)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="blocking" /></td>
+    <td><code>object</code></td>
+    <td>A minimal reference to an issue linked from a timeline event (e.g. sub-issue, parent-issue, or dependency events). (title: Issue Reference)</td>
+</tr>
+<tr>
     <td><CopyableCode code="commit_url" /></td>
     <td><code>string</code></td>
     <td></td>
@@ -230,6 +275,16 @@ Response
     <td></td>
 </tr>
 <tr>
+    <td><CopyableCode code="intent" /></td>
+    <td><code>object</code></td>
+    <td>The intent behind an agent's action on an issue, including the rationale and confidence. Present (and `null` when the event carried no agent intent) on supported event types while the issue suggestions feature is enabled for the repository; the property is omitted entirely when the feature is disabled or the event type does not support intent. (title: Issue Event Intent)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="issue_type" /></td>
+    <td><code>object</code></td>
+    <td>The type of issue. (title: Issue Type)</td>
+</tr>
+<tr>
     <td><CopyableCode code="label" /></td>
     <td><code>object</code></td>
     <td></td>
@@ -245,9 +300,19 @@ Response
     <td></td>
 </tr>
 <tr>
+    <td><CopyableCode code="parent_issue" /></td>
+    <td><code>object</code></td>
+    <td>A minimal reference to an issue linked from a timeline event (e.g. sub-issue, parent-issue, or dependency events). (title: Issue Reference)</td>
+</tr>
+<tr>
     <td><CopyableCode code="performed_via_github_app" /></td>
     <td><code>object</code></td>
     <td>GitHub apps are a new way to extend GitHub. They can be installed directly on organizations and user accounts and granted access to specific repositories. They come with granular permissions and built-in webhooks. GitHub apps are first class actors within GitHub. (title: GitHub app)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="prev_issue_type" /></td>
+    <td><code>object</code></td>
+    <td>The type of issue. (title: Issue Type)</td>
 </tr>
 <tr>
     <td><CopyableCode code="project_card" /></td>
@@ -273,6 +338,11 @@ Response
     <td><CopyableCode code="review_requester" /></td>
     <td><code>object</code></td>
     <td>A GitHub user. (title: Simple User)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="sub_issue" /></td>
+    <td><code>object</code></td>
+    <td>A minimal reference to an issue linked from a timeline event (e.g. sub-issue, parent-issue, or dependency events). (title: Issue Reference)</td>
 </tr>
 <tr>
     <td><CopyableCode code="url" /></td>
@@ -331,6 +401,16 @@ Response
     <td>How the author is associated with the repository. (COLLABORATOR, CONTRIBUTOR, FIRST_TIMER, FIRST_TIME_CONTRIBUTOR, MANNEQUIN, MEMBER, NONE, OWNER) (title: author_association, example: OWNER)</td>
 </tr>
 <tr>
+    <td><CopyableCode code="blocked_by" /></td>
+    <td><code>object</code></td>
+    <td>A minimal reference to an issue linked from a timeline event (e.g. sub-issue, parent-issue, or dependency events). (title: Issue Reference)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="blocking" /></td>
+    <td><code>object</code></td>
+    <td>A minimal reference to an issue linked from a timeline event (e.g. sub-issue, parent-issue, or dependency events). (title: Issue Reference)</td>
+</tr>
+<tr>
     <td><CopyableCode code="commit_url" /></td>
     <td><code>string</code></td>
     <td> (example: https://api.github.com/repos/octocat/Hello-World/commits/6dcb09b5b57875f334f61aebed695e2e4193db5e)</td>
@@ -351,9 +431,19 @@ Response
     <td> (example: closed)</td>
 </tr>
 <tr>
+    <td><CopyableCode code="intent" /></td>
+    <td><code>object</code></td>
+    <td>The intent behind an agent's action on an issue, including the rationale and confidence. Present (and `null` when the event carried no agent intent) on supported event types while the issue suggestions feature is enabled for the repository; the property is omitted entirely when the feature is disabled or the event type does not support intent. (title: Issue Event Intent)</td>
+</tr>
+<tr>
     <td><CopyableCode code="issue" /></td>
     <td><code>object</code></td>
     <td>Issues are a great way to keep track of tasks, enhancements, and bugs for your projects. (title: Issue)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="issue_type" /></td>
+    <td><code>object</code></td>
+    <td>The type of issue. (title: Issue Type)</td>
 </tr>
 <tr>
     <td><CopyableCode code="label" /></td>
@@ -371,9 +461,19 @@ Response
     <td>Issue Event Milestone (title: Issue Event Milestone)</td>
 </tr>
 <tr>
+    <td><CopyableCode code="parent_issue" /></td>
+    <td><code>object</code></td>
+    <td>A minimal reference to an issue linked from a timeline event (e.g. sub-issue, parent-issue, or dependency events). (title: Issue Reference)</td>
+</tr>
+<tr>
     <td><CopyableCode code="performed_via_github_app" /></td>
     <td><code>object</code></td>
     <td>GitHub apps are a new way to extend GitHub. They can be installed directly on organizations and user accounts and granted access to specific repositories. They come with granular permissions and built-in webhooks. GitHub apps are first class actors within GitHub. (title: GitHub app)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="prev_issue_type" /></td>
+    <td><code>object</code></td>
+    <td>The type of issue. (title: Issue Type)</td>
 </tr>
 <tr>
     <td><CopyableCode code="project_card" /></td>
@@ -399,6 +499,11 @@ Response
     <td><CopyableCode code="review_requester" /></td>
     <td><code>object</code></td>
     <td>A GitHub user. (title: Simple User)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="sub_issue" /></td>
+    <td><code>object</code></td>
+    <td>A minimal reference to an issue linked from a timeline event (e.g. sub-issue, parent-issue, or dependency events). (title: Issue Reference)</td>
 </tr>
 <tr>
     <td><CopyableCode code="url" /></td>
@@ -518,20 +623,27 @@ actor,
 assignee,
 assigner,
 author_association,
+blocked_by,
+blocking,
 commit_url,
 created_at,
 dismissed_review,
 event,
+intent,
 issue,
+issue_type,
 label,
 lock_reason,
 milestone,
+parent_issue,
 performed_via_github_app,
+prev_issue_type,
 project_card,
 rename,
 requested_reviewer,
 requested_team,
 review_requester,
+sub_issue,
 url
 FROM github.issues.events
 WHERE owner = '{{ owner }}' -- required
@@ -552,19 +664,26 @@ node_id,
 actor,
 assignee,
 assigner,
+blocked_by,
+blocking,
 commit_url,
 created_at,
 dismissed_review,
 event,
+intent,
+issue_type,
 label,
 lock_reason,
 milestone,
+parent_issue,
 performed_via_github_app,
+prev_issue_type,
 project_card,
 rename,
 requested_reviewer,
 requested_team,
 review_requester,
+sub_issue,
 url
 FROM github.issues.events
 WHERE owner = '{{ owner }}' -- required
@@ -588,20 +707,27 @@ actor,
 assignee,
 assigner,
 author_association,
+blocked_by,
+blocking,
 commit_url,
 created_at,
 dismissed_review,
 event,
+intent,
 issue,
+issue_type,
 label,
 lock_reason,
 milestone,
+parent_issue,
 performed_via_github_app,
+prev_issue_type,
 project_card,
 rename,
 requested_reviewer,
 requested_team,
 review_requester,
+sub_issue,
 url
 FROM github.issues.events
 WHERE owner = '{{ owner }}' -- required

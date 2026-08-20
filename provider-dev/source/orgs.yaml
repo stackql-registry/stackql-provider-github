@@ -562,6 +562,10 @@ paths:
         If proposed records in the 'deployments' field have identical 'cluster', 'logical_environment',
         'physical_environment', and 'deployment_name' values as existing records, the existing records will be updated.
         If no existing records match, new records will be created.
+        Note: Artifacts are uniquely identified by the combination of their repository and digest fields. If two entries in the deployments
+        array resolve to the same repository and have identical digest fields but differing name and version fields, the endpoint will use
+        the artifact name and version from the record processed first, since a single artifact (identified by repository and digest) can
+        only have one name and version.
       tags:
         - orgs
       operationId: orgs/set-cluster-deployment-records
@@ -604,24 +608,18 @@ paths:
                     properties:
                       name:
                         type: string
-                        description: |
-                          The name of the artifact. Note that if multiple deployments have identical 'digest' parameter values,
-                          the name parameter must also be identical across all entries.
+                        description: The name of the artifact.
                         minLength: 1
                         maxLength: 256
                       digest:
                         type: string
-                        description: |
-                          The hex encoded digest of the artifact. Note that if multiple deployments have identical 'digest' parameter values,
-                          the name and version parameters must also be identical across all entries.
+                        description: The hex encoded digest of the artifact.
                         minLength: 71
                         maxLength: 71
                         pattern: ^sha256:[a-f0-9]{64}$
                       version:
                         type: string
-                        description: |
-                          The artifact version. Note that if multiple deployments have identical 'digest' parameter values,
-                          the version parameter must also be identical across all entries.
+                        description: The artifact version.
                         maxLength: 100
                         x-multi-segment: true
                         example: 1.2.3
@@ -674,6 +672,14 @@ paths:
                       - name
                       - deployment_name
                       - digest
+                partial_success:
+                  type: boolean
+                  default: false
+                  description: |
+                    When enabled, deployments associated with repositories the actor can write to are processed
+                    while deployments associated with repositories that cannot be resolved or written to by the actor
+                    are skipped and reported in the `errors` array. When false (the default), the endpoint returns
+                    an error if any targeted repository cannot be resolved, the actor lacks write access, or no matching attestation can be found.
                 return_records:
                   type: boolean
                   default: true
@@ -694,7 +700,9 @@ paths:
                       status: deployed
                       deployment_name: deployment-pod
                       tags:
-                        runtime-risk: sensitive-data
+                        owning-team: platform
+                      runtime_risks:
+                        - sensitive-data
       responses:
         '200':
           description: |
@@ -716,6 +724,103 @@ paths:
               examples:
                 default:
                   $ref: '#/components/examples/artifact-deployment-record-list'
+        '207':
+          description: |
+            This response format is only returned when `partial_success` is set to true in the request body.
+            Successfully processed deployments are included in the `deployment_records` field. Records that could
+            not be processed and were skipped because of unresolvable repositories, missing actor permissions, or lack of a matching attestation are
+            included in the `errors` field.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_count:
+                    description: The number of deployment records created or updated.
+                    type: integer
+                  deployment_records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/artifact-deployment-record'
+                  errors:
+                    type: array
+                    description: A list of errors for deployments that could not be processed.
+                    items:
+                      type: object
+                      properties:
+                        cause:
+                          type: string
+                          description: The reason the deployment failed processing.
+                          enum:
+                            - unauthorized
+                            - not_found
+                        deployment:
+                          type: object
+                          description: The deployment payload that could not be processed.
+                          properties:
+                            name:
+                              type: string
+                              description: The name of the artifact.
+                            digest:
+                              type: string
+                              description: The digest of the artifact.
+                            deployment_name:
+                              type: string
+                              description: The name of the deployment that failed processing.
+                            version:
+                              type: string
+                              nullable: true
+                              description: The version of the deployment.
+                            status:
+                              type: string
+                              description: The deployment status.
+                            github_repository:
+                              type: string
+                              nullable: true
+                              description: The repository associated with the deployment.
+                            tags:
+                              type: object
+                              additionalProperties:
+                                type: string
+                              description: Custom metadata tags for the deployment.
+                            runtime_risks:
+                              type: array
+                              items:
+                                type: string
+                              description: Runtime risk classifications for the deployment.
+                required:
+                  - total_count
+              examples:
+                partial_success:
+                  value:
+                    total_count: 1
+                    deployment_records:
+                      - id: 42
+                        digest: sha256:1bb1e949e55dcefc6353e7b36c8897d2a107d8e8dca49d4e3c0ea8493fc0bc72
+                        logical_environment: prod
+                        physical_environment: us-east-1a
+                        cluster: production-cluster
+                        deployment_name: deployment-pod
+                        tags:
+                          owning-team: platform
+                        runtime_risks:
+                          - sensitive-data
+                        created_at: '2024-01-01T12:00:00Z'
+                        updated_at: '2024-01-01T12:30:00Z'
+                        attestation_id: 777
+                    errors:
+                      - cause: unauthorized
+                        deployment:
+                          name: my-image
+                          digest: sha256:5aa19f9a13f67a644f6d8528e2eb5cf64431e236df5dbbd44ff9b9e3f6fc6cb2
+                          deployment_name: restricted-deployment
+                          version: 2.1.1
+                          status: deployed
+                          github_repository: private-repo
+                          tags:
+                            owning-team: platform
+                          runtime_risks:
+                            - sensitive-data
         '403':
           description: Forbidden
           content:
@@ -731,7 +836,278 @@ paths:
                         - 123
                         - 345
         '404':
-          $ref: '#/components/responses/not_found'
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/basic-error'
+              examples:
+                not_found:
+                  value:
+                    message:
+                      cause: One or more repositories do not exist
+                      repositories:
+                        - repoA
+                        - repoB
+      x-github:
+        githubCloudOnly: false
+        enabledForGitHubApps: true
+        category: orgs
+        subcategory: artifact-metadata
+      x-stackQL-resource: artifact_metadata
+  /orgs/{org}/artifacts/metadata/deployment-record/cluster/{cluster}/jobs:
+    post:
+      summary: Create a cluster deployment records job
+      description: |-
+        Create a background job to set deployment records for a given cluster.
+        Performs validation and permission checks synchronously, returning rejected
+        deployments immediately, then enqueues a background job for the actual
+        deployment updates. Use the companion GET endpoint to poll for job status.
+      tags:
+        - orgs
+      operationId: orgs/create-cluster-deployment-records-job
+      externalDocs:
+        description: API method documentation
+        url: https://docs.github.com/rest/orgs/artifact-metadata#create-a-cluster-deployment-records-job
+      parameters:
+        - $ref: '#/components/parameters/org'
+        - name: cluster
+          in: path
+          description: The cluster name.
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 128
+            pattern: ^[a-zA-Z0-9._-]+$
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                logical_environment:
+                  type: string
+                  description: The stage of the deployment.
+                  minLength: 1
+                  maxLength: 128
+                physical_environment:
+                  type: string
+                  description: The physical region of the deployment.
+                  maxLength: 128
+                deployments:
+                  type: array
+                  description: The list of deployments to record.
+                  maxItems: 5000
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: The name of the artifact.
+                        minLength: 1
+                        maxLength: 256
+                      digest:
+                        type: string
+                        description: The hex encoded digest of the artifact.
+                        minLength: 71
+                        maxLength: 71
+                        pattern: ^sha256:[a-f0-9]{64}$
+                      version:
+                        type: string
+                        description: The artifact version.
+                        maxLength: 100
+                        x-multi-segment: true
+                        example: 1.2.3
+                      status:
+                        type: string
+                        description: The deployment status of the artifact.
+                        default: deployed
+                        enum:
+                          - deployed
+                          - decommissioned
+                      deployment_name:
+                        type: string
+                        description: |
+                          The unique identifier for the deployment represented by the new record.
+                        minLength: 1
+                        maxLength: 256
+                      github_repository:
+                        type: string
+                        description: The name of the GitHub repository associated with the artifact.
+                        maxLength: 100
+                        pattern: ^[A-Za-z0-9.\-_]+$
+                        example: my-github-repo
+                      tags:
+                        type: object
+                        description: Key-value pairs to tag the deployment record.
+                        additionalProperties:
+                          type: string
+                      runtime_risks:
+                        type: array
+                        description: A list of runtime risks associated with the deployment.
+                        maxItems: 4
+                        uniqueItems: true
+                        items:
+                          type: string
+                          enum:
+                            - critical-resource
+                            - internet-exposed
+                            - lateral-movement
+                            - sensitive-data
+                    required:
+                      - name
+                      - deployment_name
+                      - digest
+              required:
+                - logical_environment
+                - deployments
+            examples:
+              default:
+                value:
+                  logical_environment: prod
+                  physical_environment: pacific-east
+                  deployments:
+                    - name: awesome-image
+                      digest: sha256:1bb1e949e55dcefc6353e7b36c8897d2a107d8e8dca49d4e3c0ea8493fc0bc72
+                      version: 2.1.0
+                      status: deployed
+                      deployment_name: deployment-pod
+                      tags:
+                        owning-team: platform
+                      runtime_risks:
+                        - sensitive-data
+      responses:
+        '202':
+          description: |
+            Job created successfully. Authorized deployments will be processed in the background.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id:
+                    description: The ID of the created job.
+                    type: integer
+                  errors:
+                    description: Deployments that were rejected during authorization.
+                    type: array
+                    items:
+                      type: string
+                      description: (opaque JSON object)
+                required:
+                  - job_id
+              examples:
+                default:
+                  value:
+                    job_id: 123
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/basic-error'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/basic-error'
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/basic-error'
+        '409':
+          description: A job is already in progress for this cluster.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/basic-error'
+      x-github:
+        githubCloudOnly: false
+        enabledForGitHubApps: true
+        category: orgs
+        subcategory: artifact-metadata
+      x-stackQL-resource: artifact_metadata
+  /orgs/{org}/artifacts/metadata/deployment-record/cluster/{cluster}/jobs/{job_id}:
+    get:
+      summary: Get cluster deployment records job status
+      description: Get the status and results of a previously created cluster deployment records job.
+      tags:
+        - orgs
+      operationId: orgs/get-cluster-deployment-records-job
+      externalDocs:
+        description: API method documentation
+        url: https://docs.github.com/rest/orgs/artifact-metadata#get-cluster-deployment-records-job-status
+      parameters:
+        - $ref: '#/components/parameters/org'
+        - name: cluster
+          in: path
+          description: The cluster name.
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 128
+            pattern: ^[a-zA-Z0-9._-]+$
+        - name: job_id
+          in: path
+          description: The ID of the job.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: |
+            Job status retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  job_id:
+                    description: The ID of the job.
+                    type: integer
+                  status:
+                    description: The current status of the job.
+                    type: string
+                    enum:
+                      - pending
+                      - processing
+                      - completed
+                      - failed
+                  started_at:
+                    description: When the job started processing (only present when processing, completed, or failed).
+                    type: string
+                    format: date-time
+                  total_count:
+                    description: The number of records successfully mutated (only present when completed).
+                    type: integer
+                  errors:
+                    description: Processing errors (only present when completed or failed).
+                    type: array
+                    items:
+                      type: string
+                      description: (opaque JSON object)
+                required:
+                  - job_id
+                  - status
+              examples:
+                default:
+                  value:
+                    job_id: 123
+                    status: completed
+                    started_at: '2026-06-10T12:00:00Z'
+                    total_count: 5
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/basic-error'
       x-github:
         githubCloudOnly: false
         enabledForGitHubApps: true
@@ -786,11 +1162,13 @@ paths:
                   pattern: ^https://
                   description: The URL where the artifact is stored.
                   example: https://reg.example.com/artifactory/bar/libfoo-1.2.3
+                  maxLength: 152
                 path:
                   type: string
                   format: uri
                   description: The path of the artifact.
                   example: com/github/bar/libfoo-1.2.3
+                  maxLength: 512
                 registry_url:
                   type: string
                   format: uri
@@ -798,10 +1176,12 @@ paths:
                   description: The base URL of the artifact registry.
                   example: https://reg.example.com/artifactory/
                   minLength: 1
+                  maxLength: 256
                 repository:
                   type: string
                   description: The repository name within the registry.
                   example: bar
+                  maxLength: 128
                 status:
                   type: string
                   description: The status of the artifact (e.g., active, inactive).
@@ -946,9 +1326,9 @@ paths:
     get:
       summary: List artifact storage records
       description: |-
-        List a collection of artifact storage records with a given subject digest that are associated with repositories owned by an organization.
+        List artifact storage records with a given subject digest for repositories owned by an organization.
 
-        The collection of storage records returned by this endpoint is filtered according to the authenticated user's permissions; if the authenticated user cannot read a repository, the attestations associated with that repository will not be included in the response. In addition, when using a fine-grained access token the `content:read` permission is required.
+        Results are filtered by the authenticated user's permissions; records for repositories the user cannot read are omitted. Fine-grained access tokens require the `artifact-metadata:read` permission.
       tags:
         - orgs
       operationId: orgs/list-artifact-storage-records
@@ -2091,7 +2471,10 @@ paths:
   /orgs/{org}/insights/api/route-stats/{actor_type}/{actor_id}:
     get:
       summary: Get route stats by actor
-      description: Get API request count statistics for an actor broken down by route within a specified time frame.
+      description: |-
+        Get API request count statistics for an actor broken down by route within a specified time frame.
+
+        Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
       tags:
         - orgs
       operationId: api-insights/get-route-stats-by-actor
@@ -2115,7 +2498,29 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-insights-route-stats'
+                type: array
+                items:
+                  type: object
+                  properties:
+                    http_method:
+                      description: The HTTP method
+                      type: string
+                    api_route:
+                      description: The API path's route template
+                      type: string
+                    total_request_count:
+                      description: The total number of requests within the queried time period
+                      type: integer
+                      format: int64
+                    rate_limited_request_count:
+                      description: The total number of requests that were rate limited within the queried time period
+                      type: integer
+                      format: int64
+                    last_rate_limited_timestamp:
+                      type: string
+                      nullable: true
+                    last_request_timestamp:
+                      type: string
               examples:
                 default:
                   $ref: '#/components/examples/api-insights-route-stats'
@@ -2127,7 +2532,10 @@ paths:
   /orgs/{org}/insights/api/subject-stats:
     get:
       summary: Get subject stats
-      description: Get API request statistics for all subjects within an organization within a specified time frame. Subjects can be users or GitHub Apps.
+      description: |-
+        Get API request statistics for all subjects within an organization within a specified time frame. Subjects can be users or GitHub Apps.
+
+        Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
       tags:
         - orgs
       operationId: api-insights/get-subject-stats
@@ -2149,7 +2557,26 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-insights-subject-stats'
+                type: array
+                items:
+                  type: object
+                  properties:
+                    subject_type:
+                      type: string
+                    subject_name:
+                      type: string
+                    subject_id:
+                      type: integer
+                      format: int64
+                    total_request_count:
+                      type: integer
+                    rate_limited_request_count:
+                      type: integer
+                    last_rate_limited_timestamp:
+                      type: string
+                      nullable: true
+                    last_request_timestamp:
+                      type: string
               examples:
                 default:
                   $ref: '#/components/examples/api-insights-subject-stats'
@@ -2161,7 +2588,10 @@ paths:
   /orgs/{org}/insights/api/summary-stats:
     get:
       summary: Get summary stats
-      description: Get overall statistics of API requests made within an organization by all users and apps within a specified time frame.
+      description: |-
+        Get overall statistics of API requests made within an organization by all users and apps within a specified time frame.
+
+        Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
       tags:
         - orgs
       operationId: api-insights/get-summary-stats
@@ -2190,7 +2620,10 @@ paths:
   /orgs/{org}/insights/api/summary-stats/users/{user_id}:
     get:
       summary: Get summary stats by user
-      description: Get overall statistics of API requests within the organization for a user.
+      description: |-
+        Get overall statistics of API requests within the organization for a user.
+
+        Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
       tags:
         - orgs
       operationId: api-insights/get-summary-stats-by-user
@@ -2220,7 +2653,10 @@ paths:
   /orgs/{org}/insights/api/summary-stats/{actor_type}/{actor_id}:
     get:
       summary: Get summary stats by actor
-      description: Get overall statistics of API requests within the organization made by a specific actor. Actors can be GitHub App installations, OAuth apps or other tokens on behalf of a user.
+      description: |-
+        Get overall statistics of API requests within the organization made by a specific actor. Actors can be GitHub App installations, OAuth apps or other tokens on behalf of a user.
+
+        Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
       tags:
         - orgs
       operationId: api-insights/get-summary-stats-by-actor
@@ -2251,7 +2687,10 @@ paths:
   /orgs/{org}/insights/api/time-stats:
     get:
       summary: Get time stats
-      description: Get the number of API requests and rate-limited requests made within an organization over a specified time period.
+      description: |-
+        Get the number of API requests and rate-limited requests made within an organization over a specified time period.
+
+        Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
       tags:
         - orgs
       operationId: api-insights/get-time-stats
@@ -2269,7 +2708,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-insights-time-stats'
+                type: array
+                items:
+                  type: object
+                  properties:
+                    timestamp:
+                      type: string
+                    total_request_count:
+                      type: integer
+                      format: int64
+                    rate_limited_request_count:
+                      type: integer
+                      format: int64
               examples:
                 default:
                   $ref: '#/components/examples/api-insights-time-stats'
@@ -2281,7 +2731,10 @@ paths:
   /orgs/{org}/insights/api/time-stats/users/{user_id}:
     get:
       summary: Get time stats by user
-      description: Get the number of API requests and rate-limited requests made within an organization by a specific user over a specified time period.
+      description: |-
+        Get the number of API requests and rate-limited requests made within an organization by a specific user over a specified time period.
+
+        Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
       tags:
         - orgs
       operationId: api-insights/get-time-stats-by-user
@@ -2300,7 +2753,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-insights-time-stats'
+                type: array
+                items:
+                  type: object
+                  properties:
+                    timestamp:
+                      type: string
+                    total_request_count:
+                      type: integer
+                      format: int64
+                    rate_limited_request_count:
+                      type: integer
+                      format: int64
               examples:
                 default:
                   $ref: '#/components/examples/api-insights-time-stats'
@@ -2312,7 +2776,10 @@ paths:
   /orgs/{org}/insights/api/time-stats/{actor_type}/{actor_id}:
     get:
       summary: Get time stats by actor
-      description: Get the number of API requests and rate-limited requests made within an organization by a specific actor within a specified time period.
+      description: |-
+        Get the number of API requests and rate-limited requests made within an organization by a specific actor within a specified time period.
+
+        Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
       tags:
         - orgs
       operationId: api-insights/get-time-stats-by-actor
@@ -2332,7 +2799,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-insights-time-stats'
+                type: array
+                items:
+                  type: object
+                  properties:
+                    timestamp:
+                      type: string
+                    total_request_count:
+                      type: integer
+                      format: int64
+                    rate_limited_request_count:
+                      type: integer
+                      format: int64
               examples:
                 default:
                   $ref: '#/components/examples/api-insights-time-stats'
@@ -2344,7 +2822,10 @@ paths:
   /orgs/{org}/insights/api/user-stats/{user_id}:
     get:
       summary: Get user stats
-      description: Get API usage statistics within an organization for a user broken down by the type of access.
+      description: |-
+        Get API usage statistics within an organization for a user broken down by the type of access.
+
+        Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
       tags:
         - orgs
       operationId: api-insights/get-user-stats
@@ -2367,7 +2848,34 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/api-insights-user-stats'
+                type: array
+                items:
+                  type: object
+                  properties:
+                    actor_type:
+                      type: string
+                    actor_name:
+                      type: string
+                    actor_id:
+                      type: integer
+                      format: int64
+                    integration_id:
+                      type: integer
+                      format: int64
+                      nullable: true
+                    oauth_application_id:
+                      type: integer
+                      format: int64
+                      nullable: true
+                    total_request_count:
+                      type: integer
+                    rate_limited_request_count:
+                      type: integer
+                    last_rate_limited_timestamp:
+                      type: string
+                      nullable: true
+                    last_request_timestamp:
+                      type: string
               examples:
                 default:
                   $ref: '#/components/examples/api-insights-user-stats'
@@ -3544,7 +4052,6 @@ paths:
             application/json:
               schema:
                 type: array
-                description: List of teams assigned to the organization role
                 items:
                   $ref: '#/components/schemas/team-role-assignment'
               examples:
@@ -3590,7 +4097,6 @@ paths:
             application/json:
               schema:
                 type: array
-                description: List of users assigned to the organization role
                 items:
                   $ref: '#/components/schemas/user-role-assignment'
               examples:
@@ -5207,7 +5713,16 @@ paths:
                   state: active
       responses:
         '200':
-          description: Response
+          description: The user's organization invitation was accepted synchronously.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/org-membership'
+              examples:
+                default:
+                  $ref: '#/components/examples/org-membership-2'
+        '202':
+          description: The acceptance of the user's organization invitation is being processed asynchronously.
           content:
             application/json:
               schema:
@@ -6618,6 +7133,17 @@ components:
           enum:
             - enterprise
             - organization
+        access_source:
+          description: |-
+            How the team's access to the repository was granted. This property is only
+            present when the team is returned in a repository context, such as
+            `GET /repos/{owner}/{repo}/teams`.
+          type: string
+          enum:
+            - direct
+            - organization
+            - enterprise
+          example: direct
         organization_id:
           type: integer
           description: Unique identifier of the organization to which this team belongs
@@ -6667,6 +7193,7 @@ components:
             - text
             - date
             - single_select
+            - multi_select
             - number
         visibility:
           type: string
@@ -6675,7 +7202,7 @@ components:
             - organization_members_only
             - all
         options:
-          description: Available options for single select fields.
+          description: Available options for single select and multi select fields.
           type: array
           items:
             type: object
@@ -6749,6 +7276,7 @@ components:
             - text
             - date
             - single_select
+            - multi_select
             - number
         visibility:
           description: The visibility of the issue field. Can be `organization_members_only` (visible only within the organization) or `all` (visible to all users who can see issues). Only used when the visibility settings feature is enabled. Defaults to `organization_members_only`.
@@ -6757,7 +7285,7 @@ components:
             - organization_members_only
             - all
         options:
-          description: Options for single select fields. Required when data_type is 'single_select'.
+          description: Options for select fields. Required when data_type is 'single_select' or 'multi_select'.
           type: array
           items:
             type: object
@@ -6809,11 +7337,14 @@ components:
             - organization_members_only
             - all
         options:
-          description: Options for single select fields. Only applicable when updating single_select fields.
+          description: Options for select fields. Only applicable when updating single_select or multi_select fields. When provided, this array **replaces** the entire existing set of options rather than adding to or updating individual options. To retain or update an existing option, include it in the array with its `id`. Options sent without an `id` are treated as new options and may cause existing options to be deleted and recreated.
           type: array
           items:
             type: object
             properties:
+              id:
+                description: The id of an existing option to retain or update. Omit this when creating a new option.
+                type: integer
               name:
                 description: Name of the option.
                 type: string
@@ -6842,7 +7373,7 @@ components:
               - priority
     issue-type:
       title: Issue Type
-      description: The type of issue.
+      description: The type assigned to the issue. This is only present for issues in repositories where issue types are supported.
       type: object
       nullable: true
       properties:
@@ -8139,7 +8670,7 @@ components:
     app-permissions:
       title: App Permissions
       type: object
-      description: The permissions granted to the user access token.
+      description: The permissions granted to the fine-grained access token.
       properties:
         actions:
           type: string
@@ -8168,6 +8699,12 @@ components:
         checks:
           type: string
           description: The level of permission to grant the access token for checks on code.
+          enum:
+            - read
+            - write
+        code_quality:
+          type: string
+          description: The level of permission to grant the access token to view and manage code quality data.
           enum:
             - read
             - write
@@ -8344,10 +8881,11 @@ components:
           type: string
           description: The level of permission to grant the access token for managing access to GitHub Copilot for members of an organization with a Copilot Business subscription. This property is in public preview and is subject to change.
           enum:
+            - read
             - write
         organization_copilot_agent_settings:
           type: string
-          description: The level of permission to grant the access token to view and manage Copilot coding agent settings for an organization.
+          description: The level of permission to grant the access token to view and manage Copilot cloud agent settings for an organization.
           enum:
             - read
             - write
@@ -9471,92 +10009,12 @@ components:
     list-attestations:
       value:
         attestations:
-          - bundle:
-              mediaType: application/vnd.dev.sigstore.bundle.v0.3+json
-              verificationMaterial:
-                tlogEntries:
-                  - logIndex: '97913980'
-                    logId:
-                      keyId: wNI9atQGlz+VWfO6LRygH4QUfY/8W4RFwiT5i5WRgB0=
-                    kindVersion:
-                      kind: dsse
-                      version: 0.0.1
-                    integratedTime: '1716998992'
-                    inclusionPromise:
-                      signedEntryTimestamp: MEYCIQCeEsQAy+qXtULkh52wbnHrkt2R2JQ05P9STK/xmdpQ2AIhANiG5Gw6cQiMnwvUz1+9UKtG/vlC8dduq07wsFOViwSL
-                    inclusionProof:
-                      logIndex: '93750549'
-                      rootHash: KgKiXoOl8rM5d4y6Xlbm2QLftvj/FYvTs6z7dJlNO60=
-                      treeSize: '93750551'
-                      hashes:
-                        - 8LI21mzwxnUSo0fuZeFsUrz2ujZ4QAL+oGeTG+5toZg=
-                        - nCb369rcIytNhGwWoqBv+eV49X3ZKpo/HJGKm9V+dck=
-                        - hnNQ9mUdSwYCfdV21pd87NucrdRRNZATowlaRR1hJ4A=
-                        - MBhhK33vlD4Tq/JKgAaXUI4VjmosWKe6+7RNpQ2ncNM=
-                        - XKWUE3stvGV1OHsIGiCGfn047Ok6uD4mFkh7BaicaEc=
-                        - Tgve40VPFfuei+0nhupdGpfPPR+hPpZjxgTiDT8WNoY=
-                        - wV+S/7tLtYGzkLaSb6UDqexNyhMvumHK/RpTNvEZuLU=
-                        - uwaWufty6sn6XqO1Tb9M3Vz6sBKPu0HT36mStxJNd7s=
-                        - jUfeMOXQP0XF1JAnCEETVbfRKMUwCzrVUzYi8vnDMVs=
-                        - xQKjzJAwwdlQG/YUYBKPXxbCmhMYKo1wnv+6vDuKWhQ=
-                        - cX3Agx+hP66t1ZLbX/yHbfjU46/3m/VAmWyG/fhxAVc=
-                        - sjohk/3DQIfXTgf/5XpwtdF7yNbrf8YykOMHr1CyBYQ=
-                        - 98enzMaC+x5oCMvIZQA5z8vu2apDMCFvE/935NfuPw8=
-                      checkpoint:
-                        envelope: rekor.sigstore.dev - 2605736670972794746\n93750551\nKgKiXoOl8rM5d4y6Xlbm2QLftvj/FYvTs6z7dJlNO60=\n\n— rekor.sigstore.dev wNI9ajBEAiBkLzdjY8A9HReU7rmtjwZ+JpSuYtEr9SmvSwUIW7FBjgIgKo+vhkW3tqc+gc8fw9gza3xLoncA8a+MTaJYCaLGA9c=\n
-                    canonicalizedBody: eyJhcGlWZXJzaW9uIjoiMC4wLjEiLCJraW5kIjoiZHNzZSIsInNwZWMiOnsiZW52ZWxvcGVIYXNoIjp7ImFsZ29yaXRobSI6InNoYTI1NiIsInZhbHVlIjoiM2I1YzkwNDk5MGFiYzE4NjI1ZWE3Njg4MzE1OGEwZmI4MTEwMjM4MGJkNjQwZjI5OWJlMzYwZWVkOTMxNjYwYiJ9LCJwYXlsb2FkSGFzaCI6eyJhbGdvcml0aG0iOiJzaGEyNTYiLCJ2YWx1ZSI6IjM4ZGNlZDJjMzE1MGU2OTQxMDViYjZiNDNjYjY3NzBiZTYzZDdhNGM4NjNiMTc2YTkwMmU1MGQ5ZTAyN2ZiMjMifSwic2lnbmF0dXJlcyI6W3sic2lnbmF0dXJlIjoiTUVRQ0lFR0lHQW03Z1pWTExwc3JQY2puZEVqaXVjdEUyL2M5K2o5S0d2YXp6M3JsQWlBZDZPMTZUNWhrelJNM0liUlB6bSt4VDQwbU5RWnhlZmQ3bGFEUDZ4MlhMUT09IiwidmVyaWZpZXIiOiJMUzB0TFMxQ1JVZEpUaUJEUlZKVVNVWkpRMEZVUlMwdExTMHRDazFKU1VkcVZFTkRRbWhUWjBGM1NVSkJaMGxWVjFsNGNVdHpjazFUTTFOMmJEVkphalZQUkdaQ1owMUtUeTlKZDBObldVbExiMXBKZW1vd1JVRjNUWGNLVG5wRlZrMUNUVWRCTVZWRlEyaE5UV015Ykc1ak0xSjJZMjFWZFZwSFZqSk5ValIzU0VGWlJGWlJVVVJGZUZaNllWZGtlbVJIT1hsYVV6RndZbTVTYkFwamJURnNXa2RzYUdSSFZYZElhR05PVFdwUmQwNVVTVFZOVkZsM1QxUlZlVmRvWTA1TmFsRjNUbFJKTlUxVVdYaFBWRlY1VjJwQlFVMUdhM2RGZDFsSUNrdHZXa2w2YWpCRFFWRlpTVXR2V2tsNmFqQkVRVkZqUkZGblFVVmtiV2RvVGs1M00yNVZMMHQxWlZGbmMzQkhTRmMzWjJnNVdFeEVMMWRrU1RoWlRVSUtLekJ3TUZZMGJ6RnJTRzgyWTAweGMwUktaM0pEWjFCUlZYcDRjSFZaZFc4cmVIZFFTSGxzTDJ0RWVXWXpSVXhxYTJGUFEwSlVUWGRuWjFWMlRVRTBSd3BCTVZWa1JIZEZRaTkzVVVWQmQwbElaMFJCVkVKblRsWklVMVZGUkVSQlMwSm5aM0pDWjBWR1FsRmpSRUY2UVdSQ1owNVdTRkUwUlVablVWVnhaa05RQ25aWVMwRjJVelJEWkdoUk1taGlXbGRLVTA5RmRsWnZkMGgzV1VSV1VqQnFRa0puZDBadlFWVXpPVkJ3ZWpGWmEwVmFZalZ4VG1wd1MwWlhhWGhwTkZrS1drUTRkMWRuV1VSV1VqQlNRVkZJTDBKR1FYZFViMXBOWVVoU01HTklUVFpNZVRsdVlWaFNiMlJYU1hWWk1qbDBUREpPYzJGVE9XcGlSMnQyVEcxa2NBcGtSMmd4V1drNU0ySXpTbkphYlhoMlpETk5kbHBIVm5kaVJ6azFZbGRXZFdSRE5UVmlWM2hCWTIxV2JXTjVPVzlhVjBaclkzazVNR051Vm5WaGVrRTFDa0puYjNKQ1owVkZRVmxQTDAxQlJVSkNRM1J2WkVoU2QyTjZiM1pNTTFKMllUSldkVXh0Um1wa1IyeDJZbTVOZFZveWJEQmhTRlpwWkZoT2JHTnRUbllLWW01U2JHSnVVWFZaTWpsMFRVSTRSME5wYzBkQlVWRkNaemM0ZDBGUlNVVkZXR1IyWTIxMGJXSkhPVE5ZTWxKd1l6TkNhR1JIVG05TlJGbEhRMmx6UndwQlVWRkNaemM0ZDBGUlRVVkxSMXBvV2xkWmVWcEhVbXRQUkVacFRVUmplazVxWXpCUFJGRjRUVEpGTTFsNldUQk9iVTVyVFVkS2JWbDZTVEpaZWtGM0NsbFVRWGRIUVZsTFMzZFpRa0pCUjBSMmVrRkNRa0ZSUzFKSFZuZGlSemsxWWxkV2RXUkVRVlpDWjI5eVFtZEZSVUZaVHk5TlFVVkdRa0ZrYW1KSGEzWUtXVEo0Y0UxQ05FZERhWE5IUVZGUlFtYzNPSGRCVVZsRlJVaEtiRnB1VFhaaFIxWm9Xa2hOZG1SSVNqRmliWE4zVDNkWlMwdDNXVUpDUVVkRWRucEJRZ3BEUVZGMFJFTjBiMlJJVW5kamVtOTJURE5TZG1FeVZuVk1iVVpxWkVkc2RtSnVUWFZhTW13d1lVaFdhV1JZVG14amJVNTJZbTVTYkdKdVVYVlpNamwwQ2sxR2QwZERhWE5IUVZGUlFtYzNPSGRCVVd0RlZHZDRUV0ZJVWpCalNFMDJUSGs1Ym1GWVVtOWtWMGwxV1RJNWRFd3lUbk5oVXpscVlrZHJka3h0WkhBS1pFZG9NVmxwT1ROaU0wcHlXbTE0ZG1RelRYWmFSMVozWWtjNU5XSlhWblZrUXpVMVlsZDRRV050Vm0xamVUbHZXbGRHYTJONU9UQmpibFoxWVhwQk5BcENaMjl5UW1kRlJVRlpUeTlOUVVWTFFrTnZUVXRIV21oYVYxbDVXa2RTYTA5RVJtbE5SR042VG1wak1FOUVVWGhOTWtVeldYcFpNRTV0VG10TlIwcHRDbGw2U1RKWmVrRjNXVlJCZDBoUldVdExkMWxDUWtGSFJIWjZRVUpEZDFGUVJFRXhibUZZVW05a1YwbDBZVWM1ZW1SSFZtdE5RMjlIUTJselIwRlJVVUlLWnpjNGQwRlJkMFZJUVhkaFlVaFNNR05JVFRaTWVUbHVZVmhTYjJSWFNYVlpNamwwVERKT2MyRlRPV3BpUjJ0M1QwRlpTMHQzV1VKQ1FVZEVkbnBCUWdwRVVWRnhSRU5vYlZsWFZtMU5iVkpyV2tSbmVGbHFRVE5OZWxrelRrUm5NRTFVVG1oT01rMHlUa1JhYWxwRVFtbGFiVTE1VG0xTmQwMUhSWGROUTBGSENrTnBjMGRCVVZGQ1p6YzRkMEZSTkVWRlozZFJZMjFXYldONU9XOWFWMFpyWTNrNU1HTnVWblZoZWtGYVFtZHZja0puUlVWQldVOHZUVUZGVUVKQmMwMEtRMVJKZUUxcVdYaE5la0V3VDFSQmJVSm5iM0pDWjBWRlFWbFBMMDFCUlZGQ1FtZE5SbTFvTUdSSVFucFBhVGgyV2pKc01HRklWbWxNYlU1MllsTTVhZ3BpUjJ0M1IwRlpTMHQzV1VKQ1FVZEVkbnBCUWtWUlVVdEVRV2N4VDFSamQwNUVZM2hOVkVKalFtZHZja0puUlVWQldVOHZUVUZGVTBKRk5FMVVSMmd3Q21SSVFucFBhVGgyV2pKc01HRklWbWxNYlU1MllsTTVhbUpIYTNaWk1uaHdUSGsxYm1GWVVtOWtWMGwyWkRJNWVXRXlXbk5pTTJSNlRESlNiR05IZUhZS1pWY3hiR0p1VVhWbFZ6RnpVVWhLYkZwdVRYWmhSMVpvV2toTmRtUklTakZpYlhOM1QwRlpTMHQzV1VKQ1FVZEVkbnBCUWtWM1VYRkVRMmh0V1ZkV2JRcE5iVkpyV2tSbmVGbHFRVE5OZWxrelRrUm5NRTFVVG1oT01rMHlUa1JhYWxwRVFtbGFiVTE1VG0xTmQwMUhSWGROUTBWSFEybHpSMEZSVVVKbk56aDNDa0ZTVVVWRmQzZFNaREk1ZVdFeVduTmlNMlJtV2tkc2VtTkhSakJaTW1kM1ZGRlpTMHQzV1VKQ1FVZEVkbnBCUWtaUlVTOUVSREZ2WkVoU2QyTjZiM1lLVERKa2NHUkhhREZaYVRWcVlqSXdkbGt5ZUhCTU1rNXpZVk01YUZrelVuQmlNalY2VEROS01XSnVUWFpQVkVrMFQxUkJNMDVVWXpGTmFUbG9aRWhTYkFwaVdFSXdZM2s0ZUUxQ1dVZERhWE5IUVZGUlFtYzNPSGRCVWxsRlEwRjNSMk5JVm1saVIyeHFUVWxIVEVKbmIzSkNaMFZGUVdSYU5VRm5VVU5DU0RCRkNtVjNRalZCU0dOQk0xUXdkMkZ6WWtoRlZFcHFSMUkwWTIxWFl6TkJjVXBMV0hKcVpWQkxNeTlvTkhCNVowTTRjRGR2TkVGQlFVZFFlRkl4ZW1KblFVRUtRa0ZOUVZORVFrZEJhVVZCS3pobmJGRkplRTlCYUZoQ1FVOVRObE1yT0ZweGQwcGpaSGQzVTNJdlZGZHBhSE16WkV4eFZrRjJiME5KVVVSaWVUbG9NUXBKWTNWRVJYSXJlbk5YYVV3NFVIYzFRMU5VZEd0c2RFbzBNakZ6UlRneFZuWjFOa0Z3VkVGTFFtZG5jV2hyYWs5UVVWRkVRWGRPYmtGRVFtdEJha0VyQ2tSSU4xQXJhR2cwVmtoWFprTlhXSFJ5UzFSdlFrdDFZa0pyUzNCbVYwTlpVWGhxV0UweWRsWXZibEJ4WWxwR1dVOVdXazlpWlRaQlRuSm5lV1J2V1VNS1RVWlZUV0l6ZUhwelJrNVJXWFp6UlZsUGFUSkxibkoyUmpCMFoyOXdiVmhIVm05NmJsb3JjUzh5UVVsRVZ6bEdNVVUzV1RaWk1EWXhaVzkxUVZsa1NBcFhkejA5Q2kwdExTMHRSVTVFSUVORlVsUkpSa2xEUVZSRkxTMHRMUzBLIn1dfX0=
-                timestampVerificationData: {}
-                certificate:
-                  rawBytes: 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
-              dsseEnvelope:
-                payload: eyJfdHlwZSI6Imh0dHBzOi8vaW4tdG90by5pby9TdGF0ZW1lbnQvdjEiLCJzdWJqZWN0IjpbeyJuYW1lIjoiZ2hfMi41MC4wX3dpbmRvd3NfYXJtNjQuemlwIiwiZGlnZXN0Ijp7InNoYTI1NiI6IjhhYWQxMjBiNDE2Mzg2YjQyNjllZjYyYzhmZGViY2FkMzFhNzA4NDcyOTc4MTdhMTQ5ZGFmOTI3ZWRjODU1NDgifX1dLCJwcmVkaWNhdGVUeXBlIjoiaHR0cHM6Ly9zbHNhLmRldi9wcm92ZW5hbmNlL3YxIiwicHJlZGljYXRlIjp7ImJ1aWxkRGVmaW5pdGlvbiI6eyJidWlsZFR5cGUiOiJodHRwczovL3Nsc2EtZnJhbWV3b3JrLmdpdGh1Yi5pby9naXRodWItYWN0aW9ucy1idWlsZHR5cGVzL3dvcmtmbG93L3YxIiwiZXh0ZXJuYWxQYXJhbWV0ZXJzIjp7IndvcmtmbG93Ijp7InJlZiI6InJlZnMvaGVhZHMvdHJ1bmsiLCJyZXBvc2l0b3J5IjoiaHR0cHM6Ly9naXRodWIuY29tL2NsaS9jbGkiLCJwYXRoIjoiLmdpdGh1Yi93b3JrZmxvd3MvZGVwbG95bWVudC55bWwifX0sImludGVybmFsUGFyYW1ldGVycyI6eyJnaXRodWIiOnsiZXZlbnRfbmFtZSI6IndvcmtmbG93X2Rpc3BhdGNoIiwicmVwb3NpdG9yeV9pZCI6IjIxMjYxMzA0OSIsInJlcG9zaXRvcnlfb3duZXJfaWQiOiI1OTcwNDcxMSJ9fSwicmVzb2x2ZWREZXBlbmRlbmNpZXMiOlt7InVyaSI6ImdpdCtodHRwczovL2dpdGh1Yi5jb20vY2xpL2NsaUByZWZzL2hlYWRzL3RydW5rIiwiZGlnZXN0Ijp7ImdpdENvbW1pdCI6ImZhZWYyZGRkODFiMDczNjc0ODQxM2E3YzY0NmNkMGJmYzI2YzAwYTAifX1dfSwicnVuRGV0YWlscyI6eyJidWlsZGVyIjp7ImlkIjoiaHR0cHM6Ly9naXRodWIuY29tL2FjdGlvbnMvcnVubmVyL2dpdGh1Yi1ob3N0ZWQifSwibWV0YWRhdGEiOnsiaW52b2NhdGlvbklkIjoiaHR0cHM6Ly9naXRodWIuY29tL2NsaS9jbGkvYWN0aW9ucy9ydW5zLzkyODkwNzU3NTIvYXR0ZW1wdHMvMSJ9fX19
-                payloadType: application/vnd.in-toto+json
-                signatures:
-                  - sig: MEQCIEGIGAm7gZVLLpsrPcjndEjiuctE2/c9+j9KGvazz3rlAiAd6O16T5hkzRM3IbRPzm+xT40mNQZxefd7laDP6x2XLQ==
-            repository_id: 1
-          - bundle:
-              mediaType: application/vnd.dev.sigstore.bundle.v0.3+json
-              verificationMaterial:
-                tlogEntries:
-                  - logIndex: '97913980'
-                    logId:
-                      keyId: wNI9atQGlz+VWfO6LRygH4QUfY/8W4RFwiT5i5WRgB0=
-                    kindVersion:
-                      kind: dsse
-                      version: 0.0.1
-                    integratedTime: '1716998992'
-                    inclusionPromise:
-                      signedEntryTimestamp: MEYCIQCeEsQAy+qXtULkh52wbnHrkt2R2JQ05P9STK/xmdpQ2AIhANiG5Gw6cQiMnwvUz1+9UKtG/vlC8dduq07wsFOViwSL
-                    inclusionProof:
-                      logIndex: '93750549'
-                      rootHash: KgKiXoOl8rM5d4y6Xlbm2QLftvj/FYvTs6z7dJlNO60=
-                      treeSize: '93750551'
-                      hashes:
-                        - 8LI21mzwxnUSo0fuZeFsUrz2ujZ4QAL+oGeTG+5toZg=
-                        - nCb369rcIytNhGwWoqBv+eV49X3ZKpo/HJGKm9V+dck=
-                        - hnNQ9mUdSwYCfdV21pd87NucrdRRNZATowlaRR1hJ4A=
-                        - MBhhK33vlD4Tq/JKgAaXUI4VjmosWKe6+7RNpQ2ncNM=
-                        - XKWUE3stvGV1OHsIGiCGfn047Ok6uD4mFkh7BaicaEc=
-                        - Tgve40VPFfuei+0nhupdGpfPPR+hPpZjxgTiDT8WNoY=
-                        - wV+S/7tLtYGzkLaSb6UDqexNyhMvumHK/RpTNvEZuLU=
-                        - uwaWufty6sn6XqO1Tb9M3Vz6sBKPu0HT36mStxJNd7s=
-                        - jUfeMOXQP0XF1JAnCEETVbfRKMUwCzrVUzYi8vnDMVs=
-                        - xQKjzJAwwdlQG/YUYBKPXxbCmhMYKo1wnv+6vDuKWhQ=
-                        - cX3Agx+hP66t1ZLbX/yHbfjU46/3m/VAmWyG/fhxAVc=
-                        - sjohk/3DQIfXTgf/5XpwtdF7yNbrf8YykOMHr1CyBYQ=
-                        - 98enzMaC+x5oCMvIZQA5z8vu2apDMCFvE/935NfuPw8=
-                      checkpoint:
-                        envelope: rekor.sigstore.dev - 2605736670972794746\n93750551\nKgKiXoOl8rM5d4y6Xlbm2QLftvj/FYvTs6z7dJlNO60=\n\n— rekor.sigstore.dev wNI9ajBEAiBkLzdjY8A9HReU7rmtjwZ+JpSuYtEr9SmvSwUIW7FBjgIgKo+vhkW3tqc+gc8fw9gza3xLoncA8a+MTaJYCaLGA9c=\n
-                    canonicalizedBody: eyJhcGlWZXJzaW9uIjoiMC4wLjEiLCJraW5kIjoiZHNzZSIsInNwZWMiOnsiZW52ZWxvcGVIYXNoIjp7ImFsZ29yaXRobSI6InNoYTI1NiIsInZhbHVlIjoiM2I1YzkwNDk5MGFiYzE4NjI1ZWE3Njg4MzE1OGEwZmI4MTEwMjM4MGJkNjQwZjI5OWJlMzYwZWVkOTMxNjYwYiJ9LCJwYXlsb2FkSGFzaCI6eyJhbGdvcml0aG0iOiJzaGEyNTYiLCJ2YWx1ZSI6IjM4ZGNlZDJjMzE1MGU2OTQxMDViYjZiNDNjYjY3NzBiZTYzZDdhNGM4NjNiMTc2YTkwMmU1MGQ5ZTAyN2ZiMjMifSwic2lnbmF0dXJlcyI6W3sic2lnbmF0dXJlIjoiTUVRQ0lFR0lHQW03Z1pWTExwc3JQY2puZEVqaXVjdEUyL2M5K2o5S0d2YXp6M3JsQWlBZDZPMTZUNWhrelJNM0liUlB6bSt4VDQwbU5RWnhlZmQ3bGFEUDZ4MlhMUT09IiwidmVyaWZpZXIiOiJMUzB0TFMxQ1JVZEpUaUJEUlZKVVNVWkpRMEZVUlMwdExTMHRDazFKU1VkcVZFTkRRbWhUWjBGM1NVSkJaMGxWVjFsNGNVdHpjazFUTTFOMmJEVkphalZQUkdaQ1owMUtUeTlKZDBObldVbExiMXBKZW1vd1JVRjNUWGNLVG5wRlZrMUNUVWRCTVZWRlEyaE5UV015Ykc1ak0xSjJZMjFWZFZwSFZqSk5ValIzU0VGWlJGWlJVVVJGZUZaNllWZGtlbVJIT1hsYVV6RndZbTVTYkFwamJURnNXa2RzYUdSSFZYZElhR05PVFdwUmQwNVVTVFZOVkZsM1QxUlZlVmRvWTA1TmFsRjNUbFJKTlUxVVdYaFBWRlY1VjJwQlFVMUdhM2RGZDFsSUNrdHZXa2w2YWpCRFFWRlpTVXR2V2tsNmFqQkVRVkZqUkZGblFVVmtiV2RvVGs1M00yNVZMMHQxWlZGbmMzQkhTRmMzWjJnNVdFeEVMMWRrU1RoWlRVSUtLekJ3TUZZMGJ6RnJTRzgyWTAweGMwUktaM0pEWjFCUlZYcDRjSFZaZFc4cmVIZFFTSGxzTDJ0RWVXWXpSVXhxYTJGUFEwSlVUWGRuWjFWMlRVRTBSd3BCTVZWa1JIZEZRaTkzVVVWQmQwbElaMFJCVkVKblRsWklVMVZGUkVSQlMwSm5aM0pDWjBWR1FsRmpSRUY2UVdSQ1owNVdTRkUwUlVablVWVnhaa05RQ25aWVMwRjJVelJEWkdoUk1taGlXbGRLVTA5RmRsWnZkMGgzV1VSV1VqQnFRa0puZDBadlFWVXpPVkJ3ZWpGWmEwVmFZalZ4VG1wd1MwWlhhWGhwTkZrS1drUTRkMWRuV1VSV1VqQlNRVkZJTDBKR1FYZFViMXBOWVVoU01HTklUVFpNZVRsdVlWaFNiMlJYU1hWWk1qbDBUREpPYzJGVE9XcGlSMnQyVEcxa2NBcGtSMmd4V1drNU0ySXpTbkphYlhoMlpETk5kbHBIVm5kaVJ6azFZbGRXZFdSRE5UVmlWM2hCWTIxV2JXTjVPVzlhVjBaclkzazVNR051Vm5WaGVrRTFDa0puYjNKQ1owVkZRVmxQTDAxQlJVSkNRM1J2WkVoU2QyTjZiM1pNTTFKMllUSldkVXh0Um1wa1IyeDJZbTVOZFZveWJEQmhTRlpwWkZoT2JHTnRUbllLWW01U2JHSnVVWFZaTWpsMFRVSTRSME5wYzBkQlVWRkNaemM0ZDBGUlNVVkZXR1IyWTIxMGJXSkhPVE5ZTWxKd1l6TkNhR1JIVG05TlJGbEhRMmx6UndwQlVWRkNaemM0ZDBGUlRVVkxSMXBvV2xkWmVWcEhVbXRQUkVacFRVUmplazVxWXpCUFJGRjRUVEpGTTFsNldUQk9iVTVyVFVkS2JWbDZTVEpaZWtGM0NsbFVRWGRIUVZsTFMzZFpRa0pCUjBSMmVrRkNRa0ZSUzFKSFZuZGlSemsxWWxkV2RXUkVRVlpDWjI5eVFtZEZSVUZaVHk5TlFVVkdRa0ZrYW1KSGEzWUtXVEo0Y0UxQ05FZERhWE5IUVZGUlFtYzNPSGRCVVZsRlJVaEtiRnB1VFhaaFIxWm9Xa2hOZG1SSVNqRmliWE4zVDNkWlMwdDNXVUpDUVVkRWRucEJRZ3BEUVZGMFJFTjBiMlJJVW5kamVtOTJURE5TZG1FeVZuVk1iVVpxWkVkc2RtSnVUWFZhTW13d1lVaFdhV1JZVG14amJVNTJZbTVTYkdKdVVYVlpNamwwQ2sxR2QwZERhWE5IUVZGUlFtYzNPSGRCVVd0RlZHZDRUV0ZJVWpCalNFMDJUSGs1Ym1GWVVtOWtWMGwxV1RJNWRFd3lUbk5oVXpscVlrZHJka3h0WkhBS1pFZG9NVmxwT1ROaU0wcHlXbTE0ZG1RelRYWmFSMVozWWtjNU5XSlhWblZrUXpVMVlsZDRRV050Vm0xamVUbHZXbGRHYTJONU9UQmpibFoxWVhwQk5BcENaMjl5UW1kRlJVRlpUeTlOUVVWTFFrTnZUVXRIV21oYVYxbDVXa2RTYTA5RVJtbE5SR042VG1wak1FOUVVWGhOTWtVeldYcFpNRTV0VG10TlIwcHRDbGw2U1RKWmVrRjNXVlJCZDBoUldVdExkMWxDUWtGSFJIWjZRVUpEZDFGUVJFRXhibUZZVW05a1YwbDBZVWM1ZW1SSFZtdE5RMjlIUTJselIwRlJVVUlLWnpjNGQwRlJkMFZJUVhkaFlVaFNNR05JVFRaTWVUbHVZVmhTYjJSWFNYVlpNamwwVERKT2MyRlRPV3BpUjJ0M1QwRlpTMHQzV1VKQ1FVZEVkbnBCUWdwRVVWRnhSRU5vYlZsWFZtMU5iVkpyV2tSbmVGbHFRVE5OZWxrelRrUm5NRTFVVG1oT01rMHlUa1JhYWxwRVFtbGFiVTE1VG0xTmQwMUhSWGROUTBGSENrTnBjMGRCVVZGQ1p6YzRkMEZSTkVWRlozZFJZMjFXYldONU9XOWFWMFpyWTNrNU1HTnVWblZoZWtGYVFtZHZja0puUlVWQldVOHZUVUZGVUVKQmMwMEtRMVJKZUUxcVdYaE5la0V3VDFSQmJVSm5iM0pDWjBWRlFWbFBMMDFCUlZGQ1FtZE5SbTFvTUdSSVFucFBhVGgyV2pKc01HRklWbWxNYlU1MllsTTVhZ3BpUjJ0M1IwRlpTMHQzV1VKQ1FVZEVkbnBCUWtWUlVVdEVRV2N4VDFSamQwNUVZM2hOVkVKalFtZHZja0puUlVWQldVOHZUVUZGVTBKRk5FMVVSMmd3Q21SSVFucFBhVGgyV2pKc01HRklWbWxNYlU1MllsTTVhbUpIYTNaWk1uaHdUSGsxYm1GWVVtOWtWMGwyWkRJNWVXRXlXbk5pTTJSNlRESlNiR05IZUhZS1pWY3hiR0p1VVhWbFZ6RnpVVWhLYkZwdVRYWmhSMVpvV2toTmRtUklTakZpYlhOM1QwRlpTMHQzV1VKQ1FVZEVkbnBCUWtWM1VYRkVRMmh0V1ZkV2JRcE5iVkpyV2tSbmVGbHFRVE5OZWxrelRrUm5NRTFVVG1oT01rMHlUa1JhYWxwRVFtbGFiVTE1VG0xTmQwMUhSWGROUTBWSFEybHpSMEZSVVVKbk56aDNDa0ZTVVVWRmQzZFNaREk1ZVdFeVduTmlNMlJtV2tkc2VtTkhSakJaTW1kM1ZGRlpTMHQzV1VKQ1FVZEVkbnBCUWtaUlVTOUVSREZ2WkVoU2QyTjZiM1lLVERKa2NHUkhhREZaYVRWcVlqSXdkbGt5ZUhCTU1rNXpZVk01YUZrelVuQmlNalY2VEROS01XSnVUWFpQVkVrMFQxUkJNMDVVWXpGTmFUbG9aRWhTYkFwaVdFSXdZM2s0ZUUxQ1dVZERhWE5IUVZGUlFtYzNPSGRCVWxsRlEwRjNSMk5JVm1saVIyeHFUVWxIVEVKbmIzSkNaMFZGUVdSYU5VRm5VVU5DU0RCRkNtVjNRalZCU0dOQk0xUXdkMkZ6WWtoRlZFcHFSMUkwWTIxWFl6TkJjVXBMV0hKcVpWQkxNeTlvTkhCNVowTTRjRGR2TkVGQlFVZFFlRkl4ZW1KblFVRUtRa0ZOUVZORVFrZEJhVVZCS3pobmJGRkplRTlCYUZoQ1FVOVRObE1yT0ZweGQwcGpaSGQzVTNJdlZGZHBhSE16WkV4eFZrRjJiME5KVVVSaWVUbG9NUXBKWTNWRVJYSXJlbk5YYVV3NFVIYzFRMU5VZEd0c2RFbzBNakZ6UlRneFZuWjFOa0Z3VkVGTFFtZG5jV2hyYWs5UVVWRkVRWGRPYmtGRVFtdEJha0VyQ2tSSU4xQXJhR2cwVmtoWFprTlhXSFJ5UzFSdlFrdDFZa0pyUzNCbVYwTlpVWGhxV0UweWRsWXZibEJ4WWxwR1dVOVdXazlpWlRaQlRuSm5lV1J2V1VNS1RVWlZUV0l6ZUhwelJrNVJXWFp6UlZsUGFUSkxibkoyUmpCMFoyOXdiVmhIVm05NmJsb3JjUzh5UVVsRVZ6bEdNVVUzV1RaWk1EWXhaVzkxUVZsa1NBcFhkejA5Q2kwdExTMHRSVTVFSUVORlVsUkpSa2xEUVZSRkxTMHRMUzBLIn1dfX0=
-                timestampVerificationData: {}
-                certificate:
-                  rawBytes: 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
-              dsseEnvelope:
-                payload: eyJfdHlwZSI6Imh0dHBzOi8vaW4tdG90by5pby9TdGF0ZW1lbnQvdjEiLCJzdWJqZWN0IjpbeyJuYW1lIjoiZ2hfMi41MC4wX3dpbmRvd3NfYXJtNjQuemlwIiwiZGlnZXN0Ijp7InNoYTI1NiI6IjhhYWQxMjBiNDE2Mzg2YjQyNjllZjYyYzhmZGViY2FkMzFhNzA4NDcyOTc4MTdhMTQ5ZGFmOTI3ZWRjODU1NDgifX1dLCJwcmVkaWNhdGVUeXBlIjoiaHR0cHM6Ly9zbHNhLmRldi9wcm92ZW5hbmNlL3YxIiwicHJlZGljYXRlIjp7ImJ1aWxkRGVmaW5pdGlvbiI6eyJidWlsZFR5cGUiOiJodHRwczovL3Nsc2EtZnJhbWV3b3JrLmdpdGh1Yi5pby9naXRodWItYWN0aW9ucy1idWlsZHR5cGVzL3dvcmtmbG93L3YxIiwiZXh0ZXJuYWxQYXJhbWV0ZXJzIjp7IndvcmtmbG93Ijp7InJlZiI6InJlZnMvaGVhZHMvdHJ1bmsiLCJyZXBvc2l0b3J5IjoiaHR0cHM6Ly9naXRodWIuY29tL2NsaS9jbGkiLCJwYXRoIjoiLmdpdGh1Yi93b3JrZmxvd3MvZGVwbG95bWVudC55bWwifX0sImludGVybmFsUGFyYW1ldGVycyI6eyJnaXRodWIiOnsiZXZlbnRfbmFtZSI6IndvcmtmbG93X2Rpc3BhdGNoIiwicmVwb3NpdG9yeV9pZCI6IjIxMjYxMzA0OSIsInJlcG9zaXRvcnlfb3duZXJfaWQiOiI1OTcwNDcxMSJ9fSwicmVzb2x2ZWREZXBlbmRlbmNpZXMiOlt7InVyaSI6ImdpdCtodHRwczovL2dpdGh1Yi5jb20vY2xpL2NsaUByZWZzL2hlYWRzL3RydW5rIiwiZGlnZXN0Ijp7ImdpdENvbW1pdCI6ImZhZWYyZGRkODFiMDczNjc0ODQxM2E3YzY0NmNkMGJmYzI2YzAwYTAifX1dfSwicnVuRGV0YWlscyI6eyJidWlsZGVyIjp7ImlkIjoiaHR0cHM6Ly9naXRodWIuY29tL2FjdGlvbnMvcnVubmVyL2dpdGh1Yi1ob3N0ZWQifSwibWV0YWRhdGEiOnsiaW52b2NhdGlvbklkIjoiaHR0cHM6Ly9naXRodWIuY29tL2NsaS9jbGkvYWN0aW9ucy9ydW5zLzkyODkwNzU3NTIvYXR0ZW1wdHMvMSJ9fX19
-                payloadType: application/vnd.in-toto+json
-                signatures:
-                  - sig: MEQCIEGIGAm7gZVLLpsrPcjndEjiuctE2/c9+j9KGvazz3rlAiAd6O16T5hkzRM3IbRPzm+xT40mNQZxefd7laDP6x2XLQ==
-            repository_id: 1
+          - repository_id: 1
+            bundle_url: https://tmastaging.blob.core.windows.net/attestations/1/2024/11/08/4.json.sn?se=2024-11-09T17%3A13%3A43Z&sig=jPSbbJnIEshUyCjBLU5Ykq0uuGc5UYxTZE1%2FhdBNMXk%3D&sp=r&spr=https%2Chttp&sr=b&st=2024-11-08T17%3A13%3A43Z&sv=2024-08-04
+            initiator: user
+          - repository_id: 1
+            bundle_url: https://tmastaging.blob.core.windows.net/attestations/1/2024/11/08/5.json.sn?se=2024-11-09T17%3A13%3A43Z&sig=jPSbbJnIEshUyCjBLU5Ykq0uuGc5UYxTZE1%2FhdBNMXk%3D&sp=r&spr=https%2Chttp&sr=b&st=2024-11-08T17%3A13%3A43Z&sv=2024-08-04
+            initiator: user
     simple-user-items:
       value:
         - login: octocat
@@ -9897,6 +10355,23 @@ components:
             - id: 3
               name: Low
               color: green
+          created_at: '2024-12-11T14:39:09Z'
+          updated_at: '2024-12-11T14:39:09Z'
+        - id: 3
+          node_id: IFMS_kwDNAd3NAZt
+          name: Categories
+          description: Issue categories
+          data_type: multi_select
+          options:
+            - id: 4
+              name: Frontend
+              color: blue
+            - id: 5
+              name: Backend
+              color: green
+            - id: 6
+              name: Infrastructure
+              color: purple
           created_at: '2024-12-11T14:39:09Z'
           updated_at: '2024-12-11T14:39:09Z'
     issue-field:

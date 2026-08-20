@@ -202,6 +202,11 @@ Response
     <td> (example: https://api.github.com/repos/octocat/Hello-World/pulls/1347/comments)</td>
 </tr>
 <tr>
+    <td><CopyableCode code="stack" /></td>
+    <td><code>object</code></td>
+    <td>The stack information associated with a pull request. (title: Pull Request Stack)</td>
+</tr>
+<tr>
     <td><CopyableCode code="state" /></td>
     <td><code>string</code></td>
     <td> (example: open)</td>
@@ -366,6 +371,7 @@ requested_reviewers,
 requested_teams,
 review_comment_url,
 review_comments_url,
+stack,
 state,
 statuses_url,
 title,

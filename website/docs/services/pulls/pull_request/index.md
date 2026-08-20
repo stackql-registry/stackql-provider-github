@@ -262,6 +262,11 @@ Pass the appropriate [media type](https://docs.github.com/rest/using-the-rest-ap
     <td> (example: https://api.github.com/repos/octocat/Hello-World/pulls/1347/comments)</td>
 </tr>
 <tr>
+    <td><CopyableCode code="stack" /></td>
+    <td><code>object</code></td>
+    <td>The stack information associated with a pull request. (title: Pull Request Stack)</td>
+</tr>
+<tr>
     <td><CopyableCode code="state" /></td>
     <td><code>string</code></td>
     <td>State of this Pull Request. Either `open` or `closed`. (open, closed) (example: open)</td>
@@ -443,6 +448,7 @@ requested_teams,
 review_comment_url,
 review_comments,
 review_comments_url,
+stack,
 state,
 statuses_url,
 title,
@@ -539,6 +545,7 @@ requested_teams,
 review_comment_url,
 review_comments,
 review_comments_url,
+stack,
 state,
 statuses_url,
 title,
@@ -664,6 +671,7 @@ requested_teams,
 review_comment_url,
 review_comments,
 review_comments_url,
+stack,
 state,
 statuses_url,
 title,

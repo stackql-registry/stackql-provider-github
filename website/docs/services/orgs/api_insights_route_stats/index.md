@@ -106,7 +106,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-actor_type"><code>actor_type</code></a>, <a href="#parameter-actor_id"><code>actor_id</code></a>, <a href="#parameter-min_timestamp"><code>min_timestamp</code></a></td>
     <td><a href="#parameter-max_timestamp"><code>max_timestamp</code></a>, <a href="#parameter-page"><code>page</code></a>, <a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-direction"><code>direction</code></a>, <a href="#parameter-sort"><code>sort</code></a>, <a href="#parameter-api_route_substring"><code>api_route_substring</code></a></td>
-    <td>Get API request count statistics for an actor broken down by route within a specified time frame.</td>
+    <td>Get API request count statistics for an actor broken down by route within a specified time frame.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.</td>
 </tr>
 </tbody>
 </table>
@@ -187,7 +187,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_route_stats_by_actor">
 
-Get API request count statistics for an actor broken down by route within a specified time frame.
+Get API request count statistics for an actor broken down by route within a specified time frame.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
 
 ```sql
 SELECT

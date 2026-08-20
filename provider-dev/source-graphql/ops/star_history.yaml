@@ -1,0 +1,65 @@
+# Stargazers with the time each star was given. The REST stargazers endpoint
+# only returns starred_at with a non-default Accept media type, which the
+# provider does not set; GraphQL returns it natively and in STARRED_AT order.
+service: activity
+resource: star_history
+title: Star History
+description: >-
+  Every star on a repository with the time it was given, oldest first -
+  suitable for star growth over time. Backed by the GitHub GraphQL API
+  (`repository.stargazers` ordered by `STARRED_AT`). Since July 2026 GitHub
+  limits stargazer listings to repository admins and collaborators; other
+  tokens get "Resource not accessible by personal access token".
+parameters:
+  - name: owner
+    in: query
+    required: true
+    schema: { type: string }
+    description: The account owner of the repository.
+  - name: repo
+    in: query
+    required: true
+    schema: { type: string }
+    description: The name of the repository.
+selection: $.data.repository.stargazers.edges
+cursor:
+  strategy: page_info
+  jsonPath: $.data.repository.stargazers.pageInfo.endCursor
+  terminateOnJsonPath: $.data.repository.stargazers.pageInfo.hasNextPage
+query: |
+  query {
+    repository(owner: "{{ .owner }}", name: "{{ .repo }}") {
+      stargazers(first: 100, orderBy: {field: STARRED_AT, direction: ASC}{{ .cursor }}) {
+        pageInfo { endCursor hasNextPage }
+        edges {
+          starred_at: starredAt
+          user: node {
+            login
+            id
+            database_id: databaseId
+            name
+            company
+            location
+            url
+            avatar_url: avatarUrl
+          }
+        }
+      }
+    }
+  }
+rowSchema:
+  type: object
+  properties:
+    starred_at: { type: string, format: date-time, description: "When the star was given." }
+    user:
+      type: object
+      description: "The user who starred the repository (`login`, `id`, `database_id`, `name`, `company`, `location`, `url`, `avatar_url`)."
+      properties:
+        login: { type: string }
+        id: { type: string }
+        database_id: { type: integer }
+        name: { type: string }
+        company: { type: string }
+        location: { type: string }
+        url: { type: string }
+        avatar_url: { type: string }

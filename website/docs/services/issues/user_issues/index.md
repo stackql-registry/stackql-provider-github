@@ -234,7 +234,7 @@ Response
 <tr>
     <td><CopyableCode code="type" /></td>
     <td><code>object</code></td>
-    <td>The type of issue. (title: Issue Type)</td>
+    <td>The type assigned to the issue. This is only present for issues in repositories where issue types are supported. (title: Issue Type)</td>
 </tr>
 <tr>
     <td><CopyableCode code="updated_at" /></td>

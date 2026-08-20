@@ -123,6 +123,11 @@ Task retrieved successfully
     <td>Last update timestamp</td>
 </tr>
 <tr>
+    <td><CopyableCode code="usage" /></td>
+    <td><code>object</code></td>
+    <td>Structured information about billing units consumed by the session.</td>
+</tr>
+<tr>
     <td><CopyableCode code="user" /></td>
     <td><code>object</code></td>
     <td>The user who created this session</td>
@@ -177,6 +182,11 @@ Tasks retrieved successfully
     <td><CopyableCode code="creator_type" /></td>
     <td><code>string</code></td>
     <td>Type of the task creator (user, organization)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="custom_agent" /></td>
+    <td><code>object</code></td>
+    <td>Custom agent metadata associated with this task</td>
 </tr>
 <tr>
     <td><CopyableCode code="html_url" /></td>
@@ -243,14 +253,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-task_id"><code>task_id</code></a></td>
     <td></td>
-    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Returns a task by ID with its associated sessions<br /></td>
+    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Returns a task by ID with its associated sessions<br /><br />**Fine-grained access tokens for "Get a task by ID"**<br /><br />This endpoint works with the following fine-grained token types:<br /><br />* [GitHub App user access tokens](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)<br />* [Fine-grained personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)<br /><br />The fine-grained token must have the following permission set:<br /><br />* "Agent tasks" repository permissions (read)<br /><br />GitHub App installation access tokens are not supported for this endpoint.<br /></td>
 </tr>
 <tr>
     <td><a href="#list_tasks"><CopyableCode code="list_tasks" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td></td>
     <td><a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-page"><code>page</code></a>, <a href="#parameter-sort"><code>sort</code></a>, <a href="#parameter-direction"><code>direction</code></a>, <a href="#parameter-state"><code>state</code></a>, <a href="#parameter-is_archived"><code>is_archived</code></a>, <a href="#parameter-since"><code>since</code></a></td>
-    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Returns a list of tasks for the authenticated user<br /></td>
+    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Returns a list of tasks for the authenticated user<br /><br />**Fine-grained access tokens for "List tasks"**<br /><br />This endpoint works with the following fine-grained token types:<br /><br />* [GitHub App user access tokens](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)<br />* [Fine-grained personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)<br /><br />The fine-grained token must have the following permission set:<br /><br />* "Agent tasks" repository permissions (read)<br /><br />GitHub App installation access tokens are not supported for this endpoint.<br /></td>
 </tr>
 </tbody>
 </table>
@@ -322,7 +332,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_task_by_id">
 
-&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Returns a task by ID with its associated sessions<br />
+&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Returns a task by ID with its associated sessions<br /><br />**Fine-grained access tokens for "Get a task by ID"**<br /><br />This endpoint works with the following fine-grained token types:<br /><br />* [GitHub App user access tokens](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)<br />* [Fine-grained personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)<br /><br />The fine-grained token must have the following permission set:<br /><br />* "Agent tasks" repository permissions (read)<br /><br />GitHub App installation access tokens are not supported for this endpoint.<br />
 
 ```sql
 SELECT
@@ -340,6 +350,7 @@ prompt,
 repository,
 state,
 updated_at,
+usage,
 user
 FROM github.agent_tasks.tasks
 WHERE task_id = '{{ task_id }}' -- required
@@ -348,7 +359,7 @@ WHERE task_id = '{{ task_id }}' -- required
 </TabItem>
 <TabItem value="list_tasks">
 
-&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Returns a list of tasks for the authenticated user<br />
+&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Returns a list of tasks for the authenticated user<br /><br />**Fine-grained access tokens for "List tasks"**<br /><br />This endpoint works with the following fine-grained token types:<br /><br />* [GitHub App user access tokens](https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app)<br />* [Fine-grained personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)<br /><br />The fine-grained token must have the following permission set:<br /><br />* "Agent tasks" repository permissions (read)<br /><br />GitHub App installation access tokens are not supported for this endpoint.<br />
 
 ```sql
 SELECT
@@ -359,6 +370,7 @@ artifacts,
 created_at,
 creator,
 creator_type,
+custom_agent,
 html_url,
 owner,
 repository,

@@ -54,7 +54,7 @@ Response
 <tr>
     <td><CopyableCode code="enabled_repositories" /></td>
     <td><code>string</code></td>
-    <td>The policy for which repositories can use Copilot coding agent. Can be one of `all`, `selected`, or `none`. (all, selected, none)</td>
+    <td>The policy for which repositories can use Copilot cloud agent. Can be one of `all`, `selected`, or `none`. (all, selected, none)</td>
 </tr>
 <tr>
     <td><CopyableCode code="selected_repositories_url" /></td>
@@ -86,14 +86,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-org"><code>org</code></a></td>
     <td></td>
-    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Gets information about which repositories in an organization have been enabled<br />or disabled for the Copilot coding agent.<br /><br />Organization owners can configure whether Copilot coding agent is enabled for<br />all repositories, selected repositories, or no repositories owned by organization.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.</td>
+    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Gets information about which repositories in an organization have been enabled<br />or disabled for the Copilot cloud agent.<br /><br />Organization owners can configure whether Copilot cloud agent is enabled for<br />all repositories, selected repositories, or no repositories owned by organization.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.</td>
 </tr>
 <tr>
     <td><a href="#set_copilot_coding_agent_permissions_organization"><CopyableCode code="set_copilot_coding_agent_permissions_organization" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-enabled_repositories"><code>enabled_repositories</code></a></td>
     <td></td>
-    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Sets the policy for which repositories in an organization can use Copilot coding agent.<br /><br />Organization owners can configure whether Copilot coding agent is enabled for<br />all repositories, selected repositories, or no repositories owned by the organization.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.</td>
+    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Sets the policy for which repositories in an organization can use Copilot cloud agent.<br /><br />Organization owners can configure whether Copilot cloud agent is enabled for<br />all repositories, selected repositories, or no repositories owned by the organization.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.</td>
 </tr>
 </tbody>
 </table>
@@ -129,7 +129,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_copilot_coding_agent_permissions_organization">
 
-&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Gets information about which repositories in an organization have been enabled<br />or disabled for the Copilot coding agent.<br /><br />Organization owners can configure whether Copilot coding agent is enabled for<br />all repositories, selected repositories, or no repositories owned by organization.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Gets information about which repositories in an organization have been enabled<br />or disabled for the Copilot cloud agent.<br /><br />Organization owners can configure whether Copilot cloud agent is enabled for<br />all repositories, selected repositories, or no repositories owned by organization.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
 
 ```sql
 SELECT
@@ -153,7 +153,7 @@ WHERE org = '{{ org }}' -- required
 >
 <TabItem value="set_copilot_coding_agent_permissions_organization">
 
-&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Sets the policy for which repositories in an organization can use Copilot coding agent.<br /><br />Organization owners can configure whether Copilot coding agent is enabled for<br />all repositories, selected repositories, or no repositories owned by the organization.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Sets the policy for which repositories in an organization can use Copilot cloud agent.<br /><br />Organization owners can configure whether Copilot cloud agent is enabled for<br />all repositories, selected repositories, or no repositories owned by the organization.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
 
 ```sql
 REPLACE github.copilot.org_coding_agent_permissions

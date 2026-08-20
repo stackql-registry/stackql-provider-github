@@ -18,7 +18,7 @@ repos service documentation.
 
 :::info[Service Summary]
 
-total resources: __73__  
+total resources: __75__  
 
 :::
 
@@ -56,14 +56,16 @@ total resources: __73__
 <a href="/services/repos/details/">details</a><br />
 <a href="/services/repos/environments/">environments</a><br />
 <a href="/services/repos/forks/">forks</a><br />
+<a href="/services/repos/hash_algorithm/">hash_algorithm</a><br />
 <a href="/services/repos/head_commit_branches/">head_commit_branches</a><br />
 <a href="/services/repos/invitations/">invitations</a><br />
+<a href="/services/repos/issue_types/">issue_types</a><br />
 <a href="/services/repos/page_build_latest/">page_build_latest</a><br />
 <a href="/services/repos/page_builds/">page_builds</a><br />
-<a href="/services/repos/pages/">pages</a><br />
-<a href="/services/repos/pages_health_check/">pages_health_check</a>
+<a href="/services/repos/pages/">pages</a>
 </div>
 <div class="providerDocColumn">
+<a href="/services/repos/pages_health_check/">pages_health_check</a><br />
 <a href="/services/repos/pr_review_protection/">pr_review_protection</a><br />
 <a href="/services/repos/private_vulnerability_reporting/">private_vulnerability_reporting</a><br />
 <a href="/services/repos/protection_rules/">protection_rules</a><br />

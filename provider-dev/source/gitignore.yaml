@@ -23,7 +23,10 @@ paths:
               schema:
                 type: array
                 items:
-                  type: string
+                  type: object
+                  properties:
+                    gitignore/get_all_template:
+                      type: string
               examples:
                 default:
                   value:

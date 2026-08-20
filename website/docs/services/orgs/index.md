@@ -18,7 +18,7 @@ orgs service documentation.
 
 :::info[Service Summary]
 
-total resources: __39__  
+total resources: __42__  
 
 :::
 
@@ -36,6 +36,7 @@ total resources: __39__
 <a href="/services/orgs/attestation_repositories/">attestation_repositories</a><br />
 <a href="/services/orgs/attestations/">attestations</a><br />
 <a href="/services/orgs/blocking/">blocking</a><br />
+<a href="/services/orgs/cluster_deployment_records_jobs/">cluster_deployment_records_jobs</a><br />
 <a href="/services/orgs/custom_properties/">custom_properties</a><br />
 <a href="/services/orgs/custom_property_values/">custom_property_values</a><br />
 <a href="/services/orgs/failed_invitations/">failed_invitations</a><br />
@@ -61,7 +62,9 @@ total resources: __39__
 <a href="/services/orgs/role_user_assignments/">role_user_assignments</a><br />
 <a href="/services/orgs/roles/">roles</a><br />
 <a href="/services/orgs/ruleset_history/">ruleset_history</a><br />
+<a href="/services/orgs/saml_identities/">saml_identities</a><br />
 <a href="/services/orgs/security_managers/">security_managers</a><br />
+<a href="/services/orgs/sponsorships/">sponsorships</a><br />
 <a href="/services/orgs/webhook_config/">webhook_config</a><br />
 <a href="/services/orgs/webhook_deliveries/">webhook_deliveries</a><br />
 <a href="/services/orgs/webhook_delivery/">webhook_delivery</a><br />

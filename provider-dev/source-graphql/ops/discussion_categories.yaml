@@ -1,0 +1,53 @@
+# Discussion categories configured on a repository (GraphQL only).
+service: discussions
+resource: discussion_categories
+title: Discussion Categories
+description: >-
+  Discussion categories configured for a repository (for example
+  Announcements, Q&A, Ideas). Backed by the GitHub GraphQL API
+  (`repository.discussionCategories`).
+parameters:
+  - name: owner
+    in: query
+    required: true
+    schema: { type: string }
+    description: The account owner of the repository.
+  - name: repo
+    in: query
+    required: true
+    schema: { type: string }
+    description: The name of the repository.
+selection: $.data.repository.discussionCategories.nodes
+cursor:
+  strategy: page_info
+  jsonPath: $.data.repository.discussionCategories.pageInfo.endCursor
+  terminateOnJsonPath: $.data.repository.discussionCategories.pageInfo.hasNextPage
+query: |
+  query {
+    repository(owner: "{{ .owner }}", name: "{{ .repo }}") {
+      discussionCategories(first: 100{{ .cursor }}) {
+        pageInfo { endCursor hasNextPage }
+        nodes {
+          id
+          name
+          slug
+          emoji
+          description
+          is_answerable: isAnswerable
+          created_at: createdAt
+          updated_at: updatedAt
+        }
+      }
+    }
+  }
+rowSchema:
+  type: object
+  properties:
+    id: { type: string, description: "The GraphQL node ID of the category." }
+    name: { type: string }
+    slug: { type: string }
+    emoji: { type: string, description: "The emoji shortcode for the category." }
+    description: { type: string }
+    is_answerable: { type: boolean, description: "Whether discussions in this category can be marked as answered." }
+    created_at: { type: string, format: date-time }
+    updated_at: { type: string, format: date-time }

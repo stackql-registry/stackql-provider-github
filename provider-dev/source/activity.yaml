@@ -4766,6 +4766,8 @@ components:
           $ref: '#/components/schemas/reaction-rollup'
         pin:
           $ref: '#/components/schemas/nullable-pinned-issue-comment'
+        minimized:
+          $ref: '#/components/schemas/nullable-issue-comment-minimized'
       required:
         - id
         - node_id
@@ -5068,7 +5070,7 @@ components:
       nullable: true
     issue-type:
       title: Issue Type
-      description: The type of issue.
+      description: The type assigned to the issue. This is only present for issues in repositories where issue types are supported.
       type: object
       nullable: true
       properties:
@@ -5404,6 +5406,8 @@ components:
           $ref: '#/components/schemas/reaction-rollup'
         pin:
           $ref: '#/components/schemas/nullable-pinned-issue-comment'
+        minimized:
+          $ref: '#/components/schemas/nullable-issue-comment-minimized'
       required:
         - id
         - node_id
@@ -5441,6 +5445,10 @@ components:
           type: integer
           format: int64
           example: 1
+        issue_field_name:
+          description: The human-readable name of the issue field.
+          type: string
+          example: Priority
         node_id:
           type: string
           example: IFT_GDKND
@@ -5450,6 +5458,7 @@ components:
           enum:
             - text
             - single_select
+            - multi_select
             - number
             - date
           example: text
@@ -5480,6 +5489,30 @@ components:
             - name
             - color
           nullable: true
+        multi_select_options:
+          description: Details about the selected options
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                description: Unique identifier for the option.
+                type: integer
+                format: int64
+                example: 1
+              name:
+                description: The name of the option
+                type: string
+                example: High
+              color:
+                description: The color of the option
+                type: string
+                example: red
+            required:
+              - id
+              - name
+              - color
+          nullable: true
       required:
         - issue_field_id
         - node_id
@@ -5499,6 +5532,19 @@ components:
       required:
         - pinned_at
         - pinned_by
+      nullable: true
+    nullable-issue-comment-minimized:
+      title: Minimized Issue Comment
+      description: Details about why an issue comment was minimized.
+      type: object
+      properties:
+        reason:
+          description: The reason the comment was minimized.
+          type: string
+          nullable: true
+          example: low-quality
+      required:
+        - reason
       nullable: true
     release-asset:
       title: Release Asset

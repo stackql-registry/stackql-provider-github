@@ -55,7 +55,7 @@ Response
 <tbody>
 <tr>
     <td><CopyableCode code="id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>The id of the job.</td>
 </tr>
 <tr>
@@ -70,7 +70,7 @@ Response
 </tr>
 <tr>
     <td><CopyableCode code="run_id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>The id of the associated workflow run.</td>
 </tr>
 <tr>
@@ -186,7 +186,7 @@ Response
 <tbody>
 <tr>
     <td><CopyableCode code="id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>The id of the job.</td>
 </tr>
 <tr>
@@ -201,7 +201,7 @@ Response
 </tr>
 <tr>
     <td><CopyableCode code="run_id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>The id of the associated workflow run.</td>
 </tr>
 <tr>
@@ -317,7 +317,7 @@ Response
 <tbody>
 <tr>
     <td><CopyableCode code="id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>The id of the job.</td>
 </tr>
 <tr>
@@ -332,7 +332,7 @@ Response
 </tr>
 <tr>
     <td><CopyableCode code="run_id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>The id of the associated workflow run.</td>
 </tr>
 <tr>
@@ -494,7 +494,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-job_id">
     <td><CopyableCode code="job_id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>The unique identifier of the job.</td>
 </tr>
 <tr id="parameter-owner">

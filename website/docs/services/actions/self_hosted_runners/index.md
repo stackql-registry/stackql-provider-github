@@ -94,6 +94,11 @@ Response
     <td><code>string</code></td>
     <td>The status of the runner. (example: online)</td>
 </tr>
+<tr>
+    <td><CopyableCode code="version" /></td>
+    <td><code>string</code></td>
+    <td>The version of the GitHub Actions Runner software. This is only set if the runner has connected to the service at least once. (example: 2.323.0)</td>
+</tr>
 </tbody>
 </table>
 </TabItem>
@@ -149,6 +154,11 @@ Response
     <td><CopyableCode code="status" /></td>
     <td><code>string</code></td>
     <td>The status of the runner. (example: online)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="version" /></td>
+    <td><code>string</code></td>
+    <td>The version of the GitHub Actions Runner software. This is only set if the runner has connected to the service at least once. (example: 2.323.0)</td>
 </tr>
 </tbody>
 </table>
@@ -206,6 +216,11 @@ Response
     <td><code>string</code></td>
     <td>The status of the runner. (example: online)</td>
 </tr>
+<tr>
+    <td><CopyableCode code="version" /></td>
+    <td><code>string</code></td>
+    <td>The version of the GitHub Actions Runner software. This is only set if the runner has connected to the service at least once. (example: 2.323.0)</td>
+</tr>
 </tbody>
 </table>
 </TabItem>
@@ -261,6 +276,11 @@ Response
     <td><CopyableCode code="status" /></td>
     <td><code>string</code></td>
     <td>The status of the runner. (example: online)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="version" /></td>
+    <td><code>string</code></td>
+    <td>The version of the GitHub Actions Runner software. This is only set if the runner has connected to the service at least once. (example: 2.323.0)</td>
 </tr>
 </tbody>
 </table>
@@ -402,7 +422,8 @@ busy,
 ephemeral,
 labels,
 os,
-status
+status,
+version
 FROM github.actions.self_hosted_runners
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required
@@ -423,7 +444,8 @@ busy,
 ephemeral,
 labels,
 os,
-status
+status,
+version
 FROM github.actions.self_hosted_runners
 WHERE org = '{{ org }}' -- required
 AND runner_id = '{{ runner_id }}' -- required
@@ -443,7 +465,8 @@ busy,
 ephemeral,
 labels,
 os,
-status
+status,
+version
 FROM github.actions.self_hosted_runners
 WHERE owner = '{{ owner }}' -- required
 AND repo = '{{ repo }}' -- required
@@ -466,7 +489,8 @@ busy,
 ephemeral,
 labels,
 os,
-status
+status,
+version
 FROM github.actions.self_hosted_runners
 WHERE org = '{{ org }}' -- required
 AND name = '{{ name }}'

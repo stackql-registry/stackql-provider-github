@@ -18,7 +18,7 @@ activity service documentation.
 
 :::info[Service Summary]
 
-total resources: __12__  
+total resources: __13__  
 
 :::
 
@@ -30,13 +30,14 @@ total resources: __12__
 <a href="/services/activity/notifications/">notifications</a><br />
 <a href="/services/activity/notifications_thread_subscriptions/">notifications_thread_subscriptions</a><br />
 <a href="/services/activity/public_events/">public_events</a><br />
-<a href="/services/activity/received_events/">received_events</a>
+<a href="/services/activity/received_events/">received_events</a><br />
+<a href="/services/activity/received_public_events/">received_public_events</a>
 </div>
 <div class="providerDocColumn">
-<a href="/services/activity/received_public_events/">received_public_events</a><br />
 <a href="/services/activity/repo_stargazers/">repo_stargazers</a><br />
 <a href="/services/activity/repo_subscriptions/">repo_subscriptions</a><br />
 <a href="/services/activity/repo_watchers/">repo_watchers</a><br />
+<a href="/services/activity/star_history/">star_history</a><br />
 <a href="/services/activity/starring/">starring</a><br />
 <a href="/services/activity/watching/">watching</a>
 </div>

@@ -136,7 +136,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-cluster"><code>cluster</code></a>, <a href="#parameter-logical_environment"><code>logical_environment</code></a>, <a href="#parameter-deployments"><code>deployments</code></a></td>
     <td></td>
-    <td>Set deployment records for a given cluster.<br />If proposed records in the 'deployments' field have identical 'cluster', 'logical_environment',<br />'physical_environment', and 'deployment_name' values as existing records, the existing records will be updated.<br />If no existing records match, new records will be created.</td>
+    <td>Set deployment records for a given cluster.<br />If proposed records in the 'deployments' field have identical 'cluster', 'logical_environment',<br />'physical_environment', and 'deployment_name' values as existing records, the existing records will be updated.<br />If no existing records match, new records will be created.<br />Note: Artifacts are uniquely identified by the combination of their repository and digest fields. If two entries in the deployments<br />array resolve to the same repository and have identical digest fields but differing name and version fields, the endpoint will use<br />the artifact name and version from the record processed first, since a single artifact (identified by repository and digest) can<br />only have one name and version.</td>
 </tr>
 <tr>
     <td><a href="#create_artifact_deployment_record"><CopyableCode code="create_artifact_deployment_record" /></a></td>
@@ -225,13 +225,14 @@ AND subject_digest = '{{ subject_digest }}' -- required
 >
 <TabItem value="set_cluster_deployment_records">
 
-Set deployment records for a given cluster.<br />If proposed records in the 'deployments' field have identical 'cluster', 'logical_environment',<br />'physical_environment', and 'deployment_name' values as existing records, the existing records will be updated.<br />If no existing records match, new records will be created.
+Set deployment records for a given cluster.<br />If proposed records in the 'deployments' field have identical 'cluster', 'logical_environment',<br />'physical_environment', and 'deployment_name' values as existing records, the existing records will be updated.<br />If no existing records match, new records will be created.<br />Note: Artifacts are uniquely identified by the combination of their repository and digest fields. If two entries in the deployments<br />array resolve to the same repository and have identical digest fields but differing name and version fields, the endpoint will use<br />the artifact name and version from the record processed first, since a single artifact (identified by repository and digest) can<br />only have one name and version.
 
 ```sql
 INSERT INTO github.orgs.artifact_deployment_records (
 logical_environment,
 physical_environment,
 deployments,
+partial_success,
 return_records,
 org,
 cluster
@@ -240,6 +241,7 @@ SELECT
 '{{ logical_environment }}' /* required */,
 '{{ physical_environment }}',
 '{{ deployments }}' /* required */,
+{{ partial_success }},
 {{ return_records }},
 '{{ org }}',
 '{{ cluster }}'
@@ -320,6 +322,14 @@ total_count
           github_repository: "{{ github_repository }}"
           tags: "{{ tags }}"
           runtime_risks: "{{ runtime_risks }}"
+    - name: partial_success
+      value: {{ partial_success }}
+      description: |
+        When enabled, deployments associated with repositories the actor can write to are processed
+        while deployments associated with repositories that cannot be resolved or written to by the actor
+        are skipped and reported in the \`errors\` array. When false (the default), the endpoint returns
+        an error if any targeted repository cannot be resolved, the actor lacks write access, or no matching attestation can be found.
+      default: false
     - name: return_records
       value: {{ return_records }}
       description: |

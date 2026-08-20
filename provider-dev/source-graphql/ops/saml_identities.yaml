@@ -1,0 +1,80 @@
+# SAML / SCIM external identities linked to an organization - GraphQL only.
+service: orgs
+resource: saml_identities
+title: SAML Identities
+description: >-
+  External identities (SAML and SCIM) linked to organization members when
+  the organization uses SAML single sign-on. Backed by the GitHub GraphQL
+  API (`organization.samlIdentityProvider.externalIdentities`). Requires
+  organization owner access and an organization with SAML SSO configured.
+parameters:
+  - name: org
+    in: query
+    required: true
+    schema: { type: string }
+    description: The organization name.
+selection: $.data.organization.samlIdentityProvider.externalIdentities.nodes
+cursor:
+  strategy: page_info
+  jsonPath: $.data.organization.samlIdentityProvider.externalIdentities.pageInfo.endCursor
+  terminateOnJsonPath: $.data.organization.samlIdentityProvider.externalIdentities.pageInfo.hasNextPage
+query: |
+  query {
+    organization(login: "{{ .org }}") {
+      samlIdentityProvider {
+        externalIdentities(first: 100{{ .cursor }}) {
+          pageInfo { endCursor hasNextPage }
+          nodes {
+            id
+            guid
+            saml_identity: samlIdentity {
+              name_id: nameId
+              username
+              emails { value primary }
+            }
+            scim_identity: scimIdentity {
+              username
+              emails { value primary }
+            }
+            user { login id }
+          }
+        }
+      }
+    }
+  }
+rowSchema:
+  type: object
+  properties:
+    id: { type: string, description: "The GraphQL node ID of the external identity." }
+    guid: { type: string, description: "The GUID for this identity." }
+    saml_identity:
+      type: object
+      description: "The SAML identity (`name_id`, `username`, `emails[]`)."
+      properties:
+        name_id: { type: string }
+        username: { type: string }
+        emails:
+          type: array
+          items:
+            type: object
+            properties:
+              value: { type: string }
+              primary: { type: boolean }
+    scim_identity:
+      type: object
+      description: "The SCIM identity (`username`, `emails[]`)."
+      properties:
+        username: { type: string }
+        emails:
+          type: array
+          items:
+            type: object
+            properties:
+              value: { type: string }
+              primary: { type: boolean }
+    user:
+      type: object
+      description: "The linked GitHub user, null for unlinked identities (`login`, `id`)."
+      properties:
+        login: { type: string }
+        id: { type: string }

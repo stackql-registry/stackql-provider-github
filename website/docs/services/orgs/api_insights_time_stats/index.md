@@ -155,21 +155,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-actor_type"><code>actor_type</code></a>, <a href="#parameter-actor_id"><code>actor_id</code></a>, <a href="#parameter-min_timestamp"><code>min_timestamp</code></a>, <a href="#parameter-timestamp_increment"><code>timestamp_increment</code></a></td>
     <td><a href="#parameter-max_timestamp"><code>max_timestamp</code></a></td>
-    <td>Get the number of API requests and rate-limited requests made within an organization by a specific actor within a specified time period.</td>
+    <td>Get the number of API requests and rate-limited requests made within an organization by a specific actor within a specified time period.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.</td>
 </tr>
 <tr>
     <td><a href="#get_time_stats_by_user"><CopyableCode code="get_time_stats_by_user" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-user_id"><code>user_id</code></a>, <a href="#parameter-min_timestamp"><code>min_timestamp</code></a>, <a href="#parameter-timestamp_increment"><code>timestamp_increment</code></a></td>
     <td><a href="#parameter-max_timestamp"><code>max_timestamp</code></a></td>
-    <td>Get the number of API requests and rate-limited requests made within an organization by a specific user over a specified time period.</td>
+    <td>Get the number of API requests and rate-limited requests made within an organization by a specific user over a specified time period.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.</td>
 </tr>
 <tr>
     <td><a href="#get_time_stats"><CopyableCode code="get_time_stats" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-min_timestamp"><code>min_timestamp</code></a>, <a href="#parameter-timestamp_increment"><code>timestamp_increment</code></a></td>
     <td><a href="#parameter-max_timestamp"><code>max_timestamp</code></a></td>
-    <td>Get the number of API requests and rate-limited requests made within an organization over a specified time period.</td>
+    <td>Get the number of API requests and rate-limited requests made within an organization over a specified time period.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.</td>
 </tr>
 </tbody>
 </table>
@@ -237,7 +237,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_time_stats_by_actor">
 
-Get the number of API requests and rate-limited requests made within an organization by a specific actor within a specified time period.
+Get the number of API requests and rate-limited requests made within an organization by a specific actor within a specified time period.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
 
 ```sql
 SELECT
@@ -256,7 +256,7 @@ AND max_timestamp = '{{ max_timestamp }}'
 </TabItem>
 <TabItem value="get_time_stats_by_user">
 
-Get the number of API requests and rate-limited requests made within an organization by a specific user over a specified time period.
+Get the number of API requests and rate-limited requests made within an organization by a specific user over a specified time period.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
 
 ```sql
 SELECT
@@ -274,7 +274,7 @@ AND max_timestamp = '{{ max_timestamp }}'
 </TabItem>
 <TabItem value="get_time_stats">
 
-Get the number of API requests and rate-limited requests made within an organization over a specified time period.
+Get the number of API requests and rate-limited requests made within an organization over a specified time period.<br /><br />Under normal conditions, you can expect API data to appear within 4–6 hours after making a request. During incidents or periods of unusually high volume, it may take longer to show up.
 
 ```sql
 SELECT

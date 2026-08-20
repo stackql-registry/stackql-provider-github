@@ -1,3 +1,7 @@
+# stackql
+stackql
+/.stackql
+
 main.zip
 
 # Byte-compiled / optimized / DLL files
@@ -82,3 +86,7 @@ nohup.out
 **/test-output/
 # Ignore everything in source directory except .gitkeep
 source/*
+
+# provider-dev test harness
+provider-dev/test/.bin/
+provider-dev/test/.venv/

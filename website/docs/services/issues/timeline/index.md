@@ -92,6 +92,16 @@ Response
     <td>How the author is associated with the repository. (COLLABORATOR, CONTRIBUTOR, FIRST_TIMER, FIRST_TIME_CONTRIBUTOR, MANNEQUIN, MEMBER, NONE, OWNER) (title: author_association, example: OWNER)</td>
 </tr>
 <tr>
+    <td><CopyableCode code="blocked_by" /></td>
+    <td><code>object</code></td>
+    <td>A minimal reference to an issue linked from a timeline event (e.g. sub-issue, parent-issue, or dependency events). (title: Issue Reference)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="blocking" /></td>
+    <td><code>object</code></td>
+    <td>A minimal reference to an issue linked from a timeline event (e.g. sub-issue, parent-issue, or dependency events). (title: Issue Reference)</td>
+</tr>
+<tr>
     <td><CopyableCode code="body" /></td>
     <td><code>string</code></td>
     <td>Contents of the issue comment (example: What version of Safari were you using when you observed this bug?)</td>
@@ -142,6 +152,16 @@ Response
     <td></td>
 </tr>
 <tr>
+    <td><CopyableCode code="intent" /></td>
+    <td><code>object</code></td>
+    <td>The intent behind an agent's action on an issue, including the rationale and confidence. Present (and `null` when the event carried no agent intent) on supported event types while the issue suggestions feature is enabled for the repository; the property is omitted entirely when the feature is disabled or the event type does not support intent. (title: Issue Event Intent)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="issue_type" /></td>
+    <td><code>object</code></td>
+    <td>The type of issue. (title: Issue Type)</td>
+</tr>
+<tr>
     <td><CopyableCode code="issue_url" /></td>
     <td><code>string (uri)</code></td>
     <td></td>
@@ -167,6 +187,16 @@ Response
     <td></td>
 </tr>
 <tr>
+    <td><CopyableCode code="minimized" /></td>
+    <td><code>object</code></td>
+    <td>Details about why an issue comment was minimized. (title: Minimized Issue Comment)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="parent_issue" /></td>
+    <td><code>object</code></td>
+    <td>A minimal reference to an issue linked from a timeline event (e.g. sub-issue, parent-issue, or dependency events). (title: Issue Reference)</td>
+</tr>
+<tr>
     <td><CopyableCode code="parents" /></td>
     <td><code>array</code></td>
     <td></td>
@@ -180,6 +210,11 @@ Response
     <td><CopyableCode code="pin" /></td>
     <td><code>object</code></td>
     <td>Context around who pinned an issue comment and when it was pinned. (title: Pinned Issue Comment)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="prev_issue_type" /></td>
+    <td><code>object</code></td>
+    <td>The type of issue. (title: Issue Type)</td>
 </tr>
 <tr>
     <td><CopyableCode code="project_card" /></td>
@@ -237,6 +272,11 @@ Response
     <td></td>
 </tr>
 <tr>
+    <td><CopyableCode code="sub_issue" /></td>
+    <td><code>object</code></td>
+    <td>A minimal reference to an issue linked from a timeline event (e.g. sub-issue, parent-issue, or dependency events). (title: Issue Reference)</td>
+</tr>
+<tr>
     <td><CopyableCode code="submitted_at" /></td>
     <td><code>string (date-time)</code></td>
     <td></td>
@@ -290,7 +330,7 @@ The following methods are available for this resource:
     <td><a href="#list_events_for_timeline"><CopyableCode code="list_events_for_timeline" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a>, <a href="#parameter-issue_number"><code>issue_number</code></a></td>
-    <td><a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-page"><code>page</code></a></td>
+    <td><a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-page"><code>page</code></a>, <a href="#parameter-exclude"><code>exclude</code></a></td>
     <td>List all timeline events for an issue.</td>
 </tr>
 </tbody>
@@ -323,6 +363,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="repo" /></td>
     <td><code>string</code></td>
     <td>The name of the repository without the `.git` extension. The name is not case sensitive.</td>
+</tr>
+<tr id="parameter-exclude">
+    <td><CopyableCode code="exclude" /></td>
+    <td><code>string</code></td>
+    <td>A comma-separated list of timeline event names to exclude from the response.</td>
 </tr>
 <tr id="parameter-page">
     <td><CopyableCode code="page" /></td>
@@ -359,6 +404,8 @@ actor,
 assignee,
 author,
 author_association,
+blocked_by,
+blocking,
 body,
 body_html,
 body_text,
@@ -369,14 +416,19 @@ created_at,
 dismissed_review,
 event,
 html_url,
+intent,
+issue_type,
 issue_url,
 label,
 lock_reason,
 message,
 milestone,
+minimized,
+parent_issue,
 parents,
 performed_via_github_app,
 pin,
+prev_issue_type,
 project_card,
 pull_request_url,
 reactions,
@@ -388,6 +440,7 @@ sha,
 source,
 state,
 state_reason,
+sub_issue,
 submitted_at,
 tree,
 updated_at,
@@ -400,6 +453,7 @@ AND repo = '{{ repo }}' -- required
 AND issue_number = '{{ issue_number }}' -- required
 AND per_page = '{{ per_page }}'
 AND page = '{{ page }}'
+AND exclude = '{{ exclude }}'
 ;
 ```
 </TabItem>

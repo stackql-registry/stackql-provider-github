@@ -1,0 +1,1 @@
+{"auth": {"type": "basic", "username_var": "STACKQL_GITHUB_USERNAME", "password_var": "STACKQL_GITHUB_PASSWORD"}}

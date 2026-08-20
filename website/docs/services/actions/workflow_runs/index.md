@@ -56,7 +56,7 @@ Response
 <tbody>
 <tr>
     <td><CopyableCode code="id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>The ID of the workflow run.</td>
 </tr>
 <tr>
@@ -66,7 +66,7 @@ Response
 </tr>
 <tr>
     <td><CopyableCode code="check_suite_id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>The ID of the associated check suite.</td>
 </tr>
 <tr>
@@ -252,7 +252,7 @@ Response
 <tbody>
 <tr>
     <td><CopyableCode code="id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>The ID of the workflow run.</td>
 </tr>
 <tr>
@@ -262,7 +262,7 @@ Response
 </tr>
 <tr>
     <td><CopyableCode code="check_suite_id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>The ID of the associated check suite.</td>
 </tr>
 <tr>
@@ -448,7 +448,7 @@ Response
 <tbody>
 <tr>
     <td><CopyableCode code="id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>The ID of the workflow run.</td>
 </tr>
 <tr>
@@ -458,7 +458,7 @@ Response
 </tr>
 <tr>
     <td><CopyableCode code="check_suite_id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>The ID of the associated check suite.</td>
 </tr>
 <tr>
@@ -644,7 +644,7 @@ Response
 <tbody>
 <tr>
     <td><CopyableCode code="id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>The ID of the workflow run.</td>
 </tr>
 <tr>
@@ -654,7 +654,7 @@ Response
 </tr>
 <tr>
     <td><CopyableCode code="check_suite_id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>The ID of the associated check suite.</td>
 </tr>
 <tr>
@@ -949,7 +949,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-job_id">
     <td><CopyableCode code="job_id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>The unique identifier of the job.</td>
 </tr>
 <tr id="parameter-owner">
@@ -984,7 +984,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 </tr>
 <tr id="parameter-check_suite_id">
     <td><CopyableCode code="check_suite_id" /></td>
-    <td><code>integer</code></td>
+    <td><code>integer (int64)</code></td>
     <td>Returns workflow runs with the `check_suite_id` that you specify.</td>
 </tr>
 <tr id="parameter-created">
@@ -1350,7 +1350,8 @@ EXEC github.actions.workflow_runs.re_run_job_for_workflow_run
 @job_id='{{ job_id }}' --required 
 @@json=
 '{
-"enable_debug_logging": {{ enable_debug_logging }}
+"enable_debug_logging": {{ enable_debug_logging }}, 
+"enable_debugger": {{ enable_debugger }}
 }'
 ;
 ```

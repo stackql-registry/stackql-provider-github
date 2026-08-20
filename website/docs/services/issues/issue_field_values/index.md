@@ -62,9 +62,19 @@ Response
     <td> (example: IFT_GDKND)</td>
 </tr>
 <tr>
+    <td><CopyableCode code="issue_field_name" /></td>
+    <td><code>string</code></td>
+    <td>The human-readable name of the issue field. (example: Priority)</td>
+</tr>
+<tr>
     <td><CopyableCode code="data_type" /></td>
     <td><code>string</code></td>
-    <td>The data type of the issue field (text, single_select, number, date) (example: text)</td>
+    <td>The data type of the issue field (text, single_select, multi_select, number, date) (example: text)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="multi_select_options" /></td>
+    <td><code>array</code></td>
+    <td>Details about the selected options</td>
 </tr>
 <tr>
     <td><CopyableCode code="single_select_option" /></td>
@@ -106,21 +116,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#add_issue_field_values"><CopyableCode code="add_issue_field_values" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-repository_id"><code>repository_id</code></a>, <a href="#parameter-issue_number"><code>issue_number</code></a></td>
+    <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a>, <a href="#parameter-issue_number"><code>issue_number</code></a></td>
     <td></td>
     <td>Add custom field values to an issue. You can set values for organization-level issue fields that have been defined for the repository's organization.<br />Adding an empty array will clear all existing field values for the issue.<br /><br />This endpoint supports the following field data types:<br />- **`text`**: String values for text fields<br />- **`single_select`**: Option names for single-select fields (must match an existing option name)<br />- **`number`**: Numeric values for number fields<br />- **`date`**: ISO 8601 date strings for date fields<br /><br />Only users with push access to the repository can add issue field values. If you don't have the proper permissions, you'll receive a `403 Forbidden` response.<br /><br />This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications). Creating content too quickly using this endpoint may result in secondary rate limiting. For more information, see "[Rate limits for the API](https://docs.github.com/rest/using-the-rest-api/rate-limits-for-the-rest-api#about-secondary-rate-limits)"<br />and "[Best practices for using the REST API](https://docs.github.com/rest/guides/best-practices-for-using-the-rest-api)."</td>
 </tr>
 <tr>
     <td><a href="#set_issue_field_values"><CopyableCode code="set_issue_field_values" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-repository_id"><code>repository_id</code></a>, <a href="#parameter-issue_number"><code>issue_number</code></a></td>
+    <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a>, <a href="#parameter-issue_number"><code>issue_number</code></a></td>
     <td></td>
     <td>Set custom field values for an issue, replacing any existing values. You can set values for organization-level issue fields that have been defined for the repository's organization.<br /><br />This endpoint supports the following field data types:<br />- **`text`**: String values for text fields<br />- **`single_select`**: Option names for single-select fields (must match an existing option name)<br />- **`number`**: Numeric values for number fields<br />- **`date`**: ISO 8601 date strings for date fields<br /><br />This operation will replace all existing field values with the provided ones. If you want to add field values without replacing existing ones, use the `POST` endpoint instead.<br /><br />Only users with push access to the repository can set issue field values. If you don't have the proper permissions, you'll receive a `403 Forbidden` response.<br /><br />This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications). Creating content too quickly using this endpoint may result in secondary rate limiting. For more information, see "[Rate limits for the API](https://docs.github.com/rest/using-the-rest-api/rate-limits-for-the-rest-api#about-secondary-rate-limits)"<br />and "[Best practices for using the REST API](https://docs.github.com/rest/guides/best-practices-for-using-the-rest-api)."</td>
 </tr>
 <tr>
     <td><a href="#delete_issue_field_value"><CopyableCode code="delete_issue_field_value" /></a></td>
     <td><CopyableCode code="delete" /></td>
-    <td><a href="#parameter-repository_id"><code>repository_id</code></a>, <a href="#parameter-issue_number"><code>issue_number</code></a>, <a href="#parameter-issue_field_id"><code>issue_field_id</code></a></td>
+    <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a>, <a href="#parameter-issue_number"><code>issue_number</code></a>, <a href="#parameter-issue_field_id"><code>issue_field_id</code></a></td>
     <td></td>
     <td>Remove a specific custom field value from an issue.<br /><br />Only users with push access to the repository can delete issue field values. If you don't have the proper permissions, you'll receive a `403 Forbidden` response.<br /><br />If the specified field does not have a value set on the issue, this operation will return a `404` error.<br /><br />This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications). Creating content too quickly using this endpoint may result in secondary rate limiting. For more information, see "[Rate limits for the API](https://docs.github.com/rest/using-the-rest-api/rate-limits-for-the-rest-api#about-secondary-rate-limits)"<br />and "[Best practices for using the REST API](https://docs.github.com/rest/guides/best-practices-for-using-the-rest-api)."</td>
 </tr>
@@ -160,11 +170,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><code>string</code></td>
     <td>The name of the repository without the `.git` extension. The name is not case sensitive.</td>
 </tr>
-<tr id="parameter-repository_id">
-    <td><CopyableCode code="repository_id" /></td>
-    <td><code>integer</code></td>
-    <td>The unique identifier of the repository.</td>
-</tr>
 <tr id="parameter-page">
     <td><CopyableCode code="page" /></td>
     <td><code>integer</code></td>
@@ -194,7 +199,9 @@ Lists all issue field values for an issue.
 SELECT
 issue_field_id,
 node_id,
+issue_field_name,
 data_type,
+multi_select_options,
 single_select_option,
 value
 FROM github.issues.issue_field_values
@@ -225,17 +232,21 @@ Add custom field values to an issue. You can set values for organization-level i
 ```sql
 INSERT INTO github.issues.issue_field_values (
 issue_field_values,
-repository_id,
+owner,
+repo,
 issue_number
 )
 SELECT 
 '{{ issue_field_values }}',
-'{{ repository_id }}',
+'{{ owner }}',
+'{{ repo }}',
 '{{ issue_number }}'
 RETURNING
 issue_field_id,
 node_id,
+issue_field_name,
 data_type,
+multi_select_options,
 single_select_option,
 value
 ;
@@ -246,8 +257,11 @@ value
 <CodeBlock language="yaml">{`# Description fields are for documentation purposes
 - name: issue_field_values
   props:
-    - name: repository_id
-      value: {{ repository_id }}
+    - name: owner
+      value: "{{ owner }}"
+      description: Required parameter for the issue_field_values resource.
+    - name: repo
+      value: "{{ repo }}"
       description: Required parameter for the issue_field_values resource.
     - name: issue_number
       value: {{ issue_number }}
@@ -281,12 +295,15 @@ REPLACE github.issues.issue_field_values
 SET 
 issue_field_values = '{{ issue_field_values }}'
 WHERE 
-repository_id = '{{ repository_id }}' --required
+owner = '{{ owner }}' --required
+AND repo = '{{ repo }}' --required
 AND issue_number = '{{ issue_number }}' --required
 RETURNING
 issue_field_id,
 node_id,
+issue_field_name,
 data_type,
+multi_select_options,
 single_select_option,
 value;
 ```
@@ -308,7 +325,8 @@ Remove a specific custom field value from an issue.<br /><br />Only users with p
 
 ```sql
 DELETE FROM github.issues.issue_field_values
-WHERE repository_id = '{{ repository_id }}' --required
+WHERE owner = '{{ owner }}' --required
+AND repo = '{{ repo }}' --required
 AND issue_number = '{{ issue_number }}' --required
 AND issue_field_id = '{{ issue_field_id }}' --required
 ;

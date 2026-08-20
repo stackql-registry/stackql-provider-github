@@ -1,0 +1,81 @@
+# Comments on a single discussion (GraphQL only).
+service: discussions
+resource: discussion_comments
+title: Discussion Comments
+description: >-
+  Top-level comments on a discussion, with reply counts. Backed by the
+  GitHub GraphQL API (`repository.discussion.comments`).
+parameters:
+  - name: owner
+    in: query
+    required: true
+    schema: { type: string }
+    description: The account owner of the repository.
+  - name: repo
+    in: query
+    required: true
+    schema: { type: string }
+    description: The name of the repository.
+  - name: discussion_number
+    in: query
+    required: true
+    schema: { type: integer }
+    description: The number that identifies the discussion.
+selection: $.data.repository.discussion.comments.nodes
+cursor:
+  strategy: page_info
+  jsonPath: $.data.repository.discussion.comments.pageInfo.endCursor
+  terminateOnJsonPath: $.data.repository.discussion.comments.pageInfo.hasNextPage
+query: |
+  query {
+    repository(owner: "{{ .owner }}", name: "{{ .repo }}") {
+      discussion(number: {{ .discussion_number }}) {
+        comments(first: 100{{ .cursor }}) {
+          pageInfo { endCursor hasNextPage }
+          nodes {
+            id
+            url
+            body
+            created_at: createdAt
+            updated_at: updatedAt
+            published_at: publishedAt
+            is_answer: isAnswer
+            is_minimized: isMinimized
+            minimized_reason: minimizedReason
+            upvote_count: upvoteCount
+            author { login }
+            replies { total_count: totalCount }
+            reactions { total_count: totalCount }
+          }
+        }
+      }
+    }
+  }
+rowSchema:
+  type: object
+  properties:
+    id: { type: string, description: "The GraphQL node ID of the comment." }
+    url: { type: string, description: "The HTML URL of the comment." }
+    body: { type: string, description: "The comment body as Markdown." }
+    created_at: { type: string, format: date-time }
+    updated_at: { type: string, format: date-time }
+    published_at: { type: string, format: date-time }
+    is_answer: { type: boolean, description: "Whether this comment is the chosen answer." }
+    is_minimized: { type: boolean }
+    minimized_reason: { type: string }
+    upvote_count: { type: integer }
+    author:
+      type: object
+      description: "The comment author (`login`)."
+      properties:
+        login: { type: string }
+    replies:
+      type: object
+      description: "Reply counts (`total_count`)."
+      properties:
+        total_count: { type: integer }
+    reactions:
+      type: object
+      description: "Reaction counts (`total_count`)."
+      properties:
+        total_count: { type: integer }

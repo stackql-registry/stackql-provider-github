@@ -109,6 +109,11 @@ Response
     <td> (example: https://github.com/octocat)</td>
 </tr>
 <tr>
+    <td><CopyableCode code="inherited" /></td>
+    <td><code>boolean</code></td>
+    <td>Whether the user is a member of the team only through a child team. `true` means the membership is inherited from a child team; `false` means the user is a direct (immediate) member of the team. Only present on the `List team members` endpoint, and only when the feature is enabled for the organization.</td>
+</tr>
+<tr>
     <td><CopyableCode code="login" /></td>
     <td><code>string</code></td>
     <td> (example: octocat)</td>
@@ -127,6 +132,11 @@ Response
     <td><CopyableCode code="repos_url" /></td>
     <td><code>string (uri)</code></td>
     <td> (example: https://api.github.com/users/octocat/repos)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="role" /></td>
+    <td><code>string</code></td>
+    <td>The member's role on the team. Only present on the `List team members` endpoint, and only when the feature is enabled for the organization. (member, maintainer) (example: member)</td>
 </tr>
 <tr>
     <td><CopyableCode code="site_admin" /></td>
@@ -251,6 +261,11 @@ Response
     <td> (example: https://github.com/octocat)</td>
 </tr>
 <tr>
+    <td><CopyableCode code="inherited" /></td>
+    <td><code>boolean</code></td>
+    <td>Whether the user is a member of the team only through a child team. `true` means the membership is inherited from a child team; `false` means the user is a direct (immediate) member of the team. Only present on the `List team members` endpoint, and only when the feature is enabled for the organization.</td>
+</tr>
+<tr>
     <td><CopyableCode code="login" /></td>
     <td><code>string</code></td>
     <td> (example: octocat)</td>
@@ -269,6 +284,11 @@ Response
     <td><CopyableCode code="repos_url" /></td>
     <td><code>string (uri)</code></td>
     <td> (example: https://api.github.com/users/octocat/repos)</td>
+</tr>
+<tr>
+    <td><CopyableCode code="role" /></td>
+    <td><code>string</code></td>
+    <td>The member's role on the team. Only present on the `List team members` endpoint, and only when the feature is enabled for the organization. (member, maintainer) (example: member)</td>
 </tr>
 <tr>
     <td><CopyableCode code="site_admin" /></td>
@@ -330,7 +350,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-team_slug"><code>team_slug</code></a></td>
     <td><a href="#parameter-role"><code>role</code></a>, <a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-page"><code>page</code></a></td>
-    <td>Team members will include the members of child teams.<br /><br />To list members in a team, the team must be visible to the authenticated user.</td>
+    <td>Team members will include the members of child teams.<br /><br />Each member includes their `role` on the team (`member` or `maintainer`) and an `inherited` flag indicating whether the membership is inherited from a child team (`true`) or is a direct membership (`false`). These fields let you read a member's role and direct/inherited status without additional requests.<br /><br />To list members in a team, the team must be visible to the authenticated user.</td>
 </tr>
 <tr>
     <td><a href="#get_member_legacy"><CopyableCode code="get_member_legacy" /></a></td>
@@ -344,7 +364,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-team_id"><code>team_id</code></a></td>
     <td><a href="#parameter-role"><code>role</code></a>, <a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-page"><code>page</code></a></td>
-    <td>&gt; [!WARNING]<br />&gt; **Endpoint closing down notice:** This endpoint route is closing down and will be removed from the Teams API. We recommend migrating your existing code to use the new [`List team members`](https://docs.github.com/rest/teams/members#list-team-members) endpoint.<br /><br />Team members will include the members of child teams.</td>
+    <td>&gt; [!WARNING]<br />&gt; **Endpoint closing down notice:** This endpoint route is closing down and will be removed from the Teams API. We recommend migrating your existing code to use the new [`List team members`](https://docs.github.com/rest/teams/members#list-team-members) endpoint.<br /><br />Team members will include the members of child teams.<br /><br />Each member includes their `role` on the team (`member` or `maintainer`) and an `inherited` flag indicating whether the membership is inherited from a child team (`true`) or is a direct membership (`false`).</td>
 </tr>
 <tr>
     <td><a href="#add_member_legacy"><CopyableCode code="add_member_legacy" /></a></td>
@@ -426,7 +446,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list_members_in_org">
 
-Team members will include the members of child teams.<br /><br />To list members in a team, the team must be visible to the authenticated user.
+Team members will include the members of child teams.<br /><br />Each member includes their `role` on the team (`member` or `maintainer`) and an `inherited` flag indicating whether the membership is inherited from a child team (`true`) or is a direct membership (`false`). These fields let you read a member's role and direct/inherited status without additional requests.<br /><br />To list members in a team, the team must be visible to the authenticated user.
 
 ```sql
 SELECT
@@ -441,10 +461,12 @@ followers_url,
 following_url,
 gists_url,
 html_url,
+inherited,
 login,
 organizations_url,
 received_events_url,
 repos_url,
+role,
 site_admin,
 starred_at,
 starred_url,
@@ -476,7 +498,7 @@ AND username = '{{ username }}' -- required
 </TabItem>
 <TabItem value="list_members_legacy">
 
-&gt; [!WARNING]<br />&gt; **Endpoint closing down notice:** This endpoint route is closing down and will be removed from the Teams API. We recommend migrating your existing code to use the new [`List team members`](https://docs.github.com/rest/teams/members#list-team-members) endpoint.<br /><br />Team members will include the members of child teams.
+&gt; [!WARNING]<br />&gt; **Endpoint closing down notice:** This endpoint route is closing down and will be removed from the Teams API. We recommend migrating your existing code to use the new [`List team members`](https://docs.github.com/rest/teams/members#list-team-members) endpoint.<br /><br />Team members will include the members of child teams.<br /><br />Each member includes their `role` on the team (`member` or `maintainer`) and an `inherited` flag indicating whether the membership is inherited from a child team (`true`) or is a direct membership (`false`).
 
 ```sql
 SELECT
@@ -491,10 +513,12 @@ followers_url,
 following_url,
 gists_url,
 html_url,
+inherited,
 login,
 organizations_url,
 received_events_url,
 repos_url,
+role,
 site_admin,
 starred_at,
 starred_url,

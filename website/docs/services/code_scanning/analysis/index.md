@@ -75,7 +75,7 @@ Response
 <tr>
     <td><CopyableCode code="commit_sha" /></td>
     <td><code>string</code></td>
-    <td>The SHA of the commit to which the analysis you are uploading relates. (pattern: <code>^[0-9a-fA-F]+$</code>)</td>
+    <td>The SHA of the commit to which the analysis you are uploading relates. (pattern: <code>^(&#91;0-9a-fA-F&#93;&#123;40&#125;(?:&#91;0-9a-fA-F&#93;&#123;24&#125;)?)$</code>)</td>
 </tr>
 <tr>
     <td><CopyableCode code="created_at" /></td>
@@ -166,7 +166,7 @@ Response
 <tr>
     <td><CopyableCode code="commit_sha" /></td>
     <td><code>string</code></td>
-    <td>The SHA of the commit to which the analysis you are uploading relates. (pattern: <code>^[0-9a-fA-F]+$</code>)</td>
+    <td>The SHA of the commit to which the analysis you are uploading relates. (pattern: <code>^(&#91;0-9a-fA-F&#93;&#123;40&#125;(?:&#91;0-9a-fA-F&#93;&#123;24&#125;)?)$</code>)</td>
 </tr>
 <tr>
     <td><CopyableCode code="created_at" /></td>

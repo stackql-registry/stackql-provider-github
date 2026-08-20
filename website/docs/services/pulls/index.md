@@ -18,7 +18,7 @@ pulls service documentation.
 
 :::info[Service Summary]
 
-total resources: __8__  
+total resources: __11__  
 
 :::
 
@@ -28,12 +28,15 @@ total resources: __8__
 <a href="/services/pulls/comments/">comments</a><br />
 <a href="/services/pulls/comments_for_review/">comments_for_review</a><br />
 <a href="/services/pulls/commits/">commits</a><br />
-<a href="/services/pulls/files/">files</a>
+<a href="/services/pulls/files/">files</a><br />
+<a href="/services/pulls/pull_request/">pull_request</a><br />
+<a href="/services/pulls/pull_request_async_merges/">pull_request_async_merges</a>
 </div>
 <div class="providerDocColumn">
-<a href="/services/pulls/pull_request/">pull_request</a><br />
 <a href="/services/pulls/pull_requests/">pull_requests</a><br />
 <a href="/services/pulls/review_requests/">review_requests</a><br />
-<a href="/services/pulls/reviews/">reviews</a>
+<a href="/services/pulls/review_threads/">review_threads</a><br />
+<a href="/services/pulls/reviews/">reviews</a><br />
+<a href="/services/pulls/stacks/">stacks</a>
 </div>
 </div>

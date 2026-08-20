@@ -119,7 +119,7 @@ Response
 <tr>
     <td><CopyableCode code="permissions" /></td>
     <td><code>object</code></td>
-    <td>The permissions granted to the user access token. (title: App Permissions)</td>
+    <td>The permissions granted to the fine-grained access token. (title: App Permissions)</td>
 </tr>
 <tr>
     <td><CopyableCode code="repositories_url" /></td>

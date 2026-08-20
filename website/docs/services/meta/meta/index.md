@@ -72,6 +72,11 @@ Response
     <td></td>
 </tr>
 <tr>
+    <td><CopyableCode code="commit_signing_keys" /></td>
+    <td><code>array</code></td>
+    <td></td>
+</tr>
+<tr>
     <td><CopyableCode code="copilot" /></td>
     <td><code>array</code></td>
     <td></td>
@@ -161,7 +166,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td></td>
     <td></td>
-    <td>Returns meta information about GitHub, including a list of GitHub's IP addresses. For more information, see "[About GitHub's IP addresses](https://docs.github.com/articles/about-github-s-ip-addresses/)."<br /><br />The API's response also includes a list of GitHub's domain names.<br /><br />The values shown in the documentation's response are example values. You must always query the API directly to get the latest values.<br /><br />&gt; [!NOTE]<br />&gt; This endpoint returns both IPv4 and IPv6 addresses. However, not all features support IPv6. You should refer to the specific documentation for each feature to determine if IPv6 is supported.</td>
+    <td>Returns meta information about GitHub, including a list of GitHub's IP addresses. For more information, see "[About GitHub's IP addresses](https://docs.github.com/articles/about-github-s-ip-addresses/)."<br /><br />The API's response also includes a list of GitHub's domain names, and the public keys used by GitHub to sign commits made through the web UI.<br /><br />The values shown in the documentation's response are example values. You must always query the API directly to get the latest values.<br /><br />&gt; [!NOTE]<br />&gt; This endpoint returns both IPv4 and IPv6 addresses. However, not all features support IPv6. You should refer to the specific documentation for each feature to determine if IPv6 is supported.</td>
 </tr>
 </tbody>
 </table>
@@ -192,7 +197,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Returns meta information about GitHub, including a list of GitHub's IP addresses. For more information, see "[About GitHub's IP addresses](https://docs.github.com/articles/about-github-s-ip-addresses/)."<br /><br />The API's response also includes a list of GitHub's domain names.<br /><br />The values shown in the documentation's response are example values. You must always query the API directly to get the latest values.<br /><br />&gt; [!NOTE]<br />&gt; This endpoint returns both IPv4 and IPv6 addresses. However, not all features support IPv6. You should refer to the specific documentation for each feature to determine if IPv6 is supported.
+Returns meta information about GitHub, including a list of GitHub's IP addresses. For more information, see "[About GitHub's IP addresses](https://docs.github.com/articles/about-github-s-ip-addresses/)."<br /><br />The API's response also includes a list of GitHub's domain names, and the public keys used by GitHub to sign commits made through the web UI.<br /><br />The values shown in the documentation's response are example values. You must always query the API directly to get the latest values.<br /><br />&gt; [!NOTE]<br />&gt; This endpoint returns both IPv4 and IPv6 addresses. However, not all features support IPv6. You should refer to the specific documentation for each feature to determine if IPv6 is supported.
 
 ```sql
 SELECT
@@ -200,6 +205,7 @@ actions,
 actions_macos,
 api,
 codespaces,
+commit_signing_keys,
 copilot,
 dependabot,
 domains,

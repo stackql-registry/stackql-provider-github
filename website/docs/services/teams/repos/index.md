@@ -993,7 +993,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-team_slug"><code>team_slug</code></a></td>
     <td><a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-page"><code>page</code></a></td>
-    <td>Lists a team's repositories visible to the authenticated user.<br /><br />&gt; [!NOTE]<br />&gt; You can also specify a team by `org_id` and `team_id` using the route `GET /organizations/&#123;org_id&#125;/team/&#123;team_id&#125;/repos`.</td>
+    <td>Lists a team's repositories visible to the authenticated user.<br /><br />OAuth app tokens and personal access tokens (classic) need the `read:org` or `repo` scope to use this endpoint.<br /><br />&gt; [!NOTE]<br />&gt; You can also specify a team by `org_id` and `team_id` using the route `GET /organizations/&#123;org_id&#125;/team/&#123;team_id&#125;/repos`.</td>
 </tr>
 <tr>
     <td><a href="#list_repos_legacy"><CopyableCode code="list_repos_legacy" /></a></td>
@@ -1081,7 +1081,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list_repos_in_org">
 
-Lists a team's repositories visible to the authenticated user.<br /><br />&gt; [!NOTE]<br />&gt; You can also specify a team by `org_id` and `team_id` using the route `GET /organizations/&#123;org_id&#125;/team/&#123;team_id&#125;/repos`.
+Lists a team's repositories visible to the authenticated user.<br /><br />OAuth app tokens and personal access tokens (classic) need the `read:org` or `repo` scope to use this endpoint.<br /><br />&gt; [!NOTE]<br />&gt; You can also specify a team by `org_id` and `team_id` using the route `GET /organizations/&#123;org_id&#125;/team/&#123;team_id&#125;/repos`.
 
 ```sql
 SELECT

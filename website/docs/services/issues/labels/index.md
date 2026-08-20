@@ -573,10 +573,9 @@ url
       value: {{ issue_number }}
       description: Required parameter for the labels resource.
     - name: labels
-      value:
-        - "{{ labels }}"
+      value: "{{ labels }}"
       description: |
-        The names of the labels to add to the issue's existing labels. You can also pass an \`array\` of labels directly, but GitHub recommends passing an object with the \`labels\` key. To replace all of the labels for an issue, use "[Set labels for an issue](https://docs.github.com/rest/issues/labels#set-labels-for-an-issue)."
+        The labels to add to the issue's existing labels. You can also pass an \`array\` of labels directly, but GitHub recommends passing an object with the \`labels\` key. To replace all of the labels for an issue, use "[Set labels for an issue](https://docs.github.com/rest/issues/labels#set-labels-for-an-issue)."
     - name: name
       value: "{{ name }}"
       description: |

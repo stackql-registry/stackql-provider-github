@@ -78,6 +78,11 @@ Response
     <td>Unique identifier of the organization to which this team belongs</td>
 </tr>
 <tr>
+    <td><CopyableCode code="access_source" /></td>
+    <td><code>string</code></td>
+    <td>How the team's access to the repository was granted. This property is only present when the team is returned in a repository context, such as `GET /repos/&#123;owner&#125;/&#123;repo&#125;/teams`. (direct, organization, enterprise) (example: direct)</td>
+</tr>
+<tr>
     <td><CopyableCode code="description" /></td>
     <td><code>string</code></td>
     <td></td>
@@ -401,6 +406,7 @@ name,
 enterprise_id,
 node_id,
 organization_id,
+access_source,
 description,
 html_url,
 members_url,
@@ -480,6 +486,7 @@ privacy,
 notification_setting,
 permission,
 parent_team_id,
+parent_team_slug,
 org
 )
 SELECT 
@@ -491,6 +498,7 @@ SELECT
 '{{ notification_setting }}',
 '{{ permission }}',
 {{ parent_team_id }},
+'{{ parent_team_slug }}',
 '{{ org }}'
 RETURNING
 id,
@@ -574,6 +582,10 @@ url
       value: {{ parent_team_id }}
       description: |
         The ID of a team to set as the parent team.
+    - name: parent_team_slug
+      value: "{{ parent_team_slug }}"
+      description: |
+        The slug of a team to set as the parent team. Ignored when \`parent_team_id\` is also provided.
 `}</CodeBlock>
 
 </TabItem>
@@ -601,7 +613,8 @@ description = '{{ description }}',
 privacy = '{{ privacy }}',
 notification_setting = '{{ notification_setting }}',
 permission = '{{ permission }}',
-parent_team_id = {{ parent_team_id }}
+parent_team_id = {{ parent_team_id }},
+parent_team_slug = '{{ parent_team_slug }}'
 WHERE 
 org = '{{ org }}' --required
 AND team_slug = '{{ team_slug }}' --required
@@ -642,7 +655,8 @@ description = '{{ description }}',
 privacy = '{{ privacy }}',
 notification_setting = '{{ notification_setting }}',
 permission = '{{ permission }}',
-parent_team_id = {{ parent_team_id }}
+parent_team_id = {{ parent_team_id }},
+parent_team_slug = '{{ parent_team_slug }}'
 WHERE 
 team_id = '{{ team_id }}' --required
 AND name = '{{ name }}' --required

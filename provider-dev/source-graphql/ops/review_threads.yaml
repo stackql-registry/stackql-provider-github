@@ -1,0 +1,98 @@
+# Pull request review threads with resolution state - GraphQL only (the REST
+# API exposes review comments but not the thread / resolved grouping).
+service: pulls
+resource: review_threads
+title: Review Threads
+description: >-
+  Review comment threads on a pull request with their resolved / outdated
+  state and the comments in each thread. Backed by the GitHub GraphQL API
+  (`pullRequest.reviewThreads`); the REST API does not expose thread
+  resolution.
+parameters:
+  - name: owner
+    in: query
+    required: true
+    schema: { type: string }
+    description: The account owner of the repository.
+  - name: repo
+    in: query
+    required: true
+    schema: { type: string }
+    description: The name of the repository.
+  - name: pull_number
+    in: query
+    required: true
+    schema: { type: integer }
+    description: The number that identifies the pull request.
+selection: $.data.repository.pullRequest.reviewThreads.nodes
+cursor:
+  strategy: page_info
+  jsonPath: $.data.repository.pullRequest.reviewThreads.pageInfo.endCursor
+  terminateOnJsonPath: $.data.repository.pullRequest.reviewThreads.pageInfo.hasNextPage
+query: |
+  query {
+    repository(owner: "{{ .owner }}", name: "{{ .repo }}") {
+      pullRequest(number: {{ .pull_number }}) {
+        reviewThreads(first: 100{{ .cursor }}) {
+          pageInfo { endCursor hasNextPage }
+          nodes {
+            id
+            is_resolved: isResolved
+            is_outdated: isOutdated
+            is_collapsed: isCollapsed
+            path
+            line
+            start_line: startLine
+            diff_side: diffSide
+            subject_type: subjectType
+            resolved_by: resolvedBy { login }
+            comments(first: 100) {
+              total_count: totalCount
+              nodes {
+                id
+                url
+                body
+                created_at: createdAt
+                author { login }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+rowSchema:
+  type: object
+  properties:
+    id: { type: string, description: "The GraphQL node ID of the thread." }
+    is_resolved: { type: boolean }
+    is_outdated: { type: boolean, description: "Whether the thread is on a line that has since changed." }
+    is_collapsed: { type: boolean }
+    path: { type: string, description: "The file the thread is attached to." }
+    line: { type: integer, description: "The line in the diff the thread is attached to." }
+    start_line: { type: integer, description: "The first line of a multi-line comment range." }
+    diff_side: { type: string, description: "LEFT or RIGHT." }
+    subject_type: { type: string, description: "LINE or FILE." }
+    resolved_by:
+      type: object
+      description: "The user who resolved the thread (`login`)."
+      properties:
+        login: { type: string }
+    comments:
+      type: object
+      description: "The comments in the thread (`total_count`, `nodes[]` with `id`, `url`, `body`, `created_at`, `author.login`)."
+      properties:
+        total_count: { type: integer }
+        nodes:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string }
+              url: { type: string }
+              body: { type: string }
+              created_at: { type: string, format: date-time }
+              author:
+                type: object
+                properties:
+                  login: { type: string }

@@ -20,8 +20,8 @@ Web-based version-control and collaboration.
 
 :::info[Provider Summary] 
 
-total services: __44__  
-total resources: __433__  
+total services: __48__  
+total resources: __480__  
 
 :::
 
@@ -59,7 +59,7 @@ AUTH='{ "github": { "type": "basic",  "username_var": "YOUR_GITHUB_USERNAME_VAR"
 stackql shell --auth="${AUTH}"
 
 ```
-or using PowerShell:  
+or using PowerShell:
 
 ```powershell
 
@@ -69,33 +69,425 @@ stackql.exe shell --auth=$Auth
 ```
 </details>
 
+### Authenticating with the GitHub CLI (no PAT required)
+
+If you are logged in to the [GitHub CLI](https://cli.github.com/) (`gh auth login`), you can reuse its stored OAuth token instead of creating a Personal Access Token. The token is supplied to the provider using the `bearer` auth type:
+
+```bash
+export STACKQL_GITHUB_TOKEN=$(gh auth token)
+stackql exec --auth='{"github":{"type":"bearer","credentialsenvvar":"STACKQL_GITHUB_TOKEN"}}' \
+  "SELECT login FROM github.users.users"
+```
+
+or using PowerShell:
+
+```powershell
+$env:STACKQL_GITHUB_TOKEN = (gh auth token)
+$Auth = "{ 'github': { 'type': 'bearer', 'credentialsenvvar': 'STACKQL_GITHUB_TOKEN' }}"
+stackql.exe shell --auth=$Auth
+```
+
+The same `bearer` configuration works with any GitHub token source, including the `GITHUB_TOKEN` injected into GitHub Actions workflows (set `credentialsenvvar` to `GITHUB_TOKEN`), so no PAT is required in CI either.
+
+### Using the github provider with agent assistants (MCP)
+
+StackQL ships an MCP server (`stackql mcp`), so agent assistants such as Claude Code, Claude Desktop, Codex and other MCP clients can query GitHub with SQL, pre-authenticated and without a PAT.
+
+First, store the GitHub CLI token in a dotenv file that the server sources at startup:
+
+```bash
+mkdir -p ~/.stackql
+echo "STACKQL_GITHUB_TOKEN=$(gh auth token)" > ~/.stackql/github.env
+```
+
+Then register the server with your MCP client, passing the `bearer` auth configuration and the env file.
+
+For Claude Code:
+
+```bash
+claude mcp add stackql -- stackql mcp \
+  --auth='{"github":{"type":"bearer","credentialsenvvar":"STACKQL_GITHUB_TOKEN"}}' \
+  --env.file="$HOME/.stackql/github.env"
+```
+
+For Claude Desktop (`claude_desktop_config.json`) or any client configured with JSON:
+
+```json
+{
+  "mcpServers": {
+    "stackql": {
+      "command": "stackql",
+      "args": [
+        "mcp",
+        "--auth={\"github\":{\"type\":\"bearer\",\"credentialsenvvar\":\"STACKQL_GITHUB_TOKEN\"}}",
+        "--env.file=/path/to/.stackql/github.env"
+      ]
+    }
+  }
+}
+```
+
+For Codex (`~/.codex/config.toml`):
+
+```toml
+[mcp_servers.stackql]
+command = "stackql"
+args = [
+  "mcp",
+  "--auth={\"github\":{\"type\":\"bearer\",\"credentialsenvvar\":\"STACKQL_GITHUB_TOKEN\"}}",
+  "--env.file=/path/to/.stackql/github.env"
+]
+```
+
+The agent can then discover and query GitHub using the server's tools (`list_resources`, `describe_resource`, `run_select_query` and so on). Credential values are resolved inside the server process and are never visible to the agent. If you re-authenticate with `gh auth login`, rewrite the dotenv file and ask the agent to call the `reload_credentials` tool (or restart the server) to pick up the new token.
+
+
+## Repository inventory
+
+Repositories in an organization, with size, language and activity signals:
+
+```sql
+SELECT
+  name,
+  visibility,
+  language,
+  default_branch,
+  stargazers_count,
+  forks_count,
+  open_issues_count,
+  pushed_at
+FROM github.repos.repos
+WHERE org = 'stackql'
+ORDER BY pushed_at DESC;
+```
+
+Repository counts by primary language:
+
+```sql
+SELECT language, count(*) AS repos
+FROM github.repos.repos
+WHERE org = 'stackql'
+GROUP BY language
+ORDER BY repos DESC;
+```
+
+A single repository:
+
+```sql
+SELECT name, full_name, description, default_branch, license
+FROM github.repos.details
+WHERE owner = 'stackql' AND repo = 'stackql';
+```
+
+## Contributors and window functions
+
+The SQL engine supports window functions, so ranking, running totals and
+percentiles run locally over the API results. Rank contributors in a
+repository:
+
+```sql
+SELECT
+  login,
+  contributions,
+  RANK() OVER (ORDER BY contributions DESC) AS rank,
+  ROUND(100.0 * contributions / SUM(contributions) OVER (), 2) AS pct_of_total,
+  SUM(contributions) OVER (ORDER BY contributions DESC) AS running_total
+FROM github.repos.contributors
+WHERE owner = 'stackql' AND repo = 'stackql';
+```
+
+Group contributors into quartiles:
+
+```sql
+SELECT
+  login,
+  contributions,
+  CASE NTILE(4) OVER (ORDER BY contributions DESC)
+    WHEN 1 THEN 'Top Contributors'
+    WHEN 2 THEN 'Active Contributors'
+    WHEN 3 THEN 'Moderate Contributors'
+    ELSE 'Occasional Contributors'
+  END AS contributor_tier
+FROM github.repos.contributors
+WHERE owner = 'stackql' AND repo = 'stackql';
+```
+
+Rank contributors across several repositories with `IN` (one request per
+repository, unioned by the engine):
+
+```sql
+SELECT
+  DENSE_RANK() OVER (ORDER BY SUM(contributions) DESC) AS rank,
+  login,
+  SUM(contributions) AS total_contributions,
+  MAX(html_url) AS html_url
+FROM github.repos.contributors
+WHERE owner = 'stackql'
+AND repo IN ('stackql', 'stackql-deploy', 'stackql-provider-registry')
+GROUP BY login
+ORDER BY total_contributions DESC;
+```
+
+## Release cadence
+
+Days between releases, using `LAG` and `LEAD`:
+
+```sql
+SELECT
+  tag_name,
+  published_at,
+  LAG(tag_name, 1) OVER (ORDER BY published_at) AS previous_release,
+  LEAD(tag_name, 1) OVER (ORDER BY published_at) AS next_release,
+  ROUND(julianday(published_at) - julianday(LAG(published_at, 1) OVER (ORDER BY published_at)), 1) AS days_since_last_release
+FROM github.repos.releases
+WHERE owner = 'stackql' AND repo = 'stackql'
+ORDER BY published_at;
+```
+
+## Issues and pull requests
+
+Cumulative issue count over time:
+
+```sql
+SELECT
+  number,
+  title,
+  state,
+  created_at,
+  COUNT(*) OVER (ORDER BY created_at) AS cumulative_issues,
+  COUNT(*) OVER (PARTITION BY state ORDER BY created_at) AS cumulative_by_state
+FROM github.issues.issues
+WHERE owner = 'stackql' AND repo = 'stackql' AND state = 'all'
+ORDER BY created_at;
+```
+
+Open pull requests with their age in days (`state` is pushed to the API as a
+query parameter):
+
+```sql
+SELECT
+  number,
+  title,
+  json_extract(user, '$.login') AS author,
+  ROUND(julianday('now') - julianday(created_at)) AS age_days
+FROM github.pulls.pull_requests
+WHERE owner = 'stackql' AND repo = 'stackql' AND state = 'open';
+```
+
+## Commit activity
+
+Four-week moving average of commits, expanding the weekly `days` array with
+`json_each`:
+
+```sql
+WITH weekly_totals AS (
+  SELECT
+    datetime(week, 'unixepoch') AS week_start,
+    SUM(json_each.value) AS commits_this_week
+  FROM github.repos.stats_commit_activity, json_each(days)
+  WHERE owner = 'stackql' AND repo = 'stackql'
+  GROUP BY week
+)
+SELECT
+  week_start,
+  commits_this_week,
+  ROUND(AVG(commits_this_week) OVER (ORDER BY week_start ROWS BETWEEN 3 PRECEDING AND CURRENT ROW), 1) AS four_week_moving_avg,
+  SUM(commits_this_week) OVER (ORDER BY week_start) AS cumulative_commits
+FROM weekly_totals
+ORDER BY week_start;
+```
+
+## GitHub Actions
+
+Workflows and their most recent runs:
+
+```sql
+SELECT id, name, state, path
+FROM github.actions.workflows
+WHERE owner = 'stackql' AND repo = 'stackql';
+```
+
+```sql
+SELECT
+  id,
+  display_title,
+  status,
+  conclusion,
+  run_started_at,
+  ROUND((julianday(updated_at) - julianday(run_started_at)) * 1440) AS duration_minutes
+FROM github.actions.workflow_runs
+WHERE owner = 'stackql' AND repo = 'stackql' AND workflow_id = 130624966;
+```
+
+Success rate by workflow:
+
+```sql
+SELECT
+  name,
+  COUNT(*) AS runs,
+  SUM(conclusion = 'success') AS succeeded,
+  ROUND(100.0 * SUM(conclusion = 'success') / COUNT(*), 1) AS success_pct
+FROM github.actions.workflow_runs
+WHERE owner = 'stackql' AND repo = 'stackql'
+GROUP BY name;
+```
+
+## Discussions, stars and contribution graphs
+
+Nested objects in these resources come back as JSON columns; use
+`json_extract` to pull out individual fields.
+
+Discussions in a repository with their category and comment counts:
+
+```sql
+SELECT
+  number,
+  title,
+  json_extract(category, '$.name') AS category,
+  json_extract(author, '$.login') AS author,
+  json_extract(comments, '$.total_count') AS comments,
+  is_answered,
+  created_at
+FROM github.discussions.discussions
+WHERE owner = 'stackql' AND repo = 'stackql';
+```
+
+Star growth by month (each star with the time it was given). Start a shell
+with the GitHub CLI token and no page cap so the full history is fetched:
+
+```bash
+export STACKQL_GITHUB_TOKEN=$(gh auth token)
+stackql shell \
+  --auth='{"github":{"type":"bearer","credentialsenvvar":"STACKQL_GITHUB_TOKEN"}}' \
+  --http.response.pageLimit=0
+```
+
+```sql
+SELECT
+  strftime('%Y-%m', starred_at) AS month,
+  COUNT(*) AS stars,
+  SUM(COUNT(*)) OVER (ORDER BY strftime('%Y-%m', starred_at)) AS cumulative_stars
+FROM github.activity.star_history
+WHERE owner = 'stackql' AND repo = 'stackql'
+GROUP BY month
+ORDER BY month;
+```
+
+:::note Resources that require a bearer token
+
+The following resources return `Resource not accessible by personal access token`
+when authenticated with a fine-grained personal access token. Use a bearer
+token with access to the repository or organization instead, such as the
+GitHub CLI token shown above (`gh auth token`):
+
+- `github.activity.star_history` and `github.activity.repo_stargazers` (stargazer
+  listings are limited to repository admins and collaborators)
+- `github.orgs.saml_identities` (requires organization owner access)
+
+:::
+
+A user's contribution calendar, one row per day:
+
+```sql
+SELECT
+  json_extract(d.value, '$.date') AS day,
+  json_extract(d.value, '$.contribution_count') AS contributions
+FROM github.users.contribution_calendar c, json_each(c.contribution_days) d
+WHERE c.username = 'jeffreyaven'
+ORDER BY day;
+```
+
+Unresolved review threads on a pull request:
+
+```sql
+SELECT path, line, json_extract(comments, '$.total_count') AS comments
+FROM github.pulls.review_threads
+WHERE owner = 'stackql' AND repo = 'stackql' AND pull_number = 600
+AND is_resolved = 0;
+```
+
+## Rate limits
+
+```sql
+SELECT
+  json_extract(rate, '$.limit') AS rate_limit,
+  json_extract(rate, '$.remaining') AS remaining,
+  json_extract(rate, '$.used') AS used,
+  datetime(json_extract(rate, '$.reset'), 'unixepoch') AS reset_at
+FROM github.rate_limit.rate_limit;
+```
+
+## Provision, mutate and tear down
+
+Mutations use the same SQL grammar: `INSERT` creates, `UPDATE` patches,
+`EXEC` invokes lifecycle methods and `DELETE` removes. Request body fields are
+supplied as columns using their API names. An issue end to end:
+
+```sql
+-- create
+INSERT INTO github.issues.issues (owner, repo, title, body, labels)
+SELECT 'stackql', 'my-repo', 'Example issue', 'Created with StackQL', '["documentation"]';
+
+-- update
+UPDATE github.issues.issues
+SET state = 'closed', state_reason = 'completed'
+WHERE owner = 'stackql' AND repo = 'my-repo' AND issue_number = 1;
+
+-- lock the conversation
+EXEC github.issues.issues.lock
+  @owner = 'stackql', @repo = 'my-repo', @issue_number = 1
+  @@json = '{"lock_reason": "resolved"}';
+```
+
+Create a repository in an organization, then delete it:
+
+```sql
+INSERT INTO github.repos.repos (org, name, description, private, auto_init)
+SELECT 'stackql', 'stackql-example', 'Created with StackQL', true, true;
+
+DELETE FROM github.repos.repos
+WHERE owner = 'stackql' AND repo = 'stackql-example';
+```
+
+Re-run the failed jobs of a workflow run:
+
+```sql
+EXEC github.actions.workflow_runs.re_run_workflow_failed_jobs
+  @owner = 'stackql', @repo = 'stackql', @run_id = 1234567890;
+```
+
+
 ## Services
 <div class="row">
 <div class="providerDocColumn">
 <a href="/services/actions/">actions</a><br />
 <a href="/services/activity/">activity</a><br />
 <a href="/services/agent_tasks/">agent_tasks</a><br />
+<a href="/services/agents/">agents</a><br />
 <a href="/services/apps/">apps</a><br />
 <a href="/services/billing/">billing</a><br />
 <a href="/services/campaigns/">campaigns</a><br />
 <a href="/services/checks/">checks</a><br />
 <a href="/services/classroom/">classroom</a><br />
+<a href="/services/code_quality/">code_quality</a><br />
 <a href="/services/code_scanning/">code_scanning</a><br />
 <a href="/services/code_security/">code_security</a><br />
 <a href="/services/codes_of_conduct/">codes_of_conduct</a><br />
 <a href="/services/codespaces/">codespaces</a><br />
 <a href="/services/copilot/">copilot</a><br />
+<a href="/services/copilot_spaces/">copilot_spaces</a><br />
 <a href="/services/credentials/">credentials</a><br />
 <a href="/services/dependabot/">dependabot</a><br />
 <a href="/services/dependency_graph/">dependency_graph</a><br />
+<a href="/services/discussions/">discussions</a><br />
 <a href="/services/emojis/">emojis</a><br />
 <a href="/services/enterprise_team_memberships/">enterprise_team_memberships</a><br />
 <a href="/services/enterprise_team_organizations/">enterprise_team_organizations</a><br />
 <a href="/services/enterprise_teams/">enterprise_teams</a><br />
-<a href="/services/gists/">gists</a><br />
-<a href="/services/git/">git</a><br />
 </div>
 <div class="providerDocColumn">
+<a href="/services/gists/">gists</a><br />
+<a href="/services/git/">git</a><br />
 <a href="/services/gitignore/">gitignore</a><br />
 <a href="/services/hosted_compute/">hosted_compute</a><br />
 <a href="/services/interactions/">interactions</a><br />

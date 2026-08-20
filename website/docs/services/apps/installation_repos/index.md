@@ -178,6 +178,11 @@ The access the user has to each repository is included in the hash under the `pe
     <td> (example: 2011-01-26T19:01:12Z)</td>
 </tr>
 <tr>
+    <td><CopyableCode code="custom_properties" /></td>
+    <td><code>object</code></td>
+    <td>The custom properties that were defined for the repository. The keys are the custom property names, and the values are the corresponding custom property values. Present for org repos only.</td>
+</tr>
+<tr>
     <td><CopyableCode code="default_branch" /></td>
     <td><code>string</code></td>
     <td>The default branch of the repository. (example: master)</td>
@@ -684,6 +689,11 @@ Response
     <td> (example: 2011-01-26T19:01:12Z)</td>
 </tr>
 <tr>
+    <td><CopyableCode code="custom_properties" /></td>
+    <td><code>object</code></td>
+    <td>The custom properties that were defined for the repository. The keys are the custom property names, and the values are the corresponding custom property values. Present for org repos only.</td>
+</tr>
+<tr>
     <td><CopyableCode code="default_branch" /></td>
     <td><code>string</code></td>
     <td>The default branch of the repository. (example: master)</td>
@@ -1175,6 +1185,7 @@ compare_url,
 contents_url,
 contributors_url,
 created_at,
+custom_properties,
 default_branch,
 delete_branch_on_merge,
 deployments_url,
@@ -1286,6 +1297,7 @@ compare_url,
 contents_url,
 contributors_url,
 created_at,
+custom_properties,
 default_branch,
 delete_branch_on_merge,
 deployments_url,

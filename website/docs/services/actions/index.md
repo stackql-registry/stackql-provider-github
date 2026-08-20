@@ -18,7 +18,7 @@ actions service documentation.
 
 :::info[Service Summary]
 
-total resources: __52__  
+total resources: __54__  
 
 :::
 
@@ -32,6 +32,7 @@ total resources: __52__
 <a href="/services/actions/cache_retention_limit/">cache_retention_limit</a><br />
 <a href="/services/actions/cache_storage_limit/">cache_storage_limit</a><br />
 <a href="/services/actions/cache_usage/">cache_usage</a><br />
+<a href="/services/actions/concurrency_groups/">concurrency_groups</a><br />
 <a href="/services/actions/default_workflow_permissions/">default_workflow_permissions</a><br />
 <a href="/services/actions/enabled_repos/">enabled_repos</a><br />
 <a href="/services/actions/fork_pr_contributor_approval_permissions/">fork_pr_contributor_approval_permissions</a><br />
@@ -73,6 +74,7 @@ total resources: __52__
 <a href="/services/actions/variables/">variables</a><br />
 <a href="/services/actions/workflow_access/">workflow_access</a><br />
 <a href="/services/actions/workflow_jobs/">workflow_jobs</a><br />
+<a href="/services/actions/workflow_run_concurrency_groups/">workflow_run_concurrency_groups</a><br />
 <a href="/services/actions/workflow_run_logs/">workflow_run_logs</a><br />
 <a href="/services/actions/workflow_run_reviews/">workflow_run_reviews</a><br />
 <a href="/services/actions/workflow_run_usage/">workflow_run_usage</a><br />

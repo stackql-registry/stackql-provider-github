@@ -237,7 +237,7 @@ Response
 <tr>
     <td><CopyableCode code="type" /></td>
     <td><code>object</code></td>
-    <td>The type of issue. (title: Issue Type)</td>
+    <td>The type assigned to the issue. This is only present for issues in repositories where issue types are supported. (title: Issue Type)</td>
 </tr>
 <tr>
     <td><CopyableCode code="updated_at" /></td>
@@ -453,7 +453,7 @@ Response
 <tr>
     <td><CopyableCode code="type" /></td>
     <td><code>object</code></td>
-    <td>The type of issue. (title: Issue Type)</td>
+    <td>The type assigned to the issue. This is only present for issues in repositories where issue types are supported. (title: Issue Type)</td>
 </tr>
 <tr>
     <td><CopyableCode code="updated_at" /></td>
@@ -669,7 +669,7 @@ Response
 <tr>
     <td><CopyableCode code="type" /></td>
     <td><code>object</code></td>
-    <td>The type of issue. (title: Issue Type)</td>
+    <td>The type assigned to the issue. This is only present for issues in repositories where issue types are supported. (title: Issue Type)</td>
 </tr>
 <tr>
     <td><CopyableCode code="updated_at" /></td>
@@ -885,7 +885,7 @@ Response
 <tr>
     <td><CopyableCode code="type" /></td>
     <td><code>object</code></td>
-    <td>The type of issue. (title: Issue Type)</td>
+    <td>The type assigned to the issue. This is only present for issues in repositories where issue types are supported. (title: Issue Type)</td>
 </tr>
 <tr>
     <td><CopyableCode code="updated_at" /></td>
@@ -933,7 +933,7 @@ The following methods are available for this resource:
     <td><a href="#list_for_repo"><CopyableCode code="list_for_repo" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-owner"><code>owner</code></a>, <a href="#parameter-repo"><code>repo</code></a></td>
-    <td><a href="#parameter-milestone"><code>milestone</code></a>, <a href="#parameter-state"><code>state</code></a>, <a href="#parameter-assignee"><code>assignee</code></a>, <a href="#parameter-type"><code>type</code></a>, <a href="#parameter-creator"><code>creator</code></a>, <a href="#parameter-mentioned"><code>mentioned</code></a>, <a href="#parameter-labels"><code>labels</code></a>, <a href="#parameter-sort"><code>sort</code></a>, <a href="#parameter-direction"><code>direction</code></a>, <a href="#parameter-since"><code>since</code></a>, <a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-page"><code>page</code></a></td>
+    <td><a href="#parameter-milestone"><code>milestone</code></a>, <a href="#parameter-state"><code>state</code></a>, <a href="#parameter-assignee"><code>assignee</code></a>, <a href="#parameter-type"><code>type</code></a>, <a href="#parameter-creator"><code>creator</code></a>, <a href="#parameter-mentioned"><code>mentioned</code></a>, <a href="#parameter-issue_field_values"><code>issue_field_values</code></a>, <a href="#parameter-labels"><code>labels</code></a>, <a href="#parameter-sort"><code>sort</code></a>, <a href="#parameter-direction"><code>direction</code></a>, <a href="#parameter-since"><code>since</code></a>, <a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-page"><code>page</code></a></td>
     <td>List issues in a repository. Only open issues will be listed.<br /><br />&gt; [!NOTE]<br />&gt; GitHub's REST API considers every pull request an issue, but not every issue is a pull request. For this reason, "Issues" endpoints may return both issues and pull requests in the response. You can identify pull requests by the `pull_request` key. Be aware that the `id` of a pull request returned from "Issues" endpoints will be an _issue id_. To find out the pull request id, use the "[List pull requests](https://docs.github.com/rest/pulls/pulls#list-pull-requests)" endpoint.<br /><br />This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)."<br /><br />- **`application/vnd.github.raw+json`**: Returns the raw markdown body. Response will include `body`. This is the default if you do not pass any specific media type.<br />- **`application/vnd.github.text+json`**: Returns a text only representation of the markdown body. Response will include `body_text`.<br />- **`application/vnd.github.html+json`**: Returns HTML rendered from the body's markdown. Response will include `body_html`.<br />- **`application/vnd.github.full+json`**: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.</td>
 </tr>
 <tr>
@@ -1038,6 +1038,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     <td><CopyableCode code="filter" /></td>
     <td><code>string</code></td>
     <td>Indicates which sorts of issues to return. `assigned` means issues assigned to you. `created` means issues created by you. `mentioned` means issues mentioning you. `subscribed` means issues you're subscribed to updates for. `all` or `repos` means all issues you can see, regardless of participation or creation.</td>
+</tr>
+<tr id="parameter-issue_field_values">
+    <td><CopyableCode code="issue_field_values" /></td>
+    <td><code>string</code></td>
+    <td>A comma-separated list of issue field filters in `field_slug:value` format. Only issues matching all specified field values are returned. Requires issue fields to be enabled for the repository. Issue fields are not available for user-owned repositories, and field availability for organization-owned public repositories depends on the organization's visibility settings. For example, `priority:Urgent,severity:High` filters issues where the `priority` field is `Urgent` AND the `severity` field is `High`.</td>
 </tr>
 <tr id="parameter-labels">
     <td><CopyableCode code="labels" /></td>
@@ -1221,6 +1226,7 @@ AND assignee = '{{ assignee }}'
 AND type = '{{ type }}'
 AND creator = '{{ creator }}'
 AND mentioned = '{{ mentioned }}'
+AND issue_field_values = '{{ issue_field_values }}'
 AND labels = '{{ labels }}'
 AND sort = '{{ sort }}'
 AND direction = '{{ direction }}'
@@ -1376,6 +1382,7 @@ assignee,
 milestone,
 labels,
 assignees,
+issue_field_values,
 type,
 owner,
 repo
@@ -1387,6 +1394,7 @@ SELECT
 '{{ milestone }}',
 '{{ labels }}',
 '{{ assignees }}',
+'{{ issue_field_values }}',
 '{{ type }}',
 '{{ owner }}',
 '{{ repo }}'
@@ -1470,6 +1478,12 @@ user
         - "{{ assignees }}"
       description: |
         Logins for Users to assign to this issue. _NOTE: Only users with push access can set assignees for new issues. Assignees are silently dropped otherwise._
+    - name: issue_field_values
+      description: |
+        An array of issue field values to set on this issue. Each field value must include the field ID and the value to set. Issue fields are only available for organization-owned repositories with the feature enabled. Field values are silently dropped otherwise.
+      value:
+        - field_id: {{ field_id }}
+          value: "{{ value }}"
     - name: type
       value: "{{ type }}"
       description: |
@@ -1500,6 +1514,7 @@ body = '{{ body }}',
 assignee = '{{ assignee }}',
 state = '{{ state }}',
 state_reason = '{{ state_reason }}',
+duplicate_issue_id = {{ duplicate_issue_id }},
 milestone = '{{ milestone }}',
 labels = '{{ labels }}',
 assignees = '{{ assignees }}',
@@ -1544,6 +1559,7 @@ repository_url,
 state,
 state_reason,
 sub_issues_summary,
+suggestions,
 timeline_url,
 title,
 type,

@@ -84,7 +84,7 @@ Response
 <tr>
     <td><CopyableCode code="dismissed_reason" /></td>
     <td><code>string</code></td>
-    <td>**Required when the state is dismissed.** The reason for dismissing or closing the alert. (false positive, won't fix, used in tests)</td>
+    <td>**Required when the state is dismissed.** The reason for dismissing or closing the alert. (false positive, won't fix, used in tests, mitigated)</td>
 </tr>
 <tr>
     <td><CopyableCode code="fixed_at" /></td>
@@ -100,6 +100,11 @@ Response
     <td><CopyableCode code="instances_url" /></td>
     <td><code>string (uri)</code></td>
     <td>The REST API URL for fetching the list of instances for an alert.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="linked_pull_requests" /></td>
+    <td><code>array</code></td>
+    <td>Pull requests linked to this alert.</td>
 </tr>
 <tr>
     <td><CopyableCode code="most_recent_instance" /></td>
@@ -228,6 +233,7 @@ dismissed_reason,
 fixed_at,
 html_url,
 instances_url,
+linked_pull_requests,
 most_recent_instance,
 number,
 rule,
@@ -282,6 +288,7 @@ dismissed_reason,
 fixed_at,
 html_url,
 instances_url,
+linked_pull_requests,
 most_recent_instance,
 number,
 rule,

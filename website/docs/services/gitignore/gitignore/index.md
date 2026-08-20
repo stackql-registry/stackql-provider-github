@@ -78,6 +78,11 @@ Response
     </tr>
 </thead>
 <tbody>
+<tr>
+    <td><CopyableCode code="gitignore/get_all_template" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
 </tbody>
 </table>
 </TabItem>
@@ -164,7 +169,7 @@ List all templates available to pass as an option when [creating a repository](h
 
 ```sql
 SELECT
-*
+gitignore/get_all_template
 FROM github.gitignore.gitignore
 ;
 ```

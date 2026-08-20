@@ -526,28 +526,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-org"><code>org</code></a></td>
     <td><a href="#parameter-per_page"><code>per_page</code></a>, <a href="#parameter-page"><code>page</code></a></td>
-    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Lists the selected repositories that are enabled for Copilot coding agent in an organization.<br /><br />Organization owners can use this endpoint when the coding agent repository policy<br />is set to `selected` to see which repositories have been enabled.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.</td>
+    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Lists the selected repositories that are enabled for Copilot cloud agent in an organization.<br /><br />Organization owners can use this endpoint when the coding agent repository policy<br />is set to `selected` to see which repositories have been enabled.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.</td>
 </tr>
 <tr>
     <td><a href="#enable_copilot_coding_agent_for_repository_in_organization"><CopyableCode code="enable_copilot_coding_agent_for_repository_in_organization" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-repository_id"><code>repository_id</code></a></td>
     <td></td>
-    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Adds a repository to the list of selected repositories enabled for Copilot<br />coding agent in an organization. This method can only be called when the<br />coding agent repository policy is set to `selected`.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.</td>
+    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Adds a repository to the list of selected repositories enabled for Copilot<br />cloud agent in an organization. This method can only be called when the<br />cloud agent repository policy is set to `selected`.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.</td>
 </tr>
 <tr>
     <td><a href="#set_copilot_coding_agent_selected_repositories_for_organization"><CopyableCode code="set_copilot_coding_agent_selected_repositories_for_organization" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-selected_repository_ids"><code>selected_repository_ids</code></a></td>
     <td></td>
-    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Replaces the list of selected repositories that are enabled for Copilot coding<br />agent in an organization. This method can only be called when the coding agent<br />repository policy is set to `selected`.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.</td>
+    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Replaces the list of selected repositories that are enabled for Copilot cloud<br />agent in an organization. This method can only be called when the cloud agent<br />repository policy is set to `selected`.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.</td>
 </tr>
 <tr>
     <td><a href="#disable_copilot_coding_agent_for_repository_in_organization"><CopyableCode code="disable_copilot_coding_agent_for_repository_in_organization" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-org"><code>org</code></a>, <a href="#parameter-repository_id"><code>repository_id</code></a></td>
     <td></td>
-    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Removes a repository from the list of selected repositories enabled for Copilot<br />coding agent in an organization. This method can only be called when the<br />coding agent repository policy is set to `selected`.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scopes to use this endpoint.</td>
+    <td>&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Removes a repository from the list of selected repositories enabled for Copilot<br />cloud agent in an organization. This method can only be called when the<br />cloud agent repository policy is set to `selected`.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scopes to use this endpoint.</td>
 </tr>
 </tbody>
 </table>
@@ -598,7 +598,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list_copilot_coding_agent_selected_repositories_for_organization">
 
-&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Lists the selected repositories that are enabled for Copilot coding agent in an organization.<br /><br />Organization owners can use this endpoint when the coding agent repository policy<br />is set to `selected` to see which repositories have been enabled.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Lists the selected repositories that are enabled for Copilot cloud agent in an organization.<br /><br />Organization owners can use this endpoint when the coding agent repository policy<br />is set to `selected` to see which repositories have been enabled.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
 
 ```sql
 SELECT
@@ -713,7 +713,7 @@ AND page = '{{ page }}'
 >
 <TabItem value="enable_copilot_coding_agent_for_repository_in_organization">
 
-&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Adds a repository to the list of selected repositories enabled for Copilot<br />coding agent in an organization. This method can only be called when the<br />coding agent repository policy is set to `selected`.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Adds a repository to the list of selected repositories enabled for Copilot<br />cloud agent in an organization. This method can only be called when the<br />cloud agent repository policy is set to `selected`.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
 
 ```sql
 REPLACE github.copilot.org_coding_agent_repos
@@ -726,7 +726,7 @@ AND repository_id = '{{ repository_id }}' --required;
 </TabItem>
 <TabItem value="set_copilot_coding_agent_selected_repositories_for_organization">
 
-&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Replaces the list of selected repositories that are enabled for Copilot coding<br />agent in an organization. This method can only be called when the coding agent<br />repository policy is set to `selected`.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
+&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Replaces the list of selected repositories that are enabled for Copilot cloud<br />agent in an organization. This method can only be called when the cloud agent<br />repository policy is set to `selected`.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scope to use this endpoint.
 
 ```sql
 REPLACE github.copilot.org_coding_agent_repos
@@ -750,7 +750,7 @@ AND selected_repository_ids = '{{ selected_repository_ids }}' --required;
 >
 <TabItem value="disable_copilot_coding_agent_for_repository_in_organization">
 
-&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Removes a repository from the list of selected repositories enabled for Copilot<br />coding agent in an organization. This method can only be called when the<br />coding agent repository policy is set to `selected`.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scopes to use this endpoint.
+&gt; [!NOTE]<br />&gt; This endpoint is in public preview and is subject to change.<br /><br />Removes a repository from the list of selected repositories enabled for Copilot<br />cloud agent in an organization. This method can only be called when the<br />cloud agent repository policy is set to `selected`.<br /><br />OAuth app tokens and personal access tokens (classic) need the `admin:org` scopes to use this endpoint.
 
 ```sql
 DELETE FROM github.copilot.org_coding_agent_repos
