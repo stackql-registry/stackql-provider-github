@@ -142,7 +142,11 @@ args = [
 The agent can then discover and query GitHub using the server's tools (`list_resources`, `describe_resource`, `run_select_query` and so on). Credential values are resolved inside the server process and are never visible to the agent. If you re-authenticate with `gh auth login`, rewrite the dotenv file and ask the agent to call the `reload_credentials` tool (or restart the server) to pick up the new token.
 
 
-## Repository inventory
+## Example Queries
+
+Try the following queries using `stackql shell`, or run them from a script or CI pipeline with `stackql exec`.
+
+### Repository inventory
 
 Repositories in an organization, with size, language and activity signals:
 
@@ -179,7 +183,7 @@ FROM github.repos.details
 WHERE owner = 'stackql' AND repo = 'stackql';
 ```
 
-## Contributors and window functions
+### Contributors and window functions
 
 The SQL engine supports window functions, so ranking, running totals and
 percentiles run locally over the API results. Rank contributors in a
@@ -228,7 +232,33 @@ GROUP BY login
 ORDER BY total_contributions DESC;
 ```
 
-## Release cadence
+Distinct human contributors across every repository in an organization. The
+`repo` parameter of `contributors` is resolved from each row of `repos`, so the
+engine issues one contributors request per repository and joins the results
+locally. `type = 'User'` drops GitHub App and bot accounts (`type = 'Bot'`),
+the `NOT LIKE` drops AI coding agent accounts, and `fork = 0` excludes
+forked repositories. Boolean fields are stored as integers, so compare them
+with `0` and `1` (`fork = 'false'` or `fork = false` would match no rows):
+
+```sql
+SELECT
+  c.login,
+  c.html_url,
+  COUNT(*) AS repos_contributed_to,
+  SUM(c.contributions) AS total_contributions
+FROM github.repos.repos r
+LEFT JOIN github.repos.contributors c
+  ON c.repo = r.name
+WHERE r.org = 'stackql'
+AND r.fork = 0
+AND c.owner = 'stackql'
+AND c.type = 'User'
+AND c.login NOT LIKE '%claude%'
+GROUP BY c.login, c.html_url
+ORDER BY total_contributions DESC;
+```
+
+### Release cadence
 
 Days between releases, using `LAG` and `LEAD`:
 
@@ -244,7 +274,7 @@ WHERE owner = 'stackql' AND repo = 'stackql'
 ORDER BY published_at;
 ```
 
-## Issues and pull requests
+### Issues and pull requests
 
 Cumulative issue count over time:
 
@@ -274,7 +304,7 @@ FROM github.pulls.pull_requests
 WHERE owner = 'stackql' AND repo = 'stackql' AND state = 'open';
 ```
 
-## Commit activity
+### Commit activity
 
 Four-week moving average of commits, expanding the weekly `days` array with
 `json_each`:
@@ -297,7 +327,7 @@ FROM weekly_totals
 ORDER BY week_start;
 ```
 
-## GitHub Actions
+### GitHub Actions
 
 Workflows and their most recent runs:
 
@@ -332,7 +362,7 @@ WHERE owner = 'stackql' AND repo = 'stackql'
 GROUP BY name;
 ```
 
-## Discussions, stars and contribution graphs
+### Discussions, stars and contribution graphs
 
 Nested objects in these resources come back as JSON columns; use
 `json_extract` to pull out individual fields.
@@ -406,7 +436,7 @@ WHERE owner = 'stackql' AND repo = 'stackql' AND pull_number = 600
 AND is_resolved = 0;
 ```
 
-## Rate limits
+### Rate limits
 
 ```sql
 SELECT
@@ -417,7 +447,7 @@ SELECT
 FROM github.rate_limit.rate_limit;
 ```
 
-## Provision, mutate and tear down
+### Provision, mutate and tear down
 
 Mutations use the same SQL grammar: `INSERT` creates, `UPDATE` patches,
 `EXEC` invokes lifecycle methods and `DELETE` removes. Request body fields are
