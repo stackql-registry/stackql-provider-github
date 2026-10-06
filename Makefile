@@ -39,6 +39,7 @@
 SHELL := /bin/bash
 
 PROVIDER      := github
+SOURCE_PROJECT ?= https://github.com/stackql-registry/stackql-provider-$(PROVIDER)
 VERSION       := v00.00.00000
 SPEC_URL      := https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json
 SPEC_FILE     := provider-dev/downloaded/api.github.com.json
@@ -150,7 +151,8 @@ docs:
 	  --provider-name $(PROVIDER) \
 	  --provider-dir ./$(PROVIDER_DIR) \
 	  --output-dir ./$(WEBSITE_DIR) \
-	  --provider-data-dir ./provider-dev/docgen/provider-data
+	  --provider-data-dir ./provider-dev/docgen/provider-data \
+	  --source-project $(SOURCE_PROJECT)
 	bash bin/fix-doc-links.sh $(WEBSITE_DIR)/docs/services
 
 docs-build:
