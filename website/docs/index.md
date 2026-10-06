@@ -22,6 +22,7 @@ Web-based version-control and collaboration.
 
 total services: __48__  
 total resources: __480__  
+source project: __[stackql-provider-github](https://github.com/stackql-registry/stackql-provider-github)__  
 
 :::
 
